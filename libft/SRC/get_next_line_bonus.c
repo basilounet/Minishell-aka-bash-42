@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 20:16:48 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/01/30 18:30:13 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:33:23 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 char	**ft_free_gnl(int fd, char *str)
 {

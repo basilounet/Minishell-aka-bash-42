@@ -1,22 +1,25 @@
 ##========== SOURCES ==========##
 
-SRC = srcs/interpreter/lexer/lexer.c \
-		srcs/main.c \
-		srcs/utils/create_tokens.c \
-		srcs/utils/char_utils.c \
-		srcs/utils/create_ctns.c
+SRC = interpreter/lexer/lexer.c \
+		main.c \
+		utils/create_tokens.c \
+		utils/char_utils.c \
+		utils/create_ctns.c
 MAIN = main.c
 
 ##========== NAMES ==========##
 
 NAME = minishell
-SRCS_DIR = srcs/
+SRCS_DIR = SRC/
 OBJS_DIR = OBJ/
+LIBFT_DIR = libft
+PIPEX_DIR = pipex
+INCLUDE_DIR = includes
 
 ##========== OBJECTS ==========##
 
-OBJS = $(SRC:.c=.o)
-MAIN_OBJ = $(MAIN:.c=.o)
+OBJS := $(addprefix $(OBJS_DIR),$(SRC:.c=.o))
+MAIN_OBJ = $(addprefix $(OBJS_DIR),$(MAIN:.c=.o))
 
 ##========== COLORS ==========##
 
@@ -32,15 +35,14 @@ WHITE		=		\033[0;97m
 
 ##========== COMPILATOR ==========##
 
-CC = cc
+CC = clang
 
 ##========== FLAGS ==========##
 
 CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = $(LIBS) #-fsanitize=address
-LIBS = -Llibft -lft -ltermcap -lreadline
-LIBFT = libft/libft.a
-
+LIBS = -I$(INCLUDE_DIR)
+LIBFT = $(LIBFT_DIR)/libft.a
 
 ##========== MODES ==========##
 
@@ -62,33 +64,37 @@ NUM_SRC = $(words $(SRC))
 INDEX = 0
 NUM_LINES_TO_CLEAR = 1
 
-all : $(CLEAR) $(NAME)
+all : $(NAME)
 
-$(NAME) : $(OBJS) $(LIBFT) $(MAIN_OBJ)
-	@$(CC) -o $(NAME) $(CFLAGS) -Iincludes $(MAIN_OBJ) $(OBJS) $(LDFLAGS)
-	@echo "$(GREEN)Pipex compiled$(BASE_COLOR)"
+$(NAME) : $(LIBFT) pipex $(OBJS) $(MAIN_OBJ)
+	@$(CC) -o $(NAME) $(CFLAGS) $(MAIN_OBJ) $(OBJS) $(LDFLAGS)
+	@echo "$(GREEN)-= Minishell compiled =-$(BASE_COLOR)"
 
 $(LIBFT) :
-	@DEBUG=$(DEBUG_MODE) TIMER=$(TIMER) IS_PRINT=$(IS_PRINT) $(MAKE) -C libft --no-print-directory $(J4)
+	@DEBUG=$(DEBUG_MODE) TIMER=$(TIMER) IS_PRINT=$(IS_PRINT) $(MAKE) -C $(LIBFT_DIR) --no-print-directory $(J4)
+
+pipex :
+	@DEBUG=$(DEBUG_MODE) TIMER=$(TIMER) IS_PRINT=$(IS_PRINT) $(MAKE) -C $(PIPEX_DIR) --no-print-directory $(J4)
 
 clean :
 	@rm -rf $(OBJS_DIR)
-	@$(MAKE) -C libft clean --no-print-directory
+	@$(MAKE) -C $(LIBFT_DIR) clean --no-print-directory
+	@$(MAKE) -C $(PIPEX_DIR) clean --no-print-directory
 
 fclean : clean
 	@rm -rf $(NAME)
-	@$(MAKE) -C libft fclean --no-print-directory
+	@$(MAKE) -C $(LIBFT_DIR) fclean --no-print-directory
+	@$(MAKE) -C $(PIPEX_DIR) fclean --no-print-directory
 	@echo "$(CYAN)Files cleaned$(BASE_COLOR)"
 
 re : fclean all
 
-%.o : $(SRCS_DIR)%.c
+$(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 ##	@echo -e "\033[$(shell expr $(NUM_LINES_TO_CLEAR));H\033[K"
-	@mkdir -p $(OBJS_DIR)
 ifeq ($(IS_PRINT),1)
 	@sleep $(TIMER)
 	@clear
-	@echo "$(GREEN)Compiling Pipex$(BASE_COLOR)"
+	@echo "$(GREEN)Compiling minishell$(BASE_COLOR)"
 	@echo "╔==============================================╗"
 	@echo -n "║$(GREEN)"
 	@echo -n "▓"
@@ -102,11 +108,10 @@ ifeq ($(IS_PRINT),1)
 	@echo "╚==============================================╝"
 	@$(eval INDEX=$(shell expr $(INDEX) + 1))
 	@echo "Compiling : $<"
-	$(CC) $(CFLAGS) -c $< -o $@
-	@mv $< $(OBJS_DIR)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 else
-	@$(CC) $(CFLAGS) -c $< -o $@
-	@mv $< $(OBJS_DIR)
+	@$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 endif
 
 
@@ -117,4 +122,4 @@ endif
 #		$(CC) -o $(CHECKER) $(CFLAGS) $(BONUS_MAIN_OBJ) $(OBJS) $(LDFLAGS)
 
 
-.PHONY : all bonus clean fclean re
+.PHONY : all bonus clean fclean re pipex

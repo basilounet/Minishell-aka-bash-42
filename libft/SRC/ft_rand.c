@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 14:53:32 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/01/20 18:34:57 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:32:26 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 static void	gen_bit_shift(unsigned int seed, unsigned int keys[4])
 {

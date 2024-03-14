@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 11:57:09 by bvasseur          #+#    #+#             */
-/*   Updated: 2023/11/08 21:44:37 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:31:48 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 size_t	ft_power(int a, int b)
 {

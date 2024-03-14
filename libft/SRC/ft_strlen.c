@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 18:11:22 by marvin            #+#    #+#             */
-/*   Updated: 2024/01/24 10:56:06 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:32:54 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 size_t	ft_strlen(const char *str)
 {

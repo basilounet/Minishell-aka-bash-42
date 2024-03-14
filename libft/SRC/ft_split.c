@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 01:17:03 by marvin            #+#    #+#             */
-/*   Updated: 2024/01/23 20:40:34 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:32:30 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 static size_t	count_word(char const *s, char sep)
 {

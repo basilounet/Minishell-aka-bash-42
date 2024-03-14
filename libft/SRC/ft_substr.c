@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 16:39:15 by bvasseur          #+#    #+#             */
-/*   Updated: 2023/11/03 18:32:43 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:33:11 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 static int	len(char const *str, size_t n)
 {

@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:54:01 by bvasseur          #+#    #+#             */
-/*   Updated: 2023/11/27 21:57:13 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:30:40 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 size_t	ft_countc(char *str, char c)
 {

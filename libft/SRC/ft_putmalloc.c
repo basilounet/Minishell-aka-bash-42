@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 16:22:38 by bvasseur          #+#    #+#             */
-/*   Updated: 2023/11/09 18:32:17 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:32:05 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 int	ft_put_malloc_free(char *s, void (*del)(void *))
 {

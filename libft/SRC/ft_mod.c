@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 16:28:02 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/01/17 16:32:30 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:31:42 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 size_t	ft_mod(int nb, int mod)
 {

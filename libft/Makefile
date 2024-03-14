@@ -58,6 +58,7 @@ SRC = ft_abs.c \
 	ft_strncmp.c \
 	ft_strncpy.c \
 	ft_strnstr.c \
+	ft_strrchr.c \
 	ft_strtrim.c \
 	ft_substr.c \
 	ft_tolower.c \
@@ -69,6 +70,7 @@ SRC = ft_abs.c \
 NAME = libft.a
 SRCS_DIR = SRC/
 OBJS_DIR = OBJ/
+INCLUDE_DIR = ../includes
 
 ##========== OBJECTS ==========##
 
@@ -89,11 +91,13 @@ WHITE		=		\033[0;97m
 
 ##========== COMPILATOR ==========##
 
-CC = cc
+CC = clang
 
 ##========== FLAGS ==========##
 
 CFLAGS = -Wall -Wextra -Werror
+LDFLAGS = $(LIBS) #-fsanitize=address
+LIBS = -I$(INCLUDE_DIR)
 
 ##========== MODES ==========##
 
@@ -136,9 +140,9 @@ ifeq ($(IS_PRINT),1)
 	@echo "╚==================================================╝"
 	@$(eval INDEX=$(shell expr $(INDEX) + 1))
 	@echo "Compiling : $<"
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 else
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 endif
 
 clean :

@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 11:28:37 by bvasseur          #+#    #+#             */
-/*   Updated: 2023/12/04 11:32:52 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:32:38 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 char	*ft_strcat(char *dest, const char *src)
 {

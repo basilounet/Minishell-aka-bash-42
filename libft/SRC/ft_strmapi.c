@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 18:25:42 by bvasseur          #+#    #+#             */
-/*   Updated: 2023/11/04 07:05:19 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:32:56 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {

@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 00:24:41 by marvin            #+#    #+#             */
-/*   Updated: 2023/11/08 22:38:20 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:30:49 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 char	*ft_itoa(int n)
 {

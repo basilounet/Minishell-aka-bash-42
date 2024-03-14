@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 18:37:51 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/01/30 18:29:49 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:32:28 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 char	***ft_free_split_map(char ***split)
 {

@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 18:14:33 by marvin            #+#    #+#             */
-/*   Updated: 2023/11/12 15:27:53 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:32:23 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 int	ft_putstr(char const *s)
 {

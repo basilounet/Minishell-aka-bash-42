@@ -6,11 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 19:20:53 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/01/15 15:11:18 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:30:54 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 int	ft_lennum(long nb)
 {
