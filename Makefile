@@ -1,11 +1,10 @@
 ##========== SOURCES ==========##
 
 SRC = interpreter/lexer/lexer.c \
-		main.c \
 		utils/create_tokens.c \
 		utils/char_utils.c \
 		utils/create_ctns.c
-MAIN = main.c
+MAIN = 
 
 ##========== NAMES ==========##
 
@@ -43,6 +42,7 @@ CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = $(LIBS) #-fsanitize=address
 LIBS = -I$(INCLUDE_DIR)
 LIBFT = $(LIBFT_DIR)/libft.a
+ARCHIVES = $(LIBFT) $(PIPEX_DIR)/pipex.a
 
 ##========== MODES ==========##
 
@@ -67,7 +67,7 @@ NUM_LINES_TO_CLEAR = 1
 all : $(NAME)
 
 $(NAME) : $(LIBFT) pipex $(OBJS) $(MAIN_OBJ)
-	@$(CC) -o $(NAME) $(CFLAGS) $(MAIN_OBJ) $(OBJS) $(LDFLAGS)
+	@$(CC) -o $(NAME) $(CFLAGS) $(MAIN_OBJ) $(OBJS) $(LDFLAGS) $(LIBFT_DIR)/libft.a
 	@echo "$(GREEN)-= Minishell compiled =-$(BASE_COLOR)"
 
 $(LIBFT) :

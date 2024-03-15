@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_list.c                                      :+:      :+:    :+:   */
+/*   create_ctns.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 20:36:42 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/11 20:36:49 by gangouil         ###   ########.fr       */
+/*   Updated: 2024/03/15 11:39:58 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,29 +17,31 @@ t_container	*ft_ctnnew(e_type type, t_container *next)
 {
 	t_container	*stack;
 
-	stack = malloc(sizeof(t_container));
+	stack = ft_calloc(sizeof(t_container), 1);
 	if (!stack)
 		return (NULL);
-	stack->redirects = NULL;
-	stack->operator = NULL;
+	stack->type = type;
 	stack->next_ctn = next;
 	return (stack);
 }
 
 t_container	*ft_ctnlast(t_container *stack)
 {
-	if (!stack)
+	t_container	*tmp;
+	
+	tmp = stack;
+	if (!tmp)
 		return (NULL);
-	while (stack->next)
-		stack = stack->next_ctn;
-	return (stack);
+	while (tmp->next_ctn)
+		tmp = tmp->next_ctn;
+	return (tmp);
 }
 
 void	ft_ctnadd_back(t_container **stack, t_container *new)
 {
 	t_container	*last;
 
-	if (!new)
+	if (!new || !stack)
 		return ;
 	if (!*stack)
 	{
@@ -50,29 +52,28 @@ void	ft_ctnadd_back(t_container **stack, t_container *new)
 	last->next_ctn = new;
 }
 
-/*void	ft_lstadd_front(t_container **stack, t_container *new)
+void	ft_ctnadd_front(t_container **stack, t_container *new)
 {
-	t_container	*new_last;
-
-	if (!new)
+	if (!new || !stack)
 		return ;
-	new_last = ft_lstlast(new);
-	new_last->next = *stack;
+	ft_ctnlast(new)->next_ctn = *stack;
 	*stack = new;
-}*/
+}
 
 void	ft_ctnclear(t_container *stack)
 {
 	t_container	*tmp;
 
-	ft_tokclear(stack->redirects);
-	while (stack)
+	tmp = stack;
+	while (tmp)
 	{
-		tmp = stack->next_ctn;
 		//if (type == T_CMD)
 		//	call cmdclear (args, redirects, pipe)
-		free(stack);
-		stack = tmp;
+		//else
+		//	ft_ctnclear(tmp->ctn);
+		ft_tokclear(tmp->redirects);
+		free(tmp);
+		tmp = NULL;
+		tmp = tmp->next_ctn;
 	}
-	stack = NULL;
 }

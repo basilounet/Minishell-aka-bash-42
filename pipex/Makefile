@@ -11,7 +11,7 @@ MAIN = pipex.c
 
 ##========== NAMES ==========##
 
-NAME = pipex
+NAME = pipex.a
 SRCS_DIR = SRC/
 OBJS_DIR = OBJ/
 LIBFT_DIR = ../libft
@@ -43,6 +43,7 @@ CC = clang
 CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = $(LIBS) #-fsanitize=address
 LIBS = -I$(INCLUDE_DIR)
+ARCHIVES = $(LIBFT_DIR)/libft.a
 
 ##========== MODES ==========##
 
@@ -67,7 +68,8 @@ NUM_LINES_TO_CLEAR = 1
 all : $(NAME)
 
 $(NAME) : $(OBJS) $(MAIN_OBJ)
-	@$(CC) -o $(NAME) $(CFLAGS) $(MAIN_OBJ) $(OBJS) $(LDFLAGS) $(LIBFT_DIR)/libft.a
+	@ar rcs $(NAME) $(OBJ) $(MAIN_OBJ) $(ARCHIVES)
+#	@$(CC) -o $(NAME) $(CFLAGS) $(MAIN_OBJ) $(OBJS) $(LDFLAGS) $(ARCHIVES)
 	@echo "$(YELLOW)-= Pipex compiled =-$(BASE_COLOR)"
 
 clean :

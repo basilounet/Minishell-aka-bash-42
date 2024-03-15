@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 13:32:37 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/14 17:44:02 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/15 11:30:40 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,9 @@ int	pipex(int ac, char **av, char **env, int is_append)
 	return (0);
 }
 
+/*
 int	main(int ac, char **av, char **env)
 {
 	pipex(ac - 1, av + 1, env, 0);
 }
+*/
