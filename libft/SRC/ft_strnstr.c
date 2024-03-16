@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 17:10:25 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/14 17:33:04 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/15 18:02:39 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,17 @@ char	*ft_strnstr(const char *str, const char *to_find, size_t len)
 		i++;
 	}
 	return ((char *)0);
+}
+
+char	*ft_map_strstr(char **str, char *to_find)
+{
+	int		i;
+
+	i = -1;
+	if (!str)
+		return (NULL);
+	while (str[++i])
+		if (ft_strnstr(str[i], to_find, ft_strlen(str[i])))
+			return (ft_strnstr(str[i], to_find, ft_strlen(str[i])));
+	return (NULL);
 }

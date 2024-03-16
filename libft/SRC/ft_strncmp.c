@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 14:05:47 by marvin            #+#    #+#             */
-/*   Updated: 2024/03/14 17:32:58 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/16 14:15:56 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,20 @@
 
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
+	unsigned char	*area1;
+	unsigned char	*area2;
 	size_t			i;
-	unsigned char	*s11;
-	unsigned char	*s22;
 
+	if (!s1 || !s2)
+		return (0);
 	i = 0;
-	s11 = (unsigned char *)s1;
-	s22 = (unsigned char *)s2;
-	while (*s11 && *s22 && *s11 - *s22 == 0 && i < n)
+	area1 = (void *)s1;
+	area2 = (void *)s2;
+	while ((area1[i] || area2[i]) && i < n)
 	{
-		s11++;
-		s22++;
+		if (area1[i] != area2[i])
+			return (area1[i] - area2[i]);
 		i++;
 	}
-	if (i == n)
-		return (0);
-	return (*s11 - *s22);
+	return (0);
 }

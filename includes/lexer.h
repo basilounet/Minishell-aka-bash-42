@@ -6,15 +6,15 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:18:25 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/15 11:28:53 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/15 13:59:13 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
 # define LEXER_H
 
-# include <stddef.h>
 # include <libft.h>
+# include <stddef.h>
 /*
  * Tokens types
  */

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 13:32:37 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/15 11:30:40 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/15 14:01:25 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ void	create_inputs(int ac, char **av, t_px *px, int input_files[2])
 	if (!ft_strncmp(av[ac - 1], "STDOUT", 7))
 		input_files[WRITE] = STDOUT_FILENO;
 	else if (px->is_append)
-		input_files[WRITE] = open(av[ac - 1], O_CREAT | O_RDWR | O_APPEND,
+		input_files[WRITE] = open(av[ac - 1], O_CREAT | O_WRONLY | O_APPEND,
 				0777);
 	else
-		input_files[WRITE] = open(av[ac - 1], O_CREAT | O_RDWR | O_TRUNC, 0644);
+		input_files[WRITE] = open(av[ac - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (input_files[READ] < 0 || input_files[WRITE] < 0)
 	{
 		try_close_fd(input_files[0]);

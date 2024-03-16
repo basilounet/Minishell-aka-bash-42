@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 17:22:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/11 17:32:56 by gangouil         ###   ########.fr       */
+/*   Updated: 2024/03/15 14:43:09 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 #include <lexer.h>
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 static void	print_tokens(t_tokens *tokens)
 {
@@ -42,7 +42,7 @@ int	main(int argc, char **argv, char **envp)
 			write(2, "invalid prompt\n", 15);
 		print_tokens(tokens);
 		parse_prompt(tokens);
-		//write(1, line, sizeof(line));
+		// write(1, line, sizeof(line));
 		free(line);
 		ft_tokclear(tokens);
 		line = NULL;

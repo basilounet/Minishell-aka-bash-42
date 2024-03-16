@@ -59,6 +59,11 @@ ifdef FAST
 	J4 = -j4
 endif
 
+ifdef FSANITIZE
+	LDFLAGS += -fsanitize=address
+	FSANITIZE_MODE = 1
+endif
+
 ##========== ANIMATIONS ==========##
 
 NUM_SRC = $(words $(SRC))

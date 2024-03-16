@@ -2,9 +2,9 @@
 
 SRC = interpreter/lexer/lexer.c \
 		utils/create_tokens.c \
-		utils/char_utils.c \
-		utils/create_ctns.c
-MAIN = 
+		utils/create_ctns.c \
+		utils/str_utils.c
+MAIN = minishell.c
 
 ##========== NAMES ==========##
 
@@ -39,7 +39,7 @@ CC = clang
 ##========== FLAGS ==========##
 
 CFLAGS = -Wall -Wextra -Werror
-LDFLAGS = $(LIBS) #-fsanitize=address
+LDFLAGS = $(LIBS)
 LIBS = -I$(INCLUDE_DIR)
 LIBFT = $(LIBFT_DIR)/libft.a
 ARCHIVES = $(LIBFT) $(PIPEX_DIR)/pipex.a
@@ -58,6 +58,11 @@ ifdef FAST
 	J4 = -j4
 endif
 
+ifdef FSANITIZE
+	LDFLAGS += -fsanitize=address
+	FSANITIZE_MODE = 1
+endif
+
 ##========== ANIMATIONS ==========##
 
 NUM_SRC = $(words $(SRC))
@@ -71,10 +76,10 @@ $(NAME) : $(LIBFT) pipex $(OBJS) $(MAIN_OBJ)
 	@echo "$(GREEN)-= Minishell compiled =-$(BASE_COLOR)"
 
 $(LIBFT) :
-	@DEBUG=$(DEBUG_MODE) TIMER=$(TIMER) IS_PRINT=$(IS_PRINT) $(MAKE) -C $(LIBFT_DIR) --no-print-directory $(J4)
+	@DEBUG=$(DEBUG_MODE) TIMER=$(TIMER) IS_PRINT=$(IS_PRINT) FSANITIZE=$(FSANITIZE_MODE) $(MAKE) -C $(LIBFT_DIR) --no-print-directory $(J4)
 
 pipex :
-	@DEBUG=$(DEBUG_MODE) TIMER=$(TIMER) IS_PRINT=$(IS_PRINT) $(MAKE) -C $(PIPEX_DIR) --no-print-directory $(J4)
+	@DEBUG=$(DEBUG_MODE) TIMER=$(TIMER) IS_PRINT=$(IS_PRINT) FSANITIZE=$(FSANITIZE_MODE) $(MAKE) -C $(PIPEX_DIR) --no-print-directory $(J4)
 
 clean :
 	@rm -rf $(OBJS_DIR)
@@ -94,7 +99,7 @@ $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 ifeq ($(IS_PRINT),1)
 	@sleep $(TIMER)
 	@clear
-	@echo "$(GREEN)Compiling minishell$(BASE_COLOR)"
+	@echo "$(GREEN)Compiling Minishell$(BASE_COLOR)"
 	@echo "╔==============================================╗"
 	@echo -n "║$(GREEN)"
 	@echo -n "▓"

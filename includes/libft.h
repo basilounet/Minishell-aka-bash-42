@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:08:12 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/26 18:22:32 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/15 18:21:20 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,14 @@ int					ft_toupper(int c);
 size_t				ft_countc(char *str, char c);
 char				*ft_strcat(char *dest, const char *src);
 char				*ft_strchr(const char *str, int to_find);
+char				*ft_strchrn(const char *str, int to_find, int n);
+
 char				*ft_strdup(const char *src);
 void				ft_striteri(char *s, void (*f)(unsigned int, char *));
 char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strjoin3(char const *s1, char const *s2,
 						char const *s3);
+char				*ft_str_reajoin(char *s1, char *s2, int s1_rea, int s2_rea);
 size_t				ft_strlcat(char *dest, const char *src, size_t size);
 size_t				ft_strlcpy(char *dest, const char *src, size_t size);
 size_t				ft_strlentc(const char *str, char c);
@@ -108,6 +111,7 @@ char				***ft_get_split_map(char **map, char c);
 char				***ft_free_split_map(char ***split);
 char				**ft_mapcpy(char **original, size_t len);
 size_t				ft_maplen(char **map);
+char				*ft_map_strstr(char **str, char *to_find);
 
 /*========== MEMORY ==========*/
 

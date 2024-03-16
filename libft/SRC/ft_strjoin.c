@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 19:42:41 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/14 17:32:46 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/15 18:06:58 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,27 @@ char	*ft_strjoin3(char const *s1, char const *s2, char const *s3)
 		ft_strncpy(dest + len_s1, s2, len_s2 + 1);
 	if (s3)
 		ft_strncpy(dest + len_s1 + len_s2, s3, len_s3 + 1);
+	return (dest);
+}
+
+char	*ft_str_reajoin(char *s1, char *s2, int s1_rea, int s2_rea)
+{
+	char	*dest;
+	size_t	len_s1;
+	size_t	len_s2;
+
+	len_s1 = ft_strlen(s1);
+	len_s2 = ft_strlen(s2);
+	dest = ft_calloc(sizeof(char), len_s1 + len_s2 + 1);
+	if (!dest)
+		return (NULL);
+	if (s1)
+		ft_strncpy(dest, s1, len_s1 + 1);
+	if (s2)
+		ft_strncpy(dest + len_s1, s2, len_s2 + 1);
+	if (s1_rea)
+		free(s1);
+	if (s2_rea)
+		free(s2);
 	return (dest);
 }
