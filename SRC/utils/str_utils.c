@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 13:57:38 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/17 17:06:51 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/18 14:05:38 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	*ft_getenv(char **env, char *to_get)
 		return (NULL);
 	if (!ft_strncmp(to_get, env[i], ft_strlen(to_get))
 		&& env[i][ft_strlen(to_get)] == '=')
-		return (env[i] + ft_strlentc(env[i], '=') + 1);
+		return (env[i] + len_env_name(env[i]) + 1);
 	else if (!ft_strncmp(to_get, env[i], ft_strlen(to_get))
 		&& env[i][ft_strlen(to_get)] != '=')
 		return (ft_getenv(&env[i + 1], to_get));

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:08:12 by marvin            #+#    #+#             */
-/*   Updated: 2024/03/17 14:11:54 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/18 13:40:23 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ int					ft_toupper(int c);
 /*========== STRINGS ==========*/
 
 size_t				ft_countc(char *str, char c);
+size_t				ft_countcn(char *str, char c, int n);
 char				*ft_strcat(char *dest, const char *src);
 char				*ft_strchr(const char *str, int to_find);
 char				*ft_strchrn(const char *str, int to_find, int n);

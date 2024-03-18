@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 13:45:27 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/18 12:48:04 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/18 15:32:22 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,8 @@ char	*get_prompt(t_ms *ms)
 	pwd = ft_getenv(ms->env, "PWD");
 	home = ft_getenv(ms->env, "HOME");
 	if (ft_getenv(ms->env, "USER"))
-		str = ft_str_reajoin(ft_getenv(ms->env, "USER"), ft_strdup("@minishell:"), 0, 1);
+		str = ft_str_reajoin(ft_getenv(ms->env, "USER"),
+				ft_strdup("@minishell:"), 0, 1);
 	else
 		str = ft_strdup("USER@minishell:");
 	if (!pwd)

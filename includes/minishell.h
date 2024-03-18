@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/18 10:31:50 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/18 18:00:10 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ void		print_env(t_ms *ms);
 
 /*========== EXPAND ==========*/
 
-char	*expand_var(t_ms *ms, char *original);
-
+int			check_quotes(char *str);
+int			len_env_name(char *str);
+char		*expand_var(t_ms *ms, char *original, int state);
 
 #endif
