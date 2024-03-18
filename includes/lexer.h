@@ -6,30 +6,40 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:18:25 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/15 13:59:13 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/17 17:15:34 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
 # define LEXER_H
-
 # include <libft.h>
 # include <stddef.h>
+
 /*
  * Tokens types
+ * T_ARG,		// 0 cat
+ * T_PIPE,		// 1 |
+ * T_INPUT,		// 2 <
+ * T_HEREDOC,	// 3 <<
+ * T_OUTPUT,	// 4 >
+ * T_APPEND,	// 5 >>
+ * T_LPARENTH,	// 6 (
+ * T_RPARENTH,	// 7 )
+ * T_OR,		// 8 ||
+ * T_AND,		// 9  &&
  */
 typedef enum e_symbol
 {
-	T_ARG,      // 0 cat
-	T_PIPE,     // 1 |
-	T_INPUT,    // 2 <
-	T_HEREDOC,  // 3 <<
-	T_OUTPUT,   // 4 >
-	T_APPEND,   // 5 >>
-	T_LPARENTH, // 6 (
-	T_RPARENTH, // 7 )
-	T_OR,       // 8 ||
-	T_AND,      // 9  &&
+	T_ARG,
+	T_PIPE,
+	T_INPUT,
+	T_HEREDOC,
+	T_OUTPUT,
+	T_APPEND,
+	T_LPARENTH,
+	T_RPARENTH,
+	T_OR,
+	T_AND,
 }					e_symbol;
 
 /*

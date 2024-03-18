@@ -1,9 +1,12 @@
 ##========== SOURCES ==========##
 
-SRC = interpreter/lexer/lexer.c \
+SRC =	interpreter/lexer/lexer.c \
+		interpreter/parser/expand.c \
 		utils/create_tokens.c \
 		utils/create_ctns.c \
-		utils/str_utils.c
+		utils/str_utils.c \
+		utils/prompt.c \
+		builds-in/env.c
 MAIN = minishell.c
 
 ##========== NAMES ==========##
@@ -22,15 +25,15 @@ MAIN_OBJ = $(addprefix $(OBJS_DIR),$(MAIN:.c=.o))
 
 ##========== COLORS ==========##
 
-BASE_COLOR 	=		\033[0;39m
-GRAY 		=		\033[0;90m
-RED 		=		\033[0;91m
-GREEN 		=		\033[0;92m
-YELLOW 		=		\033[0;93m
-BLUE 		=		\033[0;94m
-MAGENTA		=		\033[0;95m
-CYAN 		=		\033[0;96m
-WHITE		=		\033[0;97m
+BASE_COLOR 	=		\001\033[0;39m\002
+GRAY 		=		\001\033[0;90m\002
+RED 		=		\001\033[0;91m\002
+GREEN 		=		\001\033[0;92m\002
+YELLOW 		=		\001\033[0;93m\002
+BLUE 		=		\001\033[0;94m\002
+MAGENTA		=		\001\033[0;95m\002
+CYAN 		=		\001\033[0;96m\002
+WHITE		=		\001\033[0;97m\002
 
 ##========== COMPILATOR ==========##
 
@@ -55,7 +58,7 @@ ifdef DEBUG
 endif
 
 ifdef FAST
-	J4 = -j4
+	J4 = -j$(nproc)
 endif
 
 ifdef FSANITIZE
@@ -72,7 +75,7 @@ NUM_LINES_TO_CLEAR = 1
 all : $(NAME)
 
 $(NAME) : $(LIBFT) pipex $(OBJS) $(MAIN_OBJ)
-	@$(CC) -o $(NAME) $(CFLAGS) $(MAIN_OBJ) $(OBJS) $(LDFLAGS) $(LIBFT_DIR)/libft.a
+	@$(CC) -o $(NAME) $(CFLAGS) -lreadline $(MAIN_OBJ) $(OBJS) $(LDFLAGS) $(LIBFT_DIR)/libft.a
 	@echo "$(GREEN)-= Minishell compiled =-$(BASE_COLOR)"
 
 $(LIBFT) :

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 20:36:42 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/15 11:39:58 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/17 17:04:38 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_container	*ft_ctnnew(e_type type, t_container *next)
 t_container	*ft_ctnlast(t_container *stack)
 {
 	t_container	*tmp;
-	
+
 	tmp = stack;
 	if (!tmp)
 		return (NULL);
@@ -62,14 +62,14 @@ void	ft_ctnadd_front(t_container **stack, t_container *new)
 
 void	ft_ctnclear(t_container *stack)
 {
-	t_container	*tmp;
+	t_container *tmp;
 
 	tmp = stack;
 	while (tmp)
 	{
-		//if (type == T_CMD)
+		// if (type == T_CMD)
 		//	call cmdclear (args, redirects, pipe)
-		//else
+		// else
 		//	ft_ctnclear(tmp->ctn);
 		ft_tokclear(tmp->redirects);
 		free(tmp);

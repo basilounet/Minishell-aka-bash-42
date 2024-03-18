@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 19:42:41 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/15 18:06:58 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/17 13:26:14 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,9 @@ char	*ft_str_reajoin(char *s1, char *s2, int s1_rea, int s2_rea)
 		ft_strncpy(dest, s1, len_s1 + 1);
 	if (s2)
 		ft_strncpy(dest + len_s1, s2, len_s2 + 1);
-	if (s1_rea)
+	if (s1_rea && s1)
 		free(s1);
-	if (s2_rea)
+	if (s2_rea && s2)
 		free(s2);
 	return (dest);
 }
