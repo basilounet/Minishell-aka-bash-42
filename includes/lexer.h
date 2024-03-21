@@ -59,6 +59,7 @@ t_tokens			*ft_toknew(e_symbol symbol, t_tokens *next);
 t_tokens			*ft_toklast(t_tokens *stack);
 void				ft_tokadd_back(t_tokens **stack, t_tokens *new);
 void				ft_tokclear(t_tokens *stack);
-void				ft_tokpop(t_tokens *stack);
+t_tokens			*ft_tokpop(t_tokens **stack);
+char				*ft_substrc(char *str, int start, int end);
 
 #endif

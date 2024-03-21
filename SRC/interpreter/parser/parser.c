@@ -3,31 +3,55 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/12 14:26:51 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/17 17:07:11 by bvasseur         ###   ########.fr       */
+/*   Created: 2024/03/20 16:07:23 by gangouil          #+#    #+#             */
+/*   Updated: 2024/03/20 16:07:23 by gangouil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <parser.h>
+
+static char	*symbol_to_char(t_tokens *token)
+{
+	if (token->symbol == T_ARG)
+		return (token->arg);
+	if (token->symbol == T_PIPE)
+		return ("|");
+	if (token->symbol == T_INPUT)
+		return ("<");
+	if (token->symbol == T_HEREDOC)
+		return ("<<");
+	if (token->symbol == T_OUTPUT)
+		return (">");
+	if (token->symbol == T_APPEND)
+		return (">>");
+	if (token->symbol == T_LPARENTH)
+		return ("(");
+	if (token->symbol == T_RPARENTH)
+		return (")");
+	if (token->symbol == T_OR)
+		return ("||");
+	if (token->symbol == T_AND)
+		return ("&&");
+	return (NULL);
+}
 
 static int	is_symbol_set(int n, int exclude, e_symbol compared, ...)
 {
 	int		current_arg;
 	va_list	args;
 
-	va_start(args, n);
-	pass = 0;
+	va_start(args, compared);
 	while (n)
 	{
 		current_arg = va_arg(args, int);
-		if (exclude == 0 && compared == current_arg)
+		if (exclude == 0 && (int)compared == current_arg)
 		{
 			va_end(args);
 			return (1);
 		}
-		if (exclude == 1 && compared == current_arg)
+		if (exclude == 1 && (int)compared == current_arg)
 		{
 			va_end(args);
 			return (0);
@@ -58,82 +82,131 @@ static int	parenth_check(t_tokens *tokens)
 	return (1);
 }
 
-t_container	*parse_prompt(t_tokens *tokens)
+t_node	*parse_prompt(t_tokens *tokens)
 {
-	t_container	*ctn;
+	t_node *node;
 
 	if (!parenth_check(tokens))
 		return (NULL);
-	ctn = ft_ctnnew(NULL, NULL);
-	if (!ctn)
+	node = parse_logex(&tokens);
+	return (node);
+}
+
+t_node	*parse_logex(t_tokens **tokens)
+{
+    t_node		*node;
+
+	node = parse_pipeline(tokens);
+	if (!node)
+	{
+		//free(node); // needs proper free function
 		return (NULL);
-	parse_logex(ctn, tokens);
-}
-
-t_container	*parse_logex(t_container *ctn, t_tokens *tokens)
-{
-	t_container	*next_ctn;
-
-	next_ctn = NULL;
-	parse_pipeline(ctn, tokens);
-	if (tokens && (tokens->symbol == T_AND || tokens->symbol == T_OR))
-	{
-		if (tokens->symbol == T_AND)
-			ctn->operator= T_AND;
-		else
-			ctn->operator== T_OR;
-		ft_tokpop(tokens);
-		next_ctn = ft_ctnnew(NULL, NULL);
-		if (!next_ctn)
-			return (NULL); // needs free function
-		ctn->type = T_CTN;
-		ctn->next_ctn = parse_logex(next_ctn, tokens);
-		return (next_ctn);
 	}
-	return (ctn);
-}
-
-t_container	*parse_pipeline(t_container *ctn, t_tokens *tokens)
-{
-	t_command	next_cmd;
-
-	next_cmd = NULL;
-	ctn->cmd = parse_command(ctn, tokens);
-	if (tokens && tokens->symbol == T_PIPE)
+	while (*tokens && ((*tokens)->symbol == T_OR || (*tokens)->symbol == T_AND))
 	{
+		//build a droite dans un tree
 	}
+	return (node);
 }
 
-// t_cmd ?? replace by t_ctn or split function, needs to be studied
-t_command	parse_command(t_container *ctn, t_tokens *tokens)
+t_node *parse_pipeline(t_tokens **tokens)
+{
+	t_node	*node;
+	t_node	*right;
+
+	//check for brace group
+	//if one, node type = T_TREE
+	node = parse_command(tokens);
+	if (!node)
+		return (NULL); // fais tes bails
+	if (*tokens && (*tokens)->symbol == T_PIPE)
+	{
+		free(ft_tokpop(tokens));
+		if (!(*tokens))
+		{
+			printf("Syntax error: unexpected token near |\n");
+			//free(node); //needs proper free function
+			return (NULL);
+		}
+		right = parse_pipeline(tokens);
+		node = ft_treenew(T_ARG, node, right, NULL);
+		//build tree
+	}
+	return (node);
+}
+
+t_node		*parse_command(t_tokens **tokens)
+{
+	t_node		*node;
+
+	if (*tokens && (*tokens)->symbol == T_LPARENTH) //ne pas oublier de pop la parenthese
+		node = parse_brace(tokens);
+	else
+		node = parse_simple_command(tokens);
+	if (!node)
+		return (NULL); //fais tes bails
+	return (node);
+}
+
+t_node   *parse_simple_command(t_tokens **tokens)
 {
 	t_command	cmd;
-	t_tokens	*last;
+	t_node		*node;
 
-	// check for brace group && call parse cmd again
-	cmd.args = tokens;
-	while (tokens && tokens->symbol == T_ARG)
-		ft_tokpop(tokens);
-	last = ft_toklast(cmd.args);
-	last->next = NULL;
-	parse_redlist(ctn, tokens);
-	return (cmd);
+	//cmd = ft_calloc(sizeof(cmd), 1);
+	//if (!cmd)
+	//	return (NULL);
+	cmd = ft_cmdnew(NULL, NULL);
+	node = ft_nodenew(T_CMD, cmd, (t_tree){0});
+	if (!node)
+		return (NULL);
+    while (*tokens && is_symbol_set(5, 0, (*tokens)->symbol, T_APPEND,
+		T_HEREDOC, T_INPUT, T_OUTPUT, T_ARG))
+	{
+		if ((*tokens)->symbol != T_ARG)
+		{
+			if (parse_redlist(node, tokens) == 0)
+			{	
+				free(node); //needs proper free function
+				return (NULL);
+			}
+		}
+		else
+			ft_tokadd_back(&cmd.args, ft_tokpop(tokens));
+	}
+	node->cmd.args = cmd.args;
+	return (node);
 }
 
-int	parse_redlist(t_container *ctn, t_tokens *tokens)
+t_node *parse_brace(t_tokens **tokens)
 {
-	e_symbol symbol;
+	(void)tokens;
+    return (NULL); // call to parse_logex
+		// + bails mystiques tmtc
+}
 
-	if (is_symbol_set(4, 0, tokens->symbol, T_APPEND, T_HEREDOC, T_INPUT,
-			T_OUTPUT))
+int	parse_redlist(t_node *node, t_tokens **tokens)
+{
+	e_symbol	symbol;
+
+	if (*tokens && is_symbol_set(4, 0, (*tokens)->symbol, T_APPEND, T_HEREDOC,
+			T_INPUT, T_OUTPUT))
 	{
-		symbol = tokens->symbol;
+		symbol = (*tokens)->symbol;
+		free(ft_tokpop(tokens));
+		if ((*tokens)->symbol != T_ARG)
+		{
+			printf("Syntax error: unexpected token near %s\n", symbol_to_char(*tokens));
+			return (0);
+		}
+		(*tokens)->symbol = symbol;
+		if (node->type == T_CMD)
+			ft_tokadd_back(&node->cmd.redirects, *tokens);
+		else
+			ft_tokadd_back(&node->tree.redirects, *tokens);
 		ft_tokpop(tokens);
-		if (tokens->symbol != T_ARG)
-			return (0); // syntax error unexpected token
-		ft_tokadd_back(&ctn->redirects, tokens->symbol);
-		ft_tokpop(tokens);
-		parse_redlist(ctn, tokens);
+		if (parse_redlist(node, tokens) == 0)
+			return (0);
 	}
 	return (1);
 }

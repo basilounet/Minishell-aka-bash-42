@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <lexer.h>
+#include <parser.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 #include <stdio.h>
@@ -30,6 +30,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
 	t_tokens	*tokens;
+	t_node		*node;
 
 	(void)argc;
 	(void)argv;
@@ -41,10 +42,11 @@ int	main(int argc, char **argv, char **envp)
 		if (lexer(&tokens, line) == 0)
 			write(2, "invalid prompt\n", 15);
 		print_tokens(tokens);
-		parse_prompt(tokens);
+		node = parse_prompt(tokens);
+		//print_ctns(ctn, 1);
 		// write(1, line, sizeof(line));
 		free(line);
-		ft_tokclear(tokens);
+		//ft_tokclear(tokens);
 		line = NULL;
 		tokens = NULL;
 	}

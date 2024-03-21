@@ -58,7 +58,7 @@ static void	lex_string(t_tokens *tokens, char *line, int *i)
 	if (squoted % 2 == 1 || dquoted % 2 == 1)
 		tokens->arg = NULL;
 	else
-		tokens->arg = ft_substr(line, i_start, *i + 1);
+		tokens->arg = ft_substrc(line, i_start, *i + 1);
 }
 
 int	lexer(t_tokens **tokens, char *line)

@@ -1,13 +1,16 @@
 ##========== SOURCES ==========##
 
 SRC =	interpreter/lexer/lexer.c \
+		interpreter/parser/parser.c \
 		interpreter/parser/expand.c \
 		utils/create_tokens.c \
-		utils/create_ctns.c \
+		utils/create_trees.c \
+		utils/create_nodes.c \
 		utils/str_utils.c \
 		utils/prompt.c \
 		builds-in/env.c
-MAIN = minishell.c
+
+MAIN = main.c
 
 ##========== NAMES ==========##
 
@@ -37,7 +40,7 @@ WHITE		=		\001\033[0;97m\002
 
 ##========== COMPILATOR ==========##
 
-CC = clang
+CC = cc
 
 ##========== FLAGS ==========##
 

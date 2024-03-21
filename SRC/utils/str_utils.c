@@ -31,3 +31,23 @@ char	*ft_getenv(char **env, char *to_get)
 		return (ft_getenv(&env[i + 1], to_get));
 	return (NULL);
 }
+
+char	*ft_substrc(char *str, int start, int end)
+{
+	char	*new_str;
+	int		len;
+	int		i;
+
+	i = 0;
+	len = ft_strlen(str);
+	new_str = malloc(len + 1);
+	if (!new_str)
+		return (NULL);
+	while (start + i < end && i < len)
+	{
+		new_str[i] = str[start + i];
+		i++;
+	}
+	new_str[i] = 0;
+	return (new_str);
+}

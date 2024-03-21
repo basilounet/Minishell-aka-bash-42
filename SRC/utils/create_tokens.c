@@ -42,7 +42,7 @@ void	ft_tokadd_back(t_tokens **stack, t_tokens *new)
 {
 	t_tokens	*last;
 
-	if (!new || !stack)
+	if (!new)
 		return ;
 	if (!*stack)
 	{
@@ -76,16 +76,14 @@ void	ft_tokclear(t_tokens *stack)
 	}
 }
 
-void	ft_tokpop(t_tokens *stack)
+t_tokens	*ft_tokpop(t_tokens **stack)
 {
-	t_tokens	*next;
+	t_tokens	*current_token;
 
-	if (!stack)
-		return ;
-	next = stack->next;
-	if (stack->arg)
-		free(stack->arg);
-	free(stack);
-	stack = NULL;
-	stack = next;
+	if (!stack || !*stack)
+		return (NULL);
+	current_token = *stack;
+	*stack = (*stack)->next;
+	current_token->next = NULL;
+	return (current_token);
 }
