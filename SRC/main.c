@@ -21,7 +21,7 @@ static void	print_tokens(t_tokens *tokens)
 {
 	while (tokens)
 	{
-		printf("symbol = %u, arg = %s\n", tokens->symbol, tokens->arg);
+		printf("symbol = %u, arg = \"%s\"\n", tokens->symbol, tokens->arg);
 		tokens = tokens->next;
 	}
 }
@@ -40,14 +40,25 @@ int	main(int argc, char **argv, char **envp)
 	{
 		line = readline(NULL);
 		if (lexer(&tokens, line) == 0)
+		{
 			write(2, "invalid prompt\n", 15);
+			ft_tokclear(tokens);
+			return (1);
+		}
+		if (!tokens)
+		{
+			write(2, "empty\n", 6);
+			return (1);
+		}
 		print_tokens(tokens);
-		node = parse_prompt(tokens);
+		node = parse_prompt(&tokens);
+		if (node)
+			write(1, "good\n", 5);
 		//print_ctns(ctn, 1);
 		// write(1, line, sizeof(line));
-		free(line);
-		//ft_tokclear(tokens);
+		free(line);	
 		line = NULL;
-		tokens = NULL;
+		free_node(node);
+		ft_tokclear(tokens);
 	}
 }

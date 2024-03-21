@@ -35,15 +35,15 @@ char	*ft_getenv(char **env, char *to_get)
 char	*ft_substrc(char *str, int start, int end)
 {
 	char	*new_str;
-	int		len;
 	int		i;
 
 	i = 0;
-	len = ft_strlen(str);
-	new_str = malloc(len + 1);
+	if (str[end - 1] == ' ')
+		end--;
+	new_str = malloc(end - start + 2);
 	if (!new_str)
 		return (NULL);
-	while (start + i < end && i < len)
+	while (start + i < end)
 	{
 		new_str[i] = str[start + i];
 		i++;

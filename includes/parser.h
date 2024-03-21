@@ -31,8 +31,6 @@ typedef struct s_command
 	t_tokens				*redirects;
 }	t_command;
 
-//typedef struct s_binary_tree t_tree;
-
 typedef struct s_node t_node;
 
 typedef struct s_binary_tree
@@ -49,14 +47,15 @@ typedef struct s_node
 	union
 	{
 		t_command	cmd;
-		t_tree	tree;
+		t_tree		tree;
 	};
 }	t_node;
 
 t_node	*ft_treenew(e_symbol ope, t_node *left, t_node *right, t_tokens *redirs);
 t_node	*ft_nodenew(e_type type, t_command cmd, t_tree tree);
 t_command	ft_cmdnew(t_tokens *args, t_tokens *redirects);
-t_node	*parse_prompt(t_tokens *tokens);
+void	free_node(t_node *node);
+t_node	*parse_prompt(t_tokens **tokens);
 t_node	*parse_logex(t_tokens **tokens);
 t_node	*parse_pipeline(t_tokens **tokens);
 t_node	*parse_command(t_tokens **tokens);

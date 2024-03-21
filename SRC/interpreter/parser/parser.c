@@ -82,13 +82,13 @@ static int	parenth_check(t_tokens *tokens)
 	return (1);
 }
 
-t_node	*parse_prompt(t_tokens *tokens)
+t_node	*parse_prompt(t_tokens **tokens)
 {
 	t_node *node;
 
-	if (!parenth_check(tokens))
+	if (!parenth_check(*tokens))
 		return (NULL);
-	node = parse_logex(&tokens);
+	node = parse_logex(tokens);
 	return (node);
 }
 
@@ -98,10 +98,7 @@ t_node	*parse_logex(t_tokens **tokens)
 
 	node = parse_pipeline(tokens);
 	if (!node)
-	{
-		//free(node); // needs proper free function
 		return (NULL);
-	}
 	while (*tokens && ((*tokens)->symbol == T_OR || (*tokens)->symbol == T_AND))
 	{
 		//build a droite dans un tree
@@ -118,19 +115,23 @@ t_node *parse_pipeline(t_tokens **tokens)
 	//if one, node type = T_TREE
 	node = parse_command(tokens);
 	if (!node)
-		return (NULL); // fais tes bails
+		return (NULL);
 	if (*tokens && (*tokens)->symbol == T_PIPE)
 	{
 		free(ft_tokpop(tokens));
 		if (!(*tokens))
 		{
-			printf("Syntax error: unexpected token near |\n");
-			//free(node); //needs proper free function
+			printf("baseshell: unexpected token near |\n");
+			free_node(node);
 			return (NULL);
 		}
 		right = parse_pipeline(tokens);
-		node = ft_treenew(T_ARG, node, right, NULL);
-		//build tree
+		if (!right)
+		{
+			free_node(node);
+			return (NULL);
+		}
+		node = ft_treenew(T_PIPE, node, right, NULL);
 	}
 	return (node);
 }
@@ -143,8 +144,6 @@ t_node		*parse_command(t_tokens **tokens)
 		node = parse_brace(tokens);
 	else
 		node = parse_simple_command(tokens);
-	if (!node)
-		return (NULL); //fais tes bails
 	return (node);
 }
 
@@ -153,9 +152,6 @@ t_node   *parse_simple_command(t_tokens **tokens)
 	t_command	cmd;
 	t_node		*node;
 
-	//cmd = ft_calloc(sizeof(cmd), 1);
-	//if (!cmd)
-	//	return (NULL);
 	cmd = ft_cmdnew(NULL, NULL);
 	node = ft_nodenew(T_CMD, cmd, (t_tree){0});
 	if (!node)
@@ -166,8 +162,9 @@ t_node   *parse_simple_command(t_tokens **tokens)
 		if ((*tokens)->symbol != T_ARG)
 		{
 			if (parse_redlist(node, tokens) == 0)
-			{	
-				free(node); //needs proper free function
+			{
+				ft_tokclear(cmd.args);
+				free_node(node);
 				return (NULL);
 			}
 		}
@@ -194,9 +191,14 @@ int	parse_redlist(t_node *node, t_tokens **tokens)
 	{
 		symbol = (*tokens)->symbol;
 		free(ft_tokpop(tokens));
-		if ((*tokens)->symbol != T_ARG)
+		if (*tokens && (*tokens)->symbol != T_ARG)
 		{
-			printf("Syntax error: unexpected token near %s\n", symbol_to_char(*tokens));
+			printf("baseshell: syntax error near unexpected token `%s'\n", symbol_to_char(*tokens));
+			return (0);
+		}
+		if (!*tokens)
+		{
+			printf("baseshell: syntax error near unexpected token `newline'\n");
 			return (0);
 		}
 		(*tokens)->symbol = symbol;

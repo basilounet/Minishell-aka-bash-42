@@ -16,10 +16,21 @@
 t_node	*ft_treenew(e_symbol ope, t_node *left, t_node *right, t_tokens *redirs)
 {
 	t_tree	stack;
+	t_node	*node;
 
 	stack.operator = ope;
 	stack.left = left;
 	stack.right = right;
 	stack.redirects = redirs;
-	return (ft_nodenew(T_TREE, (t_command){}, stack));
+	node = ft_nodenew(T_TREE, (t_command){}, stack);
+	if (!node)
+	{
+		if (left)
+			free_node(left);
+		if (right)
+			free_node(right);
+		ft_tokclear(redirs);
+		return (NULL);
+	}
+	return (node);
 }

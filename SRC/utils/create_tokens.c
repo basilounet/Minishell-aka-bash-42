@@ -65,15 +65,15 @@ void	ft_tokclear(t_tokens *stack)
 {
 	t_tokens	*tmp;
 
-	tmp = stack;
-	while (tmp)
+	while (stack)
 	{
-		if (tmp->arg)
-			free(tmp->arg);
-		free(tmp);
-		tmp = NULL;
-		tmp = tmp->next;
+		tmp = stack->next;
+		if (stack->arg)
+			free(stack->arg);
+		free(stack);
+		stack = tmp;
 	}
+	stack = NULL;
 }
 
 t_tokens	*ft_tokpop(t_tokens **stack)
