@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/18 18:00:10 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/22 13:19:55 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ char		*moving_france_pattern(int i, int len);
 /*========== BUILDS-IN ==========*/
 
 void		print_env(t_ms *ms);
+void		cd(char *path);
+void		pwd(void);
 
 /*========== EXPAND ==========*/
 

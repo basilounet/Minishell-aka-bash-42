@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand.c                                           :+:      :+:    :+:   */
+/*   expand_2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/17 17:12:41 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/18 18:16:07 by bvasseur         ###   ########.fr       */
+/*   Created: 2024/03/21 16:48:34 by bvasseur          #+#    #+#             */
+/*   Updated: 2024/03/22 13:55:03 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,110 +22,97 @@ int	len_env_name(char *str)
 	return (len);
 }
 
-char	*replace_env_var(t_ms *ms, char *str, char *original, int *i)
+int	change_state(char c, int state, char *shld_remove, int i)
 {
-	int		len;
+	int	new_state;
+
+	new_state = state;
+	if (c == '\"' && state == 0)
+		new_state = 1;
+	else if (c == '\'' && state == 0)
+		new_state = 2;
+	else if (c == '\"' && state == 1)
+		new_state = 0;
+	else if (c == '\'' && state == 2)
+		new_state = 0;
+	if (shld_remove && new_state != state)
+		shld_remove[i] = 'y';
+	return (new_state);
+}
+
+int	expanded_line_len(t_ms *ms, char *line, int state)
+{
 	char	*var_name;
+	int		len;
+	int		i;
 
+	i = 0;
 	len = 0;
-	(*i) += 1;
-	len = len_env_name(original + *i);
-	var_name = ft_substr(original, (*i), len);
-	str = ft_str_reajoin(str, ft_strdup(ft_getenv(ms->env, var_name)), 1, 1);
-	(*i) += len - 1;
-	if (var_name)
-		free(var_name);
-	return (str);
+	while (line[i])
+	{
+		state = change_state(line[i], state, NULL, 0);
+		if (line[i] == '$' && state == 2)
+			len += len_env_name(line + i + 1);
+		else if (line[i] == '$' && state != 2)
+		{
+			var_name = ft_substr(line, i + 1, len_env_name(line + i + 1));
+			len += ft_strlen(ft_getenv(ms->env, var_name));
+			if (var_name)
+				free(var_name);
+		}
+		else
+			len++;
+		if (line[i++] == '$' && state != 2)
+			i += len_env_name(line + i);
+	}
+	return (len);
 }
 
-int	change_state(char *original, int i, int state)
+char	*remove_quotes(char *str, char *should_remove)
 {
-	if (original[i] == '\"' && state == 0)
-		return (1);
-	if (original[i] == '\'' && state == 0)
-		return (2);
-	if (original[i] == '\"' && state == 1)
-		return (0);
-	if (original[i] == '\'' && state == 2)
-		return (0);
-	return (state);
-}
-
-char	*remove_quotes(char *str)
-{
-	int		state;
-	char	*new;
+	char	*line;
 	int		i;
 	int		j;
 
-	i = 0;
+	i = -1;
 	j = 0;
-	state = 0;
-	new = NULL;
-	if (!str)
-		return (NULL);
-	while (str[i])
-	{
-		state = change_state(str, i, state);
-		if ((str[i] == '\"' && (state == 0 || state == 1)) || (str[i] == '\''
-				&& (state == 0 || state == 2)))
-		{
-			new = ft_str_reajoin(new, ft_substr(str, j, i - j), 1, 1);
-			j = i + 1;
-		}
-		i++;
-	}
-	new = ft_str_reajoin(new, ft_substr(str, j, i - j), 1, 1);
-	free(str);
-	return (new);
-}
-
-char	*expand_special_cases(t_ms *ms, char c, char *str, int *j)
-{
-	if (!(c == '~'))
-		return (str);
-	*j += 1;
-	if (c == '~')
-		return (ft_str_reajoin(str, ft_getenv(ms->env, "HOME"), 1, 0));
-	return (str);
+	if (!str || !should_remove)
+		return (ft_free_ptr(2, str, should_remove));
+	line = ft_calloc(sizeof(char), ft_strlen(str) - ft_countc(str, 'y') + 1);
+	if (!line)
+		return (ft_free_ptr(2, str, should_remove));
+	while (str[++i])
+		if (should_remove[i] == 'n')
+			line[j++] = str[i];
+	ft_free_ptr(2, str, should_remove);
+	return (line);
 }
 
 char	*expand_var(t_ms *ms, char *original, int state)
 {
-	char	*str;
+	char	*quote;
+	char	*name;
+	char	*line;
 	int		i;
-	int		j;
 
-	if (!original || !*original)
-		return (NULL);
-	i = -1;
-	j = 0;
-	str = NULL;
-	while (original[++i])
-	{
-		state = change_state(original, i, state);
-		if (original[i] == '$' || original[i] == '~')
-		{
-			str = ft_str_reajoin(str, ft_substr(original, j, i - j), 1, 1);
-			if (state == 0)
-				str = expand_special_cases(ms, original[i], str, &j);
-			if (state != 2)
-				str = replace_env_var(ms, str, original, &i);
-			j = i + (state != 2);
-		}
-	}
-	str = ft_str_reajoin(str, ft_substr(original, j, i - j), 1, 1);
-	return (remove_quotes(str));
-}
-
-int	check_quotes(char *str)
-{
-	int	state;
-	int	i;
-
+	line = ft_calloc(sizeof(char), expanded_line_len(ms, original, 0) + 1);
+	quote = ft_calloc(sizeof(char), expanded_line_len(ms, original, 0) + 1);
+	ft_memset(quote, 'n', expanded_line_len(ms, original, 0) * (quote != NULL));
 	i = 0;
-	state = 0;
-	while (str[i])
-		state = change_state(str, i++, state);
-	return (state == 0);
+	while (line && quote && original && original[i])
+	{
+		state = change_state(original[i], state, quote, ft_strlen(line));
+		if (original[i] == '$' && state != 2)
+		{
+			name = ft_substr(original, i + 1, len_env_name(original + i + 1));
+			ft_strncpy(line + ft_strlen(line), ft_getenv(ms->env, name),
+				ft_strlen(ft_getenv(ms->env, name)) + 1);
+			ft_free_ptr(1, name);
+		}
+		else
+			line[ft_strlen(line)] = original[i];
+		if (original[i++] == '$' && state != 2)
+			i += len_env_name(original + i);
+	}
+	return (remove_quotes(line, quote));
 }

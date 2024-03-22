@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:08:12 by marvin            #+#    #+#             */
-/*   Updated: 2024/03/18 13:40:23 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/22 13:32:39 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ int					ft_memcmp(const void *s1, const void *s2, size_t n);
 void				*ft_memcpy(void *dest, const void *src, size_t n);
 void				*ft_memmove(void *dest, const void *src, size_t n);
 void				*ft_memset(void *s, int c, size_t n);
+void				*ft_free_ptr(int nb, ...);
 
 /*========== FD ==========*/
 
