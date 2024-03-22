@@ -17,12 +17,77 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static void	print_tokens(t_tokens *tokens)
+static char	*symbol_to_char(e_symbol symbol)
+{
+	if (symbol == T_PIPE)
+		return ("|");
+	if (symbol == T_INPUT)
+		return ("<");
+	if (symbol == T_HEREDOC)
+		return ("<<");
+	if (symbol == T_OUTPUT)
+		return (">");
+	if (symbol == T_APPEND)
+		return (">>");
+	if (symbol == T_LPARENTH)
+		return ("(");
+	if (symbol == T_RPARENTH)
+		return (")");
+	if (symbol == T_OR)
+		return ("||");
+	if (symbol == T_AND)
+		return ("&&");
+	return (NULL);
+}
+
+static void	print_pad(int depth)
+{
+	while (depth)
+	{
+		printf("|  ");
+		depth--;
+	}
+}
+
+static void	print_tokens(t_tokens *tokens, int depth)
 {
 	while (tokens)
 	{
+		print_pad(depth);
 		printf("symbol = %u, arg = \"%s\"\n", tokens->symbol, tokens->arg);
 		tokens = tokens->next;
+	}
+}
+
+static void	print_node(t_node *node, int depth)
+{
+	if (node->type == T_CMD)
+	{
+		print_pad(depth);
+		printf("<cmd>\n");
+		depth++;
+		print_pad(depth);
+		printf("<args>\n");
+		depth++;
+		print_tokens(node->cmd.args, depth);
+		print_pad(depth - 1);
+		printf("<redirects>\n");
+		print_tokens(node->cmd.redirects, depth);
+	}
+	if (node->type == T_TREE)
+	{
+		print_pad(depth);
+		printf("<tree>\n");
+		depth++;
+		print_pad(depth);
+		printf("operator = %s\n", symbol_to_char(node->tree.operator));
+		if (node->tree.left)
+			print_node(node->tree.left, depth + 1);
+		if (node->tree.right)
+			print_node(node->tree.right, depth + 1);
+		print_pad(depth);
+		printf("<redirects>\n");
+		print_tokens(node->tree.redirects, depth);
 	}
 }
 
@@ -52,10 +117,12 @@ int	main(int argc, char **argv, char **envp)
 			write(2, "empty\n", 6);
 			return (1);
 		}
-		print_tokens(tokens);
+		//print_tokens(tokens, 0);
 		node = parse_prompt(&tokens);
-		if (node)
-			write(1, "good\n", 5);
+		if (!node)
+			write(1, "bad\n", 4);
+		else
+			print_node(node, 0);
 		//print_ctns(ctn, 1);
 		// write(1, line, sizeof(line));
 		free(line);	
