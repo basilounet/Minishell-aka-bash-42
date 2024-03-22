@@ -75,8 +75,7 @@ INCLUDE_DIR = ../includes
 
 ##========== OBJECTS ==========##
 
-PRE_OBJS = $(SRC:.c=.o)
-OBJ = $(addprefix $(OBJS_DIR),$(PRE_OBJS))
+OBJ = $(addprefix $(OBJS_DIR),$(SRC:.c=.o))
 
 ##========== COLORS ==========##
 
@@ -124,7 +123,7 @@ all : $(CLEAR) $(NAME)
 
 $(NAME) : $(OBJ)
 	@ar rcs $(NAME) $(OBJ)
-	@echo "$(RED)Libft compiled$(BASE_COLOR)"
+	@echo "$(RED)-= Libft compiled =-$(BASE_COLOR)"
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 ##	@echo -e "\033[$(shell expr $(NUM_LINES_TO_CLEAR));H\033[K"

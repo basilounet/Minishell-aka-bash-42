@@ -3,6 +3,7 @@
 SRC =	interpreter/lexer/lexer.c \
 		interpreter/parser/parser.c \
 		interpreter/parser/expand.c \
+		interpreter/execution/execution.c \
 		utils/create_tokens.c \
 		utils/create_trees.c \
 		utils/create_nodes.c \
@@ -10,7 +11,7 @@ SRC =	interpreter/lexer/lexer.c \
 		utils/prompt.c \
 		builds-in/env.c
 
-MAIN = main.c
+MAIN = minishell.c
 
 ##========== NAMES ==========##
 
@@ -48,7 +49,7 @@ CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = $(LIBS)
 LIBS = -I$(INCLUDE_DIR)
 LIBFT = $(LIBFT_DIR)/libft.a
-ARCHIVES = $(LIBFT) $(PIPEX_DIR)/pipex.a
+ARCHIVES =  $(PIPEX_DIR)/pipex.a $(LIBFT)
 
 ##========== MODES ==========##
 
@@ -78,7 +79,7 @@ NUM_LINES_TO_CLEAR = 1
 all : $(NAME)
 
 $(NAME) : $(LIBFT) pipex $(OBJS) $(MAIN_OBJ)
-	@$(CC) -o $(NAME) $(CFLAGS) -lreadline $(MAIN_OBJ) $(OBJS) $(LDFLAGS) $(LIBFT_DIR)/libft.a
+	@$(CC) -o $(NAME) $(CFLAGS) -lreadline $(MAIN_OBJ) $(OBJS) $(LDFLAGS) pipex/pipex.a libft/libft.a
 	@echo "$(GREEN)-= Minishell compiled =-$(BASE_COLOR)"
 
 $(LIBFT) :

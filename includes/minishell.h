@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/22 13:19:55 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/22 16:38:50 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define MINISHELL_H
 # include <libft.h>
 # include <pipex.h>
+# include <parser.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdio.h>
@@ -54,5 +55,9 @@ void		pwd(void);
 int			check_quotes(char *str);
 int			len_env_name(char *str);
 char		*expand_var(t_ms *ms, char *original, int state);
+
+/*========== EXECUTION ==========*/
+
+void    execute_all_commands(t_ms *ms, t_node *node);
 
 #endif

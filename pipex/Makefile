@@ -6,8 +6,8 @@ SRC = parse.c \
 		errors.c \
 		fork.c \
 		pipe.c \
-		here_doc.c
-MAIN = pipex.c
+		here_doc.c \
+		pipex.c
 
 ##========== NAMES ==========##
 
@@ -19,8 +19,7 @@ INCLUDE_DIR = ../includes
 
 ##========== OBJECTS ==========##
 
-OBJS := $(addprefix $(OBJS_DIR),$(SRC:.c=.o))
-MAIN_OBJ = $(addprefix $(OBJS_DIR),$(MAIN:.c=.o))
+OBJ = $(addprefix $(OBJS_DIR),$(SRC:.c=.o))
 
 ##========== COLORS ==========##
 
@@ -41,7 +40,7 @@ CC = cc
 ##========== FLAGS ==========##
 
 CFLAGS = -Wall -Wextra -Werror
-LDFLAGS = $(LIBS) #-fsanitize=address
+LDFLAGS = $(LIBS)
 LIBS = -I$(INCLUDE_DIR)
 ARCHIVES = $(LIBFT_DIR)/libft.a
 
@@ -72,18 +71,15 @@ NUM_LINES_TO_CLEAR = 1
 
 all : $(NAME)
 
-$(NAME) : $(OBJS) $(MAIN_OBJ)
-	@ar rcs $(NAME) $(OBJ) $(MAIN_OBJ) $(ARCHIVES)
-#	@$(CC) -o $(NAME) $(CFLAGS) $(MAIN_OBJ) $(OBJS) $(LDFLAGS) $(ARCHIVES)
+$(NAME) : $(OBJ)
+	@ar rcs $(NAME) $(OBJ)
 	@echo "$(YELLOW)-= Pipex compiled =-$(BASE_COLOR)"
 
 clean :
 	@rm -rf $(OBJS_DIR)
-	@$(MAKE) -C $(LIBFT_DIR) clean --no-print-directory
 
 fclean : clean
 	@rm -rf $(NAME)
-	@$(MAKE) -C $(LIBFT_DIR) fclean --no-print-directory
 	@echo "$(CYAN)Files cleaned$(BASE_COLOR)"
 
 re : fclean all
@@ -93,6 +89,7 @@ $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 ifeq ($(IS_PRINT),1)
 	@sleep $(TIMER)
 	@clear
+	@$(eval INDEX=$(shell expr $(INDEX) + 1))
 	@echo "$(YELLOW)Compiling Pipex$(BASE_COLOR)"
 	@echo "╔==============================================╗"
 	@echo -n "║$(YELLOW)"
@@ -105,7 +102,6 @@ ifeq ($(IS_PRINT),1)
 	done
 	@echo "$(BASE_COLOR)║"
 	@echo "╚==============================================╝"
-	@$(eval INDEX=$(shell expr $(INDEX) + 1))
 	@echo "Compiling : $<"
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@

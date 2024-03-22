@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 20:36:42 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/15 11:47:13 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/22 16:48:14 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,19 @@ t_tokens	*ft_tokpop(t_tokens **stack)
 	*stack = (*stack)->next;
 	current_token->next = NULL;
 	return (current_token);
+}
+
+int	ft_toksize(t_tokens *tokens)
+{
+	t_tokens	*tmp;
+	int			i;
+
+	i = 0;
+	tmp = tokens;
+	while (tmp)
+	{
+		i++;
+		tmp = tmp ->next;
+	}
+	return (i);
 }

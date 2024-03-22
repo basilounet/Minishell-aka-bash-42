@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 17:22:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/17 14:14:00 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/22 14:56:29 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		line = readline(NULL);
+		if (line && line[0])
+			add_history(line);
 		if (lexer(&tokens, line) == 0)
 		{
 			write(2, "invalid prompt\n", 15);

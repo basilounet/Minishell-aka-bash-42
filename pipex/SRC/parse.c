@@ -6,12 +6,12 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 13:35:20 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/14 17:45:20 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/22 17:03:49 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <pipex.h>
-#include "../includes/libft.h"
+#include <libft.h>
 
 void	check_command(t_px *px, char *command, int index)
 {
