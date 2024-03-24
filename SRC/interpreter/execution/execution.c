@@ -6,83 +6,58 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:18:03 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/22 17:49:23 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/24 22:19:07 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
-#include <pipex.h>
 #include <parser.h>
+#include <pipex.h>
 
-char    *get_input_name(t_tokens *tokens)
+
+int	node_has_input(t_node *node)
 {
-    t_tokens    *tmp;
-
-    tmp = tokens;
-    while (tmp && tmp->symbol != T_INPUT)
-        tmp = tmp->next;
-    if (!tmp || tmp->symbol != T_INPUT)
-        return ("STDIN");
-    return (tmp->arg);
+	if (node->type == T_TREE)
+		return (node->tree.redirects != NULL);
+	return (node->cmd.redirects != NULL);
 }
 
-char    *get_output_name(t_tokens *tokens)
+int	update_inputs(t_node *node, t_tokens **redirects)
 {
-    t_tokens    *tmp;
-
-    tmp = tokens;
-    while (tmp && tmp->symbol != T_OUTPUT)
-        tmp = tmp->next;
-    if (!tmp || tmp->symbol != T_OUTPUT)
-        return ("STDOUT");
-    return (tmp->arg);
+	//print_node(node, 0);
+	//printf("\n");
+	if (node->type == T_TREE)
+	{
+		if (has_input(node->tree.redirects))
+			redirects = &node->tree.redirects;
+		if (node_has_input(node->tree.left))
+			update_inputs(node->tree.left, NULL);
+		if (node_has_input(node->tree.right))
+			update_inputs(node->tree.right, NULL);
+		if (!node_has_input(node->tree.left))
+			update_inputs(node->tree.left, redirects);
+		else if (!node_has_input(node->tree.right))
+			update_inputs(node->tree.right, redirects);
+	}
+	else if (node->type == T_CMD && redirects && *redirects && !has_input(node->cmd.redirects))
+	{
+		ft_tokadd_front(&node->cmd.redirects, ft_toknew(get_input_tok(*redirects)->symbol, NULL));
+		get_input_tok(node->cmd.redirects)->arg = ft_strdup(get_input_tok(*redirects)->arg);
+		return (1);
+	}
+	return (0);
 }
 
-int is_append(t_command *cmd)
+void	execute_node(t_ms *ms, t_node *node)
 {
-    t_tokens    *tmp;
-
-    tmp = cmd->redirects;
-    while (tmp && tmp->symbol != T_APPEND)
-        tmp = tmp->next;
-    if (tmp && tmp->symbol == T_APPEND)
-        return (1);    
-    return (0);
+	(void)ms;
+	if (!node)
+		return ;
+	update_inputs(node, NULL);
 }
 
-void    execute_command(t_ms *ms, t_command *cmd)
-{
-    t_tokens    *tmp;
-    char        **av;
-    int         i;
-
-    i = 1;
-    tmp = cmd->args;
-    av = ft_calloc(sizeof(char *), ft_toksize(cmd->args) + 3);
-    if (!av)
-        return ;
-    av[0] = ft_strdup(get_input_name(cmd->redirects));
-    while (tmp)
-    {
-        av[i++] = ft_strdup(tmp->arg);
-        tmp = tmp->next;
-    }
-    av[i] = ft_strdup(get_output_name(cmd->redirects));
-    ft_print_map(av);
-    pipex(ft_toksize(cmd->args) + 2, av, ms->env, is_append(cmd));
-}
-
-void    execute_tree(t_ms *ms, t_tree *tree)
-{
-    (void)ms;
-    (void)tree;
-}
-
-void    execute_all_commands(t_ms *ms, t_node *node)
-{
-    (void)ms;
-    if (node->type == T_CMD)
-        execute_command(ms, &node->cmd);
-    else
-        execute_tree(ms, &node->tree);
-}   
+/*
+((cat && cat) < b < b < b && cat) < c
+((cat && cat) && cat) < c
+(( cat && cat ) < b && ( echo o && ( cat )) && ( rev )) < c
+*/

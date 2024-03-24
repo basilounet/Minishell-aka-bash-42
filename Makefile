@@ -4,6 +4,7 @@ SRC =	interpreter/lexer/lexer.c \
 		interpreter/parser/parser.c \
 		interpreter/parser/expand.c \
 		interpreter/execution/execution.c \
+		interpreter/execution/execution_utils.c \
 		utils/create_tokens.c \
 		utils/create_trees.c \
 		utils/create_nodes.c \
@@ -11,7 +12,7 @@ SRC =	interpreter/lexer/lexer.c \
 		utils/prompt.c \
 		builds-in/env.c
 
-MAIN = minishell.c
+MAIN = main.c
 
 ##========== NAMES ==========##
 

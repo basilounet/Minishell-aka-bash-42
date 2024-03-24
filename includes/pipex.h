@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 13:48:36 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/15 11:10:02 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/23 18:18:42 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # define WRITE 1
 
 # include "sys/wait.h"
+# include <lexer.h>
 # include <libft.h>
 
 enum		e_errors
@@ -54,12 +55,12 @@ void		init_px(t_px *px);
 
 /*========== STRUCT_INIT ==========*/
 
-t_px		parse(int ac, char **av, char **env);
-void		create_inputs(int ac, char **av, t_px *px, int input_files[2]);
+t_px		parse(t_tokens *tokens, t_tokens *env);
+void		create_inputs(t_tokens *tokens, t_px *px, int input_files[2]);
 
 /*========== PIPES ==========*/
 
-int			pipex(int ac, char **av, char **env, int is_append);
+int			pipex(t_tokens *tokens, t_tokens *env, int is_append);
 void		sole_pipe(t_px *px, int input_files[2]);
 void		first_pipe(t_px *px, int input_files[2], int new_pipe[2]);
 void		last_pipe(t_px *px, int input_files[2], int new_pipe[2]);
@@ -71,9 +72,5 @@ void		try_close_fd(int fd);
 void		pipex_child(t_px *px, int input_fd[2], int output_fd[2],
 				int original_fd[2]);
 void		pipex_parent(t_px *px, int old_pipe[2], int new_pipe[2]);
-
-/*========== HERE_DOCS ==========*/
-
-void		here_doc(int ac, char **av, char **env, int is_append);
 
 #endif

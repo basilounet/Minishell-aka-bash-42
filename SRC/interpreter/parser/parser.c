@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:07:23 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/20 16:07:23 by gangouil         ###   ########.fr       */
+/*   Updated: 2024/03/24 20:54:33 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@ t_node   *parse_simple_command(t_tokens **tokens)
 		{
 			if (parse_redlist(node, tokens) == 0)
 			{
-				ft_tokclear(cmd.args);
+				ft_tokclear(&cmd.args);
 				free_node(node);
 				return (NULL);
 			}

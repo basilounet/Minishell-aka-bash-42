@@ -6,21 +6,42 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/22 16:38:29 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/24 18:06:21 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 #include <parser.h>
 
-static void	print_tokens(t_tokens *tokens)
+/*
+int	main(int ac, char **av, char **original_env)
 {
-	while (tokens)
+	t_tokens	*tokens;
+	t_tokens	*env;
+	int			i;
+
+	(void)ac;
+	i = 1;
+	tokens = NULL;
+	env = NULL;
+	while (av[i])
 	{
-		printf("symbol = %u, arg = \"%s\"\n", tokens->symbol, tokens->arg);
-		tokens = tokens->next;
+		ft_tokadd_back(&tokens, ft_toknew(0, NULL));
+		ft_toklast(tokens)->arg = ft_strdup(av[i]);
+		i++;
 	}
+	i = 0;
+	while (original_env[i])
+	{		
+		ft_tokadd_back(&env, ft_toknew(0, NULL));
+		ft_toklast(env)->arg = ft_strdup(original_env[i]);
+		i++;
+	}
+	pipex(tokens, env, 0);
+	ft_tokclear(tokens);
+	ft_tokclear(env);
 }
+*/
 
 int	main(int ac, char **av, char **env)
 {
@@ -43,13 +64,12 @@ int	main(int ac, char **av, char **env)
 			write(2, "invalid prompt\n", 15);
 			ft_tokclear(tokens);
 		}
-		if (!tokens)
-			write(2, "empty\n", 6);
-		print_tokens(tokens);
+		//if (!tokens)
+		//	write(2, "empty\n", 6);
 		node = parse_prompt(&tokens);
-		if (node)
-			write(1, "good\n", 5);
-		execute_all_commands(&ms, node);
+		//if (node)
+		//	write(1, "good\n", 5);
+		//execute_node(&ms, node);
 		if (line)
 			free(line);
 		free(ms.prompt);

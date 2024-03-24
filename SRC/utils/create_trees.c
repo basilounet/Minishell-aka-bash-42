@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_ctns.c                                      :+:      :+:    :+:   */
+/*   create_trees.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 20:36:42 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/17 17:04:38 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/24 20:58:57 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_node	*ft_treenew(e_symbol ope, t_node *left, t_node *right, t_tokens *redirs)
 			free_node(left);
 		if (right)
 			free_node(right);
-		ft_tokclear(redirs);
+		ft_tokclear(&redirs);
 		return (NULL);
 	}
 	return (node);

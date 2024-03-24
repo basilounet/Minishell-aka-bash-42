@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 20:36:42 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/22 16:48:14 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/24 21:10:57 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,19 +61,20 @@ void	ft_tokadd_front(t_tokens **stack, t_tokens *new)
 	*stack = new;
 }
 
-void	ft_tokclear(t_tokens *stack)
+void	ft_tokclear(t_tokens **stack)
 {
 	t_tokens	*tmp;
 
-	while (stack)
+	while (*stack)
 	{
-		tmp = stack->next;
-		if (stack->arg)
-			free(stack->arg);
-		free(stack);
-		stack = tmp;
+		tmp = (*stack)->next;
+		if ((*stack)->arg)
+			free((*stack)->arg);
+		free(*stack);
+		*stack = NULL;
+		*stack = tmp;
 	}
-	stack = NULL;
+	*stack = NULL;
 }
 
 t_tokens	*ft_tokpop(t_tokens **stack)

@@ -6,15 +6,15 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/22 16:38:50 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/24 22:01:32 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include <libft.h>
-# include <pipex.h>
 # include <parser.h>
+# include <pipex.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdio.h>
@@ -58,6 +58,19 @@ char		*expand_var(t_ms *ms, char *original, int state);
 
 /*========== EXECUTION ==========*/
 
-void    execute_all_commands(t_ms *ms, t_node *node);
+void		execute_node(t_ms *ms, t_node *node);
+int	update_inputs(t_node *node, t_tokens **redirects);
+
+/*========== EXECUTION_UTILS ==========*/
+
+int			has_input(t_tokens *tokens);
+int			has_output(t_tokens *tokens);
+t_tokens	*get_input_tok(t_tokens *tokens);
+t_tokens	*get_output_tok(t_tokens *tokens);
+int			is_append(t_command *cmd);
+
+void	print_node(t_node *node, int depth);
+void	print_tokens(t_tokens *tokens, int depth);
+
 
 #endif
