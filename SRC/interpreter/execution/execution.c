@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:18:03 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/24 22:19:07 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/25 17:09:13 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,34 +18,84 @@
 int	node_has_input(t_node *node)
 {
 	if (node->type == T_TREE)
-		return (node->tree.redirects != NULL);
-	return (node->cmd.redirects != NULL);
+		return (get_input_tok(node->tree.redirects) != NULL);
+	return (get_input_tok(node->cmd.redirects) != NULL);
 }
 
-int	update_inputs(t_node *node, t_tokens **redirects)
+void	add_redirect_node(t_node *node, t_tokens *token)
 {
-	//print_node(node, 0);
-	//printf("\n");
+	t_tokens	*new_redirect;
+	
+	if (!token)
+		return ;
+	new_redirect = ft_toknew(token->symbol, NULL);
+	if (!new_redirect)
+		return ;
+	new_redirect->arg = ft_strdup(token->arg);
+	if (node->type == T_TREE)
+		ft_tokadd_front(&node->tree.redirects, new_redirect);
+	else
+		ft_tokadd_front(&node->cmd.redirects, new_redirect);
+}
+
+void	add_redirect_pipe(t_node *node, t_tokens *redirect)
+{
+	if (node->type == T_TREE && node->tree.operator == T_PIPE)
+		add_redirect_pipe(node->tree.left, redirect);
+	else
+		add_redirect_node(node, redirect);
+}
+
+int	is_node_all_redirected(t_node *node)
+{
 	if (node->type == T_TREE)
 	{
-		if (has_input(node->tree.redirects))
-			redirects = &node->tree.redirects;
-		if (node_has_input(node->tree.left))
-			update_inputs(node->tree.left, NULL);
-		if (node_has_input(node->tree.right))
-			update_inputs(node->tree.right, NULL);
-		if (!node_has_input(node->tree.left))
-			update_inputs(node->tree.left, redirects);
-		else if (!node_has_input(node->tree.right))
-			update_inputs(node->tree.right, redirects);
+		if (node->tree.operator == T_OR || node->tree.operator == T_AND)
+			return (is_node_all_redirected(node->tree.left) && is_node_all_redirected(node->tree.right));
+		else if (node->tree.operator == T_PIPE)
+			return (is_node_all_redirected(node->tree.left));
 	}
-	else if (node->type == T_CMD && redirects && *redirects && !has_input(node->cmd.redirects))
+	return (has_input(node->cmd.redirects));
+}
+
+int	place_and(t_node *node, t_tokens *redirect)
+{
+	if (node->type == T_TREE && !is_node_all_redirected(node->tree.left) && place_and(node->tree.left, redirect))
+		return(1);
+	else if (node->type == T_TREE && !is_node_all_redirected(node->tree.right) && place_and(node->tree.right, redirect))
+		return(1);
+	else
 	{
-		ft_tokadd_front(&node->cmd.redirects, ft_toknew(get_input_tok(*redirects)->symbol, NULL));
-		get_input_tok(node->cmd.redirects)->arg = ft_strdup(get_input_tok(*redirects)->arg);
+		add_redirect_node(node, redirect);
 		return (1);
 	}
 	return (0);
+}
+
+void	update_inputs(t_node *node, t_tokens *redirects)
+{
+	//print_node(node, 0);
+	//printf("is_node_all redirected : %d\n\n", is_node_all_redirected(node));
+	if (!node)
+		return ;
+	if (node->type == T_TREE)
+	{
+		if (has_input(node->tree.redirects))
+			redirects = node->tree.redirects;
+		if (node->tree.operator == T_OR)
+		{
+			add_redirect_node(node->tree.left, get_input_tok(node->tree.redirects));
+			add_redirect_node(node->tree.right, get_input_tok(node->tree.redirects));
+		}
+		if(node->tree.operator == T_PIPE)
+			add_redirect_pipe(node, get_input_tok(node->tree.redirects));
+		if (node->tree.operator == T_AND)
+			place_and(node, get_input_tok(redirects));
+		update_inputs(node->tree.left, NULL);
+		update_inputs(node->tree.right, NULL);
+	}
+	else if (redirects && !has_input(node->cmd.redirects))
+		add_redirect_node(node, redirects);
 }
 
 void	execute_node(t_ms *ms, t_node *node)
@@ -60,4 +110,8 @@ void	execute_node(t_ms *ms, t_node *node)
 ((cat && cat) < b < b < b && cat) < c
 ((cat && cat) && cat) < c
 (( cat && cat ) < b && ( echo o && ( cat )) && ( rev )) < c
+( A | A || (A | A)) < b
+(cat < a && (cat && cat) < b && cat < c && cat ) < d
+(cat < a && cat < b && (cat && cat) && cat) < c
+((((cat < a && cat < b) && cat) && cat) && cat) < c
 */

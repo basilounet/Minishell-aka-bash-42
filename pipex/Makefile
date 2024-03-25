@@ -106,6 +106,7 @@ ifeq ($(IS_PRINT),1)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 else
+	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 endif
 
