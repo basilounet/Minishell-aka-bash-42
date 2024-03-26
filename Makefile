@@ -3,6 +3,8 @@
 SRC =	interpreter/lexer/lexer.c \
 		interpreter/parser/parser.c \
 		interpreter/parser/expand.c \
+		interpreter/execution/update_inputs.c \
+		interpreter/execution/update_outputs.c \
 		interpreter/execution/execution.c \
 		interpreter/execution/execution_utils.c \
 		utils/create_tokens.c \

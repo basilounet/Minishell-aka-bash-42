@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/25 01:32:51 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/26 15:17:43 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,9 @@ char		*expand_var(t_ms *ms, char *original, int state);
 /*========== EXECUTION ==========*/
 
 void		execute_node(t_ms *ms, t_node *node);
-void	update_inputs(t_node *node, t_tokens *redirects);
+void	update_inputs(t_node *node);
+void    update_outputs(t_node *node);
+void	add_redirect_node(t_node *node, t_tokens *token);
 
 /*========== EXECUTION_UTILS ==========*/
 

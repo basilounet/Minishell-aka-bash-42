@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 17:22:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/24 22:01:37 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/26 17:54:39 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,8 @@ int	main(int argc, char **argv, char **envp)
 		if (!node)
 			write(1, "bad\n", 4);
 		//print_node(node, 0);
-		update_inputs(node, NULL);
+		update_inputs(node);
+		update_outputs(node);
 		print_node(node, 0);
 		//print_ctns(ctn, 1);
 		// write(1, line, sizeof(line));
