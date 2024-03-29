@@ -148,7 +148,7 @@ int	main(int ac, char **av, char **char_env)
 		if (lexer(&tokens, line) == 0)
 		{
 			write(2, "invalid prompt\n", 15);
-			ft_tokclear(tokens);
+			ft_tokclear(&tokens);
 			return (1);
 		}
 		if (!tokens)
@@ -163,7 +163,7 @@ int	main(int ac, char **av, char **char_env)
 		if (line)
 			free(line);
 		free_node(node);
-		ft_tokclear(tokens);
+		ft_tokclear(&tokens);
 		free(ms.prompt);
 		ms.prompt = add_colors(get_prompt(env), &moving_rainbow_pattern);
 	}

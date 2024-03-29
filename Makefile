@@ -17,7 +17,7 @@ SRC =	interpreter/lexer/lexer.c \
 		builts-in/export/export_set.c \
 		builts-in/unset.c
 
-MAIN = main.c
+MAIN = minishell.c
 
 ##========== NAMES ==========##
 

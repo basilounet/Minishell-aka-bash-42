@@ -46,7 +46,8 @@ static char	*is_export_valid(t_env *env, char *arg)
 	i = 0;
 	if (!is_evenly_quoted(arg, 0)) // check en fin de minishell si necessaire
 		return (NULL);
-	//arg = expand_var(env, arg, 0);
+	arg = expand_var(env, arg, 0); // was used to expand the values
+	//arg = ft_strdup(arg); //replaced by this to keep the same behaviour without expanding
 	if (!arg || !arg[0] || arg[0] == '=' || (arg[0] >= '0' && arg[0] <= '9'))
 	{
 		if (arg)
