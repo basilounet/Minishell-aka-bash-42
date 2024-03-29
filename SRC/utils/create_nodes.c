@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_tokens.c                                    :+:      :+:    :+:   */
+/*   create_nodes.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 20:36:42 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/15 11:47:13 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/24 20:59:32 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,14 @@ void	free_node(t_node *node)
 		return ;
 	if (node->type == T_CMD)
 	{	
-		ft_tokclear(node->cmd.args);
-		ft_tokclear(node->cmd.redirects);
+		ft_tokclear(&node->cmd.args);
+		ft_tokclear(&node->cmd.redirects);
 		node->cmd.args = NULL;
 		node->cmd.redirects = NULL;
 		free(node);
 		return ;
 	}
-	ft_tokclear(node->tree.redirects);
+	ft_tokclear(&node->tree.redirects);
 	if (node->tree.left)
 		free_node(node->tree.left);
 	if (node->tree.right)

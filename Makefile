@@ -3,7 +3,10 @@
 SRC =	interpreter/lexer/lexer.c \
 		interpreter/parser/parser.c \
 		interpreter/parser/expand.c \
+		interpreter/execution/update_inputs.c \
+		interpreter/execution/update_outputs.c \
 		interpreter/execution/execution.c \
+		interpreter/execution/execution_utils.c \
 		utils/create_tokens.c \
 		utils/create_nodes.c \
 		utils/create_env.c \
@@ -14,7 +17,7 @@ SRC =	interpreter/lexer/lexer.c \
 		builts-in/export/export_set.c \
 		builts-in/unset.c
 
-MAIN = minishell.c
+MAIN = main.c
 
 ##========== NAMES ==========##
 
@@ -126,6 +129,7 @@ ifeq ($(IS_PRINT),1)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 else
+	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 endif
 

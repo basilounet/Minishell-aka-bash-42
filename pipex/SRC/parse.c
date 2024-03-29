@@ -6,12 +6,12 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 13:35:20 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/22 17:03:49 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/23 18:20:15 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <pipex.h>
 #include <libft.h>
+#include <pipex.h>
 
 void	check_command(t_px *px, char *command, int index)
 {
@@ -40,42 +40,46 @@ void	check_command(t_px *px, char *command, int index)
 	error(px, PATH_NOT_FOUND);
 }
 
-void	check_access(t_px *px, int ac, char **av)
+void	check_access(t_px *px, int ac, t_tokens *tokens)
 {
-	int	i;
+	t_tokens	*tmp;
+	int			i;
 
 	i = -1;
-	while (++i < ac)
+	tmp = tokens;
+	while (++i < ac && tmp)
 	{
-		if (av[i][0] == 0)
+		if (!tmp->arg)
+			error(px, MALLOC_ERROR);
+		ft_printf("%s\n", tmp->arg);
+		if (tmp->arg[0] == 0)
 			error(px, PATH_NOT_FOUND);
-		check_command(px, av[i], i);
+		check_command(px, tmp->arg, i);
+		tmp = tmp->next;
 	}
 }
 
-t_px	parse(int ac, char **av, char **env)
+t_px	parse(t_tokens *tokens, t_tokens *env)
 {
-	t_px	px;
-	int		i;
+	t_tokens	*tmp;
+	t_px		px;
 
-	i = 0;
 	init_px(&px);
-	if (ac < 3)
+	tmp = env;
+	if (ft_toksize(tokens) < 3)
 		error(&px, INVALID_AC_AMOUNT);
-	if (!env)
+	while (tmp && ft_strncmp(tmp->arg, "PATH=", 5))
+		tmp = tmp->next;
+	if (!tmp)
 		error(&px, PATH_NOT_FOUND);
-	while (env[i] && ft_strncmp(env[i], "PATH=", 5))
-		i++;
-	if (!env[i])
-		error(&px, PATH_NOT_FOUND);
-	px.env = ft_split(env[i] + 5, ':');
+	px.env = ft_split(tmp->arg + 5, ':');
 	if (!px.env)
 		error(&px, MALLOC_ERROR);
-	px.total_cmd = ac - 2;
+	px.total_cmd = ft_toksize(tokens) - 2;
 	px.cmd = ft_calloc(sizeof(char **), px.total_cmd + 1);
 	px.pid = ft_calloc(sizeof(pid_t), px.total_cmd + 1);
 	if (!px.cmd || !px.pid)
 		error(&px, MALLOC_ERROR);
-	check_access(&px, ac - 2, av + 1);
+	check_access(&px, px.total_cmd, tokens->next);
 	return (px);
 }

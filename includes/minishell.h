@@ -6,16 +6,16 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/22 16:38:50 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/29 15:47:26 by gangouil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include <libft.h>
-# include <pipex.h>
 # include <parser.h>
 # include <builts_in.h>
+# include <pipex.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdio.h>
@@ -59,6 +59,21 @@ char		*expand_var(t_env *env, char *original, int state);
 
 /*========== EXECUTION ==========*/
 
-void    execute_all_commands(t_ms *ms, t_node *node);
+void		execute_node(t_ms *ms, t_node *node);
+void	update_inputs(t_node *node);
+void    update_outputs(t_node *node);
+void	add_redirect_node(t_node *node, t_tokens *token);
+
+/*========== EXECUTION_UTILS ==========*/
+
+int			has_input(t_tokens *tokens);
+int			has_output(t_tokens *tokens);
+t_tokens	*get_input_tok(t_tokens *tokens);
+t_tokens	*get_output_tok(t_tokens *tokens);
+int			is_append(t_command *cmd);
+
+void	print_node(t_node *node, int depth);
+void	print_tokens(t_tokens *tokens, int depth);
+
 
 #endif

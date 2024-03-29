@@ -6,10 +6,11 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 17:22:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/22 14:56:29 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/03/26 17:54:39 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <minishell.h>
 #include <parser.h>
 #include <readline/history.h>
 #include <readline/readline.h>
@@ -17,7 +18,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static char	*symbol_to_char(e_symbol symbol)
+char	*symbol_to_char(e_symbol symbol)
 {
 	if (symbol == T_PIPE)
 		return ("|");
@@ -40,7 +41,7 @@ static char	*symbol_to_char(e_symbol symbol)
 	return (NULL);
 }
 
-static void	print_pad(int depth)
+void	print_pad(int depth)
 {
 	while (depth)
 	{
@@ -49,7 +50,7 @@ static void	print_pad(int depth)
 	}
 }
 
-static void	print_tokens(t_tokens *tokens, int depth)
+void	print_tokens(t_tokens *tokens, int depth)
 {
 	while (tokens)
 	{
@@ -59,7 +60,7 @@ static void	print_tokens(t_tokens *tokens, int depth)
 	}
 }
 
-static void	print_node(t_node *node, int depth)
+void	print_node(t_node *node, int depth)
 {
 	if (node->type == T_CMD)
 	{
@@ -109,7 +110,7 @@ int	main(int argc, char **argv, char **envp)
 		if (lexer(&tokens, line) == 0)
 		{
 			write(2, "invalid prompt\n", 15);
-			ft_tokclear(tokens);
+			ft_tokclear(&tokens);
 			return (1);
 		}
 		if (!tokens)
@@ -121,13 +122,15 @@ int	main(int argc, char **argv, char **envp)
 		node = parse_prompt(&tokens);
 		if (!node)
 			write(1, "bad\n", 4);
-		else
-			print_node(node, 0);
+		//print_node(node, 0);
+		update_inputs(node);
+		update_outputs(node);
+		print_node(node, 0);
 		//print_ctns(ctn, 1);
 		// write(1, line, sizeof(line));
 		free(line);	
 		line = NULL;
 		free_node(node);
-		ft_tokclear(tokens);
+		ft_tokclear(&tokens);
 	}
 }

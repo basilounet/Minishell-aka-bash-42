@@ -6,7 +6,6 @@ SRC = parse.c \
 		errors.c \
 		fork.c \
 		pipe.c \
-		here_doc.c \
 		pipex.c
 
 ##========== NAMES ==========##
@@ -73,6 +72,7 @@ all : $(NAME)
 
 $(NAME) : $(OBJ)
 	@ar rcs $(NAME) $(OBJ)
+#	@$(CC) -o $(NAME) $(LDFLAGS) $(OBJ) $(ARCHIVES)
 	@echo "$(YELLOW)-= Pipex compiled =-$(BASE_COLOR)"
 
 clean :
@@ -106,6 +106,7 @@ ifeq ($(IS_PRINT),1)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 else
+	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 endif
 
