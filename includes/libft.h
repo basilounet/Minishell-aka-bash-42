@@ -79,6 +79,7 @@ size_t				ft_strlcpy(char *dest, const char *src, size_t size);
 size_t				ft_strlentc(const char *str, char c);
 size_t				ft_strlen(const char *str);
 char				*ft_strmapi(char const *s, char (*f)(unsigned int, char));
+int					ft_strcmp(char *s1, char *s2);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
 void				ft_strncpy(char *dest, const char *src, size_t size);
 char				*ft_strnstr(const char *str, const char *to_find,

@@ -15,6 +15,7 @@
 # include <libft.h>
 # include <pipex.h>
 # include <parser.h>
+# include <builts_in.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdio.h>
@@ -35,18 +36,18 @@ typedef struct s_minishell
 	char	*prompt;
 }			t_ms;
 
-char		*ft_getenv(char **env, char *to_get);
+char		*ft_getenv(t_env *env, char *to_get);
 
 /*========== PROMPTS ==========*/
 
-char		*get_prompt(t_ms *ms);
+char		*get_prompt(t_env *env);
 char		*add_colors(char *str, char *(*color_pattern)(int, int));
 char		*moving_rainbow_pattern(int i, int len);
 char		*moving_france_pattern(int i, int len);
 
-/*========== BUILDS-IN ==========*/
+/*========== BUILTS-IN ==========*/
 
-void		print_env(t_ms *ms);
+void		print_env(t_env *env);
 void		cd(char *path);
 void		pwd(void);
 
@@ -54,7 +55,7 @@ void		pwd(void);
 
 int			check_quotes(char *str);
 int			len_env_name(char *str);
-char		*expand_var(t_ms *ms, char *original, int state);
+char		*expand_var(t_env *env, char *original, int state);
 
 /*========== EXECUTION ==========*/
 

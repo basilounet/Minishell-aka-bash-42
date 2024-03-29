@@ -11,25 +11,17 @@
 /* ************************************************************************** */
 
 #include <minishell.h>
+#include <builts_in.h>
 
-char	*ft_getenv(char **env, char *to_get)
+char	*ft_getenv(t_env *env, char *to_get)
 {
-	int	i;
-
-	i = 0;
 	if (!env || !to_get)
 		return (NULL);
-	while (ft_strncmp(to_get, env[i], ft_strlen(to_get)))
-		i++;
-	if (!env[i])
+	while (env && ft_strncmp(to_get, env->name, ft_strlen(to_get)))
+		env = env->next;
+	if (!env)
 		return (NULL);
-	if (!ft_strncmp(to_get, env[i], ft_strlen(to_get))
-		&& env[i][ft_strlen(to_get)] == '=')
-		return (env[i] + len_env_name(env[i]) + 1);
-	else if (!ft_strncmp(to_get, env[i], ft_strlen(to_get))
-		&& env[i][ft_strlen(to_get)] != '=')
-		return (ft_getenv(&env[i + 1], to_get));
-	return (NULL);
+	return (env->var);
 }
 
 char	*ft_substrc(char *str, int start, int end)
@@ -38,6 +30,8 @@ char	*ft_substrc(char *str, int start, int end)
 	int		i;
 
 	i = 0;
+	if (start > end)
+		return (NULL);
 	if (str[end - 1] == ' ')
 		end--;
 	new_str = malloc(end - start + 2);
@@ -50,4 +44,26 @@ char	*ft_substrc(char *str, int start, int end)
 	}
 	new_str[i] = 0;
 	return (new_str);
+}
+
+int	is_evenly_quoted(char *str, int n)
+{
+	int	squote;
+	int	dquote;
+	int	i;
+
+	squote = 0;
+	dquote = 0;
+	i = 0;
+	while ((n && i < n) || (!n && str[i]))
+	{
+		if (str[i] == '\'' && dquote % 2 == 0)
+			squote++;
+		if (str[i] == '\"' && squote % 2 == 0)
+			dquote++;
+		i++;
+	}
+	if (squote % 2 || dquote % 2)
+		return (0);
+	return (1);
 }

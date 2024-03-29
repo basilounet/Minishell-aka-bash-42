@@ -40,7 +40,7 @@ int	change_state(char c, int state, char *shld_remove, int i)
 	return (new_state);
 }
 
-int	expanded_line_len(t_ms *ms, char *line, int state)
+int	expanded_line_len(t_env *env, char *line, int state)
 {
 	char	*var_name;
 	int		len;
@@ -56,7 +56,7 @@ int	expanded_line_len(t_ms *ms, char *line, int state)
 		else if (line[i] == '$' && state != 2)
 		{
 			var_name = ft_substr(line, i + 1, len_env_name(line + i + 1));
-			len += ft_strlen(ft_getenv(ms->env, var_name));
+			len += ft_strlen(ft_getenv(env, var_name));
 			if (var_name)
 				free(var_name);
 		}
@@ -88,16 +88,16 @@ char	*remove_quotes(char *str, char *should_remove)
 	return (line);
 }
 
-char	*expand_var(t_ms *ms, char *original, int state)
+char	*expand_var(t_env *env, char *original, int state)
 {
 	char	*quote;
 	char	*name;
 	char	*line;
 	int		i;
 
-	line = ft_calloc(sizeof(char), expanded_line_len(ms, original, 0) + 1);
-	quote = ft_calloc(sizeof(char), expanded_line_len(ms, original, 0) + 1);
-	ft_memset(quote, 'n', expanded_line_len(ms, original, 0) * (quote != NULL));
+	line = ft_calloc(sizeof(char), expanded_line_len(env, original, 0) + 1);
+	quote = ft_calloc(sizeof(char), expanded_line_len(env, original, 0) + 1);
+	ft_memset(quote, 'n', expanded_line_len(env, original, 0) * (quote != NULL));
 	i = 0;
 	while (line && quote && original && original[i])
 	{
@@ -105,8 +105,8 @@ char	*expand_var(t_ms *ms, char *original, int state)
 		if (original[i] == '$' && state != 2)
 		{
 			name = ft_substr(original, i + 1, len_env_name(original + i + 1));
-			ft_strncpy(line + ft_strlen(line), ft_getenv(ms->env, name),
-				ft_strlen(ft_getenv(ms->env, name)) + 1);
+			ft_strncpy(line + ft_strlen(line), ft_getenv(env, name),
+				ft_strlen(ft_getenv(env, name)) + 1);
 			ft_free_ptr(1, name);
 		}
 		else

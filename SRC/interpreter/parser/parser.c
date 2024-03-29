@@ -262,3 +262,6 @@ int	parse_redlist(t_node *node, t_tokens **tokens)
 	}
 	return (1);
 }
+
+//split parse redlist
+//choose addback || addfront

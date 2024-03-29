@@ -67,7 +67,7 @@ int	lexer(t_tokens **tokens, char *line)
 	t_tokens	*new_token;
 
 	i = -1;
-	while (line[++i])
+	while (line && line[++i])
 	{
 		while (line[i] == ' ')
 			i++;

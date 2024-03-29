@@ -68,7 +68,7 @@ char	*add_colors(char *str, char *(*color_pattern)(int, int))
 	return (colored_str);
 }
 
-char	*get_prompt(t_ms *ms)
+char	*get_prompt(t_env *env)
 {
 	char	*home;
 	char	*pwd;
@@ -76,10 +76,10 @@ char	*get_prompt(t_ms *ms)
 	int		i;
 
 	i = 0;
-	pwd = ft_getenv(ms->env, "PWD");
-	home = ft_getenv(ms->env, "HOME");
-	if (ft_getenv(ms->env, "USER"))
-		str = ft_str_reajoin(ft_getenv(ms->env, "USER"),
+	pwd = ft_getenv(env, "PWD");
+	home = ft_getenv(env, "HOME");
+	if (ft_getenv(env, "USER"))
+		str = ft_str_reajoin(ft_getenv(env, "USER"),
 				ft_strdup("@minishell:"), 0, 1);
 	else
 		str = ft_strdup("USER@minishell:");

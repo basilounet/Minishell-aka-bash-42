@@ -5,11 +5,14 @@ SRC =	interpreter/lexer/lexer.c \
 		interpreter/parser/expand.c \
 		interpreter/execution/execution.c \
 		utils/create_tokens.c \
-		utils/create_trees.c \
 		utils/create_nodes.c \
+		utils/create_env.c \
 		utils/str_utils.c \
 		utils/prompt.c \
-		builds-in/env.c
+		builts-in/env.c \
+		builts-in/export/export_print.c \
+		builts-in/export/export_set.c \
+		builts-in/unset.c
 
 MAIN = minishell.c
 
@@ -45,7 +48,7 @@ CC = cc
 
 ##========== FLAGS ==========##
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = #-Wall -Wextra -Werror
 LDFLAGS = $(LIBS)
 LIBS = -I$(INCLUDE_DIR)
 LIBFT = $(LIBFT_DIR)/libft.a

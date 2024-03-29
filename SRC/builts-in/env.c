@@ -12,7 +12,12 @@
 
 #include <minishell.h>
 
-void	print_env(t_ms *ms)
+void	print_env(t_env	*env)
 {
-	ft_print_map(ms->env);
+	while (env)
+	{
+		if (env->var)
+			printf("%s=%s\n", env->name, env->var);
+		env = env->next;
+	}
 }

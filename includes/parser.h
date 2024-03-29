@@ -51,8 +51,7 @@ typedef struct s_node
 	};
 }						t_node;
 
-t_node					*ft_treenew(e_symbol ope, t_node *left, t_node *right,
-							t_tokens *redirs);
+t_node					*ft_treenew(e_symbol ope, t_node *left, t_node *right, t_tokens *redirs);
 t_node					*ft_nodenew(e_type type, t_command cmd, t_tree tree);
 t_command				ft_cmdnew(t_tokens *args, t_tokens *redirects);
 void					free_node(t_node *node);
