@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:18:03 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/26 15:12:35 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/01 14:08:51 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,9 @@ void	update_inputs(t_node *node)
 			add_redirect_node(node->tree.right,
 				get_input_tok(node->tree.redirects));
 		}
-		if (node->tree.operator == T_PIPE)
+		else if (node->tree.operator == T_PIPE)
 			add_redirect_pipe(node, get_input_tok(node->tree.redirects));
-		if (node->tree.operator == T_AND)
+		else if (node->tree.operator == T_AND)
 			place_and(node, get_input_tok(node->tree.redirects));
 		update_inputs(node->tree.left);
 		update_inputs(node->tree.right);

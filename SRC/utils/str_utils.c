@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 13:57:38 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/18 14:05:38 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/02 16:58:40 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*ft_getenv(t_env *env, char *to_get)
 {
 	if (!env || !to_get)
 		return (NULL);
-	while (env && ft_strncmp(to_get, env->name, ft_strlen(to_get)))
+	while (env && ft_strncmp(to_get, env->name, ft_strlen(to_get) + 1))
 		env = env->next;
 	if (!env)
 		return (NULL);

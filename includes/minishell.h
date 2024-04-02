@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/29 15:47:26 by gangouil         ###   ########.fr       */
+/*   Updated: 2024/04/02 21:23:34 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 
 typedef struct s_minishell
 {
-	char	**env;
+	t_env	*env;
 	char	*prompt;
 }			t_ms;
 
@@ -56,13 +56,23 @@ void		pwd(void);
 int			check_quotes(char *str);
 int			len_env_name(char *str);
 char		*expand_var(t_env *env, char *original, int state);
+int	change_state(char c, int state, char *shld_remove, int i);
+void	expand_args(t_ms *ms, t_node *node);
+void	expand_redirects(t_ms *ms, t_node *node);
 
 /*========== EXECUTION ==========*/
 
-void		execute_node(t_ms *ms, t_node *node);
-void	update_inputs(t_node *node);
-void    update_outputs(t_node *node);
-void	add_redirect_node(t_node *node, t_tokens *token);
+char	*change_ifs(char *str);
+int	should_split_ifs(char *str);
+void	split_ifs(t_tokens **tokens);
+
+void    prepare_and_execute(t_ms *ms, t_node *node);
+void	expand_tokens(t_ms *ms, t_node *node);
+void    execute_node(t_ms *ms, t_node *node, int is_in_pipe);
+void			update_inputs(t_node *node);
+void			update_outputs(t_node *node);
+void			add_redirect_node(t_node *node, t_tokens *token);
+void			open_all_outputs(t_node *node);
 
 /*========== EXECUTION_UTILS ==========*/
 
@@ -74,6 +84,7 @@ int			is_append(t_command *cmd);
 
 void	print_node(t_node *node, int depth);
 void	print_tokens(t_tokens *tokens, int depth);
+int	ft_envsize(t_env *env);
 
 
 #endif

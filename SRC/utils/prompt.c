@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 13:45:27 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/21 18:14:19 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/02 17:02:36 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ char	*add_colors(char *str, char *(*color_pattern)(int, int))
 	int		i;
 
 	i = -1;
-	len = ft_strlen(str);
 	colored_str = NULL;
+	len = ft_strlen(str);
 	if (!str || !color_pattern)
 		return (NULL);
 	while (++i < len)

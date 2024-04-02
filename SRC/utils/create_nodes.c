@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 20:36:42 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/24 20:59:32 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/02 10:52:38 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ t_command	ft_cmdnew(t_tokens *args, t_tokens *redirects)
 
 	cmd.args = args;
 	cmd.redirects = redirects;
+	cmd.char_args = NULL;
 	return (cmd);
 }
 
@@ -45,8 +46,11 @@ void	free_node(t_node *node)
 	{	
 		ft_tokclear(&node->cmd.args);
 		ft_tokclear(&node->cmd.redirects);
+		if (node->cmd.char_args)
+			free(node->cmd.char_args);
 		node->cmd.args = NULL;
 		node->cmd.redirects = NULL;
+		node->cmd.char_args = NULL;
 		free(node);
 		return ;
 	}
@@ -77,7 +81,7 @@ t_node	*ft_treenew(e_symbol ope, t_node *left, t_node *right, t_tokens *redirs)
 			free_node(left);
 		if (right)
 			free_node(right);
-		ft_tokclear(redirs);
+		ft_tokclear(&redirs);
 		return (NULL);
 	}
 	return (node);
