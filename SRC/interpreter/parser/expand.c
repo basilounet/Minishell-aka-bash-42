@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 16:48:34 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/02 21:08:09 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/03 18:45:45 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	change_state(char c, int state, char *shld_remove, int i)
 	return (new_state);
 }
 
-int	expanded_line_len(t_env *env, char *line, int state)
+int	expanded_line_len(t_env *env, char *line, int ignore_quotes, int state)
 {
 	char	*var_name;
 	int		len;
@@ -52,7 +52,8 @@ int	expanded_line_len(t_env *env, char *line, int state)
 	len = 0;
 	while (line[i])
 	{
-		state = change_state(line[i], state, NULL, 0);
+		if (ignore_quotes)
+			state = change_state(line[i], state, NULL, 0);
 		if (line[i] == '$' && len_env_name(line + i + 1) && state == 2)
 			len += len_env_name(line + i + 1);
 		else if (line[i] == '$' && len_env_name(line + i + 1) && state != 2)
@@ -70,7 +71,8 @@ int	expanded_line_len(t_env *env, char *line, int state)
 	return (len);
 }
 
-char	*remove_quotes(char *str, char *should_remove)
+char	*remove_quotes(char *str, char *should_remove, int ignore_quotes,
+		int should_change_ifs)
 {
 	char	*line;
 	int		i;
@@ -78,12 +80,19 @@ char	*remove_quotes(char *str, char *should_remove)
 
 	i = -1;
 	j = 0;
-	if (!str || !should_remove)
-		return (ft_free_ptr(2, str, should_remove));
+	if (ignore_quotes)
+	{
+		ft_free_ptr(1, should_remove);
+		return (str);
+	}
 	line = ft_calloc(sizeof(char), ft_strlen(str) - ft_countc(str, 'y') + 1);
-	if (!line)
-		return (ft_free_ptr(2, str, should_remove));
-	str = change_ifs(str);
+	if (!line || !str || !should_remove)
+	{
+		ft_free_ptr(3, str, should_remove, line);
+		return (NULL);
+	}
+	if (should_change_ifs)
+		str = change_ifs(str, should_remove);
 	while (str[++i])
 		if (should_remove[i] == 'n')
 			line[j++] = str[i];
@@ -91,20 +100,24 @@ char	*remove_quotes(char *str, char *should_remove)
 	return (line);
 }
 
-char	*expand_var(t_env *env, char *original, int state)
+char	*expand_var(t_env *env, char *original, int ignore_quotes,
+		int should_change_ifs)
 {
 	char	*qte;
 	char	*name;
 	char	*line;
+	int		state;
 	int		i;
 
-	line = ft_calloc(sizeof(char), expanded_line_len(env, original, 0) + 1);
-	qte = ft_calloc(sizeof(char), expanded_line_len(env, original, 0) + 1);
-	ft_memset(qte, 'n', expanded_line_len(env, original, 0) * (qte != NULL));
+	line = ft_calloc(sizeof(char), expanded_line_len(env, original, ignore_quotes, 0) + 1);
+	qte = ft_calloc(sizeof(char), expanded_line_len(env, original, ignore_quotes, 0) + 1);
+	ft_memset(qte, 'n', expanded_line_len(env, original, ignore_quotes, 0) * (qte != NULL));
+	state = 0;
 	i = 0;
 	while (line && qte && original && original[i])
 	{
-		state = change_state(original[i], state, qte, ft_strlen(line));
+		if (ignore_quotes)
+			state = change_state(original[i], state, qte, ft_strlen(line));
 		if (original[i] == '$' && len_env_name(original + i + 1) && state != 2)
 		{
 			name = ft_substr(original, i + 1, len_env_name(original + i + 1));
@@ -117,5 +130,5 @@ char	*expand_var(t_env *env, char *original, int state)
 		if (original[i++] == '$' && len_env_name(original + i) && state != 2)
 			i += len_env_name(original + i);
 	}
-	return (remove_quotes(line, qte));
+	return (remove_quotes(line, qte, ignore_quotes, should_change_ifs));
 }

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/02 17:07:05 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/03 18:07:47 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,15 +96,9 @@ int	main(int ac, char **av, char **char_env)
 	(void)ac;
 	(void)av;
 	tokens = NULL;
-	ms.env = NULL;
-	
+	ft_memset((void *)&ms, 0, sizeof(t_ms));
 	if (env_array_to_list(&(ms.env), char_env) == 0)
-		return (1); //malloc error
-	//print_env(env); //debug
-	//export(&env, test2);
-	//print_env(env); //debug
 	ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
-	//ft_envclear(env);
 	while (1)
 	{
 		line = readline(ms.prompt);

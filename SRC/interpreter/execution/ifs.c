@@ -6,13 +6,13 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 20:51:20 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/02 21:06:14 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/03 13:00:02 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-char	*change_ifs(char *str)
+char	*change_ifs(char *str, char *should_remove)
 {
 	char	*ifs;
     int     state;
@@ -22,12 +22,13 @@ char	*change_ifs(char *str)
 	i = -1;
 	ifs = " \t\n";
     state = 0;
-	if (!str)
+	if (!str || !should_remove)
 		return (NULL);
 	while (str[++i])
 	{
 		j = 0;
-        state = change_state(str[i], state, NULL, i);
+		if (should_remove[i] == 'y')
+	        state = change_state(str[i], state, NULL, i);
 		while (state == 0 && ifs[j])
 			if (str[i] == ifs[j++])
 				str[i] = -1;

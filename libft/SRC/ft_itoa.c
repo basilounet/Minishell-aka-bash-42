@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 00:24:41 by marvin            #+#    #+#             */
-/*   Updated: 2024/03/14 17:30:49 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/03 15:51:14 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_itoa(int n)
 	int		lennum;
 	char	*dest;
 
-	lennum = ft_lennum(n) - 1;
+	lennum = ft_lennum(n);
 	if (n == 0)
 		return (ft_strdup("0"));
 	sign = (n < 0);

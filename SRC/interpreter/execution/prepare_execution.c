@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/02 21:39:42 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/03 17:21:00 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	expand_args(t_ms *ms, t_node *node)
 	while (tmp_tok)
 	{
 		tmp_char = tmp_tok->arg;
-		tmp_tok->arg = expand_var(ms->env, tmp_char, 0);
+		tmp_tok->arg = expand_var(ms->env, tmp_char, 1, 1);
 		if (should_split_ifs(tmp_char) && ft_countc(tmp_char, '$') != 0)
 			split_ifs(&tmp_tok);
 		free(tmp_char);
@@ -68,7 +68,7 @@ void	expand_redirects(t_ms *ms, t_node *node)
 	while (tmp_tok)
 	{
 		tmp_char = tmp_tok->arg;
-		tmp_tok->arg = expand_var(ms->env, tmp_char, 0);
+		tmp_tok->arg = expand_var(ms->env, tmp_char, 1, 1);
 		if (should_split_ifs(tmp_char) && ft_countc(tmp_char, '$') != 0)
 		{
 			ft_printf("baseshell: ambiguous redirect\n");
@@ -83,10 +83,9 @@ void	expand_redirects(t_ms *ms, t_node *node)
 
 void	prepare_and_execute(t_ms *ms, t_node *node)
 {
-	open_all_outputs(node);
+	open_all_outputs(ms, node);
 	update_inputs(node);
 	update_outputs(node);
-	print_node(node, 0);
 	expand_args(ms, node);
 	expand_redirects(ms, node);
 	print_node(node, 0);
