@@ -19,7 +19,7 @@ void	add_redirect_node(t_node *node, t_tokens *token)
 
 	if (!token)
 		return ;
-	new_redirect = ft_toknew(token->symbol, NULL);
+	new_redirect = ft_toknew(token->symbol, NULL, NULL);
 	if (!new_redirect)
 		return ;
 	new_redirect->arg = ft_strdup(token->arg);

@@ -73,26 +73,24 @@ char	*get_prompt(t_env *env)
 	char	*home;
 	char	*pwd;
 	char	*str;
-	int		i;
-
-	i = 0;
-	pwd = ft_getenv(env, "PWD");
+	
+	pwd = ft_strdup(ft_getenv(env, "PWD"));
 	home = ft_getenv(env, "HOME");
 	if (ft_getenv(env, "USER"))
 		str = ft_str_reajoin(ft_getenv(env, "USER"),
-				ft_strdup("@minishell:"), 0, 1);
+				ft_strdup("@baseshell:"), 0, 1);
 	else
-		str = ft_strdup("USER@minishell:");
+		str = ft_strdup("USER@baseshell:");
 	if (!pwd)
-		pwd = getcwd(NULL, i++);
-	if ((home && pwd && !ft_strncmp(home, pwd, ft_strlen(home)
-				&& home[ft_strlen(home)] != '/') && (pwd[ft_strlen(home)] == '/'
-				|| pwd[ft_strlen(home)] == '\0')))
+		pwd = getcwd(NULL, 0);
+	if ((home && pwd && !ft_strncmp(home, pwd, ft_strlen(home)) && home[ft_strlen(home)] != '/')
+				&& (pwd[ft_strlen(home)] == '/'
+				|| pwd[ft_strlen(home)] == '\0'))
 		str = ft_str_reajoin(str, ft_strjoin3("~", pwd + ft_strlen(home), "$ "),
 				1, 1);
 	else
 		str = ft_str_reajoin(str, ft_strjoin(pwd, "$ "), 1, 1);
-	if (i && pwd)
+	if (pwd)
 		free(pwd);
 	return (str);
 }

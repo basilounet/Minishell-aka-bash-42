@@ -55,7 +55,8 @@ typedef struct s_tokens
 int					lexer(t_tokens **tokens, char *line);
 
 // Stack utils functions
-t_tokens			*ft_toknew(e_symbol symbol, t_tokens *next);
+void print_error(int exit_code, int n, ...);
+t_tokens			*ft_toknew(e_symbol symbol, char *arg, t_tokens *next);
 t_tokens			*ft_toklast(t_tokens *stack);
 void				ft_tokadd_back(t_tokens **stack, t_tokens *new);
 void				ft_tokadd_front(t_tokens **stack, t_tokens *new);

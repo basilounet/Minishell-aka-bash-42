@@ -1,23 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/18 18:48:16 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/19 17:20:09 by bvasseur         ###   ########.fr       */
+/*   Created: 2024/03/29 16:03:30 by gangouil          #+#    #+#             */
+/*   Updated: 2024/03/29 16:03:31 by gangouil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void	cd(char *path)
+void	exit_shell(int sig)
 {
-	if (!path)
+	g_exitcode = -2147483648;
+	printf("\n");
+	rl_on_new_line();
+	rl_replace_line("\0", 0);
+	rl_redisplay();
+}
+
+void	set_interactive_mode(int set)
+{
+	if (set == 1)
+	{
+		signal(SIGINT, &exit_shell);
+		signal(SIGQUIT, SIG_IGN);
 		return ;
-	if (path[0] != '/')
-		path = ft_str_reajoin(getcwd(NULL, 0), ft_strjoin("/", path), 1, 1);
-	if (chdir(path))
-        ft_printf("path not found\n");
+	}
 }

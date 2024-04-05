@@ -15,12 +15,20 @@
 
 void    unset(t_env **env, char **args)
 {
-    int i;
+	t_env	*tmp;
+    int 	i;
 
     i = 1;
     while (*env && args[i])
     {
-        unset_name(env, args[i]);
+		if (ft_strcmp((*env)->name, args[i]) == 0)
+		{
+			tmp = (*env)->next;
+			ft_envdel_one(*env);
+			*env = tmp;
+		}
+		else
+        	unset_name(env, args[i]);
         i++;
     }
 }
@@ -33,13 +41,7 @@ void	unset_name(t_env **env, char *name)
 
 	if (!*env)
 		return ;
-	tmp = (*env)->next;
-	if (ft_strcmp((*env)->name, name) == 0)
-	{
-		ft_envdel_one(*env);
-		*env = tmp;
-		return ;
-	}
+	tmp = *env;
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->name, name) == 0)

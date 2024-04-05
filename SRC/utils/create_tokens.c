@@ -13,7 +13,7 @@
 #include <lexer.h>
 #include <stdlib.h>
 
-t_tokens	*ft_toknew(e_symbol symbol, t_tokens *next)
+t_tokens	*ft_toknew(e_symbol symbol, char *arg, t_tokens *next)
 {
 	t_tokens	*stack;
 
@@ -21,7 +21,7 @@ t_tokens	*ft_toknew(e_symbol symbol, t_tokens *next)
 	if (!stack)
 		return (NULL);
 	stack->symbol = symbol;
-	stack->arg = NULL;
+	stack->arg = arg;
 	stack->next = next;
 	return (stack);
 }

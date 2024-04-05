@@ -59,6 +59,8 @@ static void	lex_string(t_tokens *tokens, char *line, int *i)
 		tokens->arg = NULL;
 	else
 		tokens->arg = ft_substrc(line, i_start, *i + 1);
+	if (!tokens->arg)
+		print_error(1, 1, "baseshell: unclosed quote"); //error code a determiner
 }
 
 int	lexer(t_tokens **tokens, char *line)
@@ -73,7 +75,7 @@ int	lexer(t_tokens **tokens, char *line)
 			i++;
 		if (!line[i])
 			return (1);
-		new_token = ft_toknew(is_symbol(line, i), NULL);
+		new_token = ft_toknew(is_symbol(line, i), NULL, NULL);
 		if (!new_token)
 			return (0);
 		if (new_token->symbol == T_ARG)

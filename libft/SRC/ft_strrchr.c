@@ -12,6 +12,20 @@
 
 #include <libft.h>
 
+int	ft_strrichr(const char *str, char to_find)
+{
+	int	i;
+
+	i = ft_strlen(str);
+	while (i > 0)
+	{
+		if (str[i] == to_find)
+			return (i);
+		i--;
+	}
+	return (i);
+}
+
 char	*ft_strrchr(const char *str, int to_find)
 {
 	int		i;

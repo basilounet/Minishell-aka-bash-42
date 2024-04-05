@@ -96,78 +96,110 @@ static const char *test[] = {"bla =bli", "bloups", "blagz=", \
 	"b_3=", "bip=swag", "A=\"guy2bezbar\"", "A", "bix=", "bix+=bloarg", \
 	"biop", "biop+=$bip", "moufette", NULL};
 static const char *test2[] = {"export", NULL};
+static const char *test3[] = {"c*", "*", "t*", "*a*", "*ak*", "**", "*s", \
+	"*cases", "cases*", "cas*es", "case*s", "c*ases", NULL};
+
+static void	temp_execution(t_env *env, char *line)
+{
+	char		**argumentatos;
+	t_tokens	*tokens;
+	t_node		*node;
+
+	tokens = NULL;
+	if (lexer(&tokens, line) == 0)
+	{
+		ft_tokclear(&tokens);
+		free(line);
+		return ; //malloc error
+	}
+	node = parse_prompt(&tokens);
+	if (!node)
+	{
+		free(line);
+		return ;
+	}
+	//execute_cmd();
+	free_node(node);
+	ft_tokclear(&tokens);
+	if (ft_strncmp(line, "exit", 4) == 0)
+	{
+		free(line);
+	}
+	else if (ft_strncmp(line, "wctest", 6) == 0)
+	{
+		int	i = 0;
+		char *result;
+		while(test3[i])
+		{
+			printf("wc : %s\n", test3[i]);
+			result = wildcards(env, test3[i]);
+			printf("%s", result);
+			free(result);
+			printf("\n\n");
+			i++;
+		}
+	}
+	else if (ft_strncmp(line, "export", 6) == 0)
+	{
+		argumentatos = ft_split(line, ' ');
+		export(&env, argumentatos);
+		ft_free_map(argumentatos, ft_maplen(argumentatos));
+	}
+	else if (ft_strncmp(line, "cd", 2) == 0)
+	{
+		argumentatos = ft_split(line, ' ');
+		cd(&env, argumentatos);
+		ft_free_map(argumentatos, ft_maplen(argumentatos));
+	}
+	else if (ft_strncmp(line, "echo", 4) == 0)
+	{
+		argumentatos = ft_split(line, ' ');
+		echo(argumentatos);
+		ft_free_map(argumentatos, ft_maplen(argumentatos));
+	}
+	else if (ft_strncmp(line, "unset", 5) == 0)
+	{
+		argumentatos = ft_split(line, ' ');
+		unset(&env, argumentatos);
+		ft_free_map(argumentatos, ft_maplen(argumentatos));
+	}
+	else if (ft_strncmp(line, "env", 3) == 0)
+		print_env(env);
+	if (line)
+		free(line);
+	return ;
+}
+
+int	g_exitcode;
 
 int	main(int ac, char **av, char **char_env)
 {
 	t_ms		ms;
 	char		*line;
-	t_tokens	*tokens;
-	t_node		*node;
 	t_env		*env;
-	char		**argumentatos;
 
 	(void)ac;
 	(void)av;
-	tokens = NULL;
 	env = NULL;
 
+	set_interactive_mode(1);
 	if (env_array_to_list(&env, char_env) == 0)
 		return (1); //malloc error
-	//print_env(env); //debug
-	export(&env, test);
-	//export(&env, test2);
-	//print_env(env); //debug
-	ms.env = ft_mapcpy(char_env, ft_maplen(char_env));
-	//as we'll never actually modify the environment variables,
-	//maybe simply give the char_env var to ms.env instead of copying it?
 	ms.prompt = add_colors(get_prompt(env), &moving_rainbow_pattern);
-	//ft_envclear(env);
 	while (1)
 	{
 		line = readline(ms.prompt);
-		add_history(line);
-		if (ft_strncmp(line, "exit", 4) == 0)
-		{
-			free(line);
+		if (!line)
 			break ;
-		}
-		else if (ft_strncmp(line, "export", 6) == 0)
+		if (g_exitcode != -2147483647)
 		{
-			argumentatos = ft_split(line, ' ');
-			export(&env, argumentatos);
-			free(argumentatos);
+			add_history(line);
+			temp_execution(env, line);
 		}
-		else if (ft_strncmp(line, "unset", 5) == 0)
-		{
-			argumentatos = ft_split(line, ' ');
-			unset(&env, argumentatos);
-			free(argumentatos);
-		}
-		else if (ft_strncmp(line, "env", 3) == 0)
-			print_env(env);
-		if (lexer(&tokens, line) == 0)
-		{
-			write(2, "invalid prompt\n", 15);
-			ft_tokclear(&tokens);
-			return (1);
-		}
-		if (!tokens)
-			write(2, "empty\n", 6);
-		print_tokens(tokens, 0);
-		node = parse_prompt(&tokens);
-		if (!node)
-			write(1, "bad\n", 4);
-		else
-			print_node(node, 0);
-		//execute_all_commands(&ms, node);
-		if (line)
-			free(line);
-		free_node(node);
-		ft_tokclear(&tokens);
 		free(ms.prompt);
 		ms.prompt = add_colors(get_prompt(env), &moving_rainbow_pattern);
 	}
+	rl_clear_history();
 	free(ms.prompt);
-	ft_free_map(ms.env, ft_maplen(ms.env));
 	ft_envclear(env);
 }

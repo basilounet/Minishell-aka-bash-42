@@ -17,7 +17,7 @@ char	*ft_getenv(t_env *env, char *to_get)
 {
 	if (!env || !to_get)
 		return (NULL);
-	while (env && ft_strncmp(to_get, env->name, ft_strlen(to_get)))
+	while (env && ft_strcmp(to_get, env->name))
 		env = env->next;
 	if (!env)
 		return (NULL);
@@ -66,4 +66,63 @@ int	is_evenly_quoted(char *str, int n)
 	if (squote % 2 || dquote % 2)
 		return (0);
 	return (1);
+}
+
+int	is_existing_dir(char *path)
+{
+	struct stat	stats;
+
+	if (!path)
+		return (0);
+	stats = (struct stat){0};
+	stat(path, &stats);
+	if (S_ISDIR(stats.st_mode))
+		return (1);
+	return (0);
+}
+
+void print_error(int exit_code, int n, ...)
+{
+	va_list	args;
+	char	*to_print;
+
+	va_start(args, n);
+	g_exitcode = exit_code;
+	while (n)
+	{
+		to_print = va_arg(args, char *);
+		if (!to_print && n != 1)
+		{
+			va_arg(args, char *);
+			n--;
+		}
+		else
+			printf("%s", to_print);
+		n--;
+	}
+	printf("\n");
+	va_end(args);
+}
+
+char	*tokens_to_string(t_tokens *tokens)
+{
+	char	*str;
+	char	*quoted_str;
+
+	str = NULL;
+	while (tokens)
+	{
+		quoted_str = ft_strjoin3("\"", tokens->arg, "\"");
+		if (!quoted_str)
+		{
+			if (str)
+				free(str);
+			return (NULL);
+		}
+		str = ft_str_reajoin(str, quoted_str, 1, 1);
+		if (!str)
+			return (NULL);
+		tokens = tokens->next;
+	}
+	return (str);
 }

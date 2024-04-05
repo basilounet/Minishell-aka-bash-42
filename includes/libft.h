@@ -66,6 +66,7 @@ size_t				ft_countc(char *str, char c);
 size_t				ft_countcn(char *str, char c, int n);
 char				*ft_strcat(char *dest, const char *src);
 char				*ft_strchr(const char *str, int to_find);
+int					ft_strrichr(const char *str, char to_find);
 char				*ft_strchrn(const char *str, int to_find, int n);
 
 char				*ft_strdup(const char *src);
@@ -80,6 +81,7 @@ size_t				ft_strlentc(const char *str, char c);
 size_t				ft_strlen(const char *str);
 char				*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 int					ft_strcmp(char *s1, char *s2);
+int					ft_strlowcmp(char *s1, char *s2);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
 void				ft_strncpy(char *dest, const char *src, size_t size);
 char				*ft_strnstr(const char *str, const char *to_find,

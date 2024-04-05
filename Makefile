@@ -1,8 +1,9 @@
 ##========== SOURCES ==========##
 
-SRC =	interpreter/lexer/lexer.c \
+SRC =	interpreter/parser/lexer.c \
 		interpreter/parser/parser.c \
-		interpreter/parser/expand.c \
+		interpreter/expansion/expand.c \
+		interpreter/expansion/wildcards.c \
 		interpreter/execution/update_inputs.c \
 		interpreter/execution/update_outputs.c \
 		interpreter/execution/execution.c \
@@ -15,7 +16,11 @@ SRC =	interpreter/lexer/lexer.c \
 		builts-in/env.c \
 		builts-in/export/export_print.c \
 		builts-in/export/export_set.c \
-		builts-in/unset.c
+		builts-in/unset.c \
+		builts-in/echo.c \
+		builts-in/cd/cd.c \
+		builts-in/cd/cd_utils.c \
+		interactive/signals.c
 
 MAIN = minishell.c
 
