@@ -38,7 +38,6 @@ static bool	is_in_wildcard(char *name, char *wc)
 {
 	int		i;
 	int		j;
-	char	next_char;
 
 	i = 0;
 	j = 0;

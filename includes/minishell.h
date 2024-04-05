@@ -6,11 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-<<<<<<< HEAD
 /*   Updated: 2024/03/29 15:52:43 by gangouil         ###   ########.fr       */
-=======
-/*   Updated: 2024/04/03 17:19:43 by bvasseur         ###   ########.fr       */
->>>>>>> refs/remotes/origin/main
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,11 +94,8 @@ t_tokens	*get_input_tok(t_tokens *tokens);
 t_tokens	*get_output_tok(t_tokens *tokens);
 int			is_append(t_command *cmd);
 
-<<<<<<< HEAD
-=======
 void		print_node(t_node *node, int depth);
 void		print_tokens(t_tokens *tokens, int depth);
 int			ft_envsize(t_env *env);
 
->>>>>>> refs/remotes/origin/main
 #endif

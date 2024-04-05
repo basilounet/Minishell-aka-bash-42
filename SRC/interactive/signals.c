@@ -14,6 +14,7 @@
 
 void	exit_shell(int sig)
 {
+	(void)sig;
 	g_exitcode = -2147483648;
 	printf("\n");
 	rl_on_new_line();

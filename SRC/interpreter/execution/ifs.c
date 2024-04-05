@@ -71,7 +71,7 @@ void	split_ifs(t_tokens **tokens)
 	i = 0;
 	while (split[++i])
 	{
-		ft_tokadd_back(&tok_list, ft_toknew(0, NULL));
+		ft_tokadd_back(&tok_list, ft_toknew(0, NULL,NULL));
 		ft_toklast(tok_list)->arg = split[i];
 	}
 	free(split);

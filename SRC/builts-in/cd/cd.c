@@ -101,14 +101,6 @@ static char	*set_curpath(t_env **env, char *directory)
 	return (curpath);
 }
 
-static void	debug()
-{
-	char	cwd[100];
-
-	getcwd(cwd, 100);
-	printf("%s\n", cwd);
-}
-
 int	cd(t_env **env, char **args)
 {
 	char	*curpath;

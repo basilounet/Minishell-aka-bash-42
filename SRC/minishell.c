@@ -85,16 +85,15 @@ void	print_node(t_node *node, int depth)
 	}
 }
 
-<<<<<<< HEAD
-static const char *test[] = {"bla =bli", "bloups", "blagz=", \
+/*static char *test[] = {"bla =bli", "bloups", "blagz=", \
 	" ", "\"blarbouste\"", "zg\"oug", "bi\"z\"bou", "bi\"z'\"baz", \
 	"blax='", "blax=''", "bist=ouri", "bist==ouri", "blorgux=test", \
 	"bi\"s\"carosse", "", "bip=", "biap=titou", "bop=\"\"", "bap", \
 	"miaousse=\'\"\'$USER\'\"\'", "_zblox=b", "1two3=", "one23=", \
 	"b_3=", "bip=swag", "A=\"guy2bezbar\"", "A", "bix=", "bix+=bloarg", \
 	"biop", "biop+=$bip", "moufette", NULL};
-static const char *test2[] = {"export", NULL};
-static const char *test3[] = {"c*", "*", "t*", "*a*", "*ak*", "**", "*s", \
+static char *test2[] = {"export", NULL};*/
+static char *test3[] = {"c*", "*", "t*", "*a*", "*ak*", "**", "*s", \
 	"*cases", "cases*", "cas*es", "case*s", "c*ases", NULL};
 
 static void	temp_execution(t_env *env, char *line)
@@ -170,35 +169,17 @@ static void	temp_execution(t_env *env, char *line)
 
 int	g_exitcode;
 
-=======
->>>>>>> refs/remotes/origin/main
 int	main(int ac, char **av, char **char_env)
 {
 	t_ms		ms;
 	char		*line;
-<<<<<<< HEAD
-	t_env		*env;
 
 	(void)ac;
 	(void)av;
-	env = NULL;
-
-	set_interactive_mode(1);
-	if (env_array_to_list(&env, char_env) == 0)
-		return (1); //malloc error
-	ms.prompt = add_colors(get_prompt(env), &moving_rainbow_pattern);
-=======
-	t_tokens	*tokens;
-	t_node		*node;
-	char		**argumentatos;
-
-	(void)ac;
-	(void)av;
-	tokens = NULL;
 	ft_memset((void *)&ms, 0, sizeof(t_ms));
 	if (env_array_to_list(&(ms.env), char_env) == 0)
+		return (1);
 	ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
->>>>>>> refs/remotes/origin/main
 	while (1)
 	{
 		line = readline(ms.prompt);
@@ -206,44 +187,13 @@ int	main(int ac, char **av, char **char_env)
 			break ;
 		if (g_exitcode != -2147483647)
 		{
-<<<<<<< HEAD
 			add_history(line);
-			temp_execution(env, line);
+			temp_execution(ms.env, line);
 		}
-=======
-			argumentatos = ft_split(line, ' ');
-			export(&(ms.env), argumentatos);
-			free(argumentatos);
-		}
-		else if (ft_strncmp(line, "unset", 5) == 0)
-		{
-			argumentatos = ft_split(line, ' ');
-			unset(&(ms.env), argumentatos);
-			free(argumentatos);
-		}
-		else if (ft_strncmp(line, "env", 3) == 0)
-			print_env(ms.env);
-		if (lexer(&tokens, line) == 0)
-		{
-			write(2, "invalid prompt\n", 15);
-			ft_tokclear(&tokens);
-			return (1);
-		}
-		node = parse_prompt(&tokens);
-		prepare_and_execute(&ms, node);
-		if (line)
-			free(line);
-		free_node(node);
-		ft_tokclear(&tokens);
->>>>>>> refs/remotes/origin/main
 		free(ms.prompt);
 		ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
 	}
 	rl_clear_history();
 	free(ms.prompt);
-<<<<<<< HEAD
-	ft_envclear(env);
-=======
 	ft_envclear(ms.env);
->>>>>>> refs/remotes/origin/main
 }
