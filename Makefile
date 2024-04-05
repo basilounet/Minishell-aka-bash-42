@@ -6,6 +6,8 @@ SRC =	interpreter/parser/lexer.c \
 		interpreter/expansion/wildcards.c \
 		interpreter/execution/update_inputs.c \
 		interpreter/execution/update_outputs.c \
+		interpreter/execution/prepare_execution.c \
+		interpreter/execution/ifs.c \
 		interpreter/execution/execution.c \
 		interpreter/execution/execution_utils.c \
 		utils/create_tokens.c \
@@ -35,7 +37,7 @@ INCLUDE_DIR = includes
 
 ##========== OBJECTS ==========##
 
-OBJS := $(addprefix $(OBJS_DIR),$(SRC:.c=.o))
+OBJS = $(addprefix $(OBJS_DIR),$(SRC:.c=.o))
 MAIN_OBJ = $(addprefix $(OBJS_DIR),$(MAIN:.c=.o))
 
 ##========== COLORS ==========##
@@ -56,7 +58,7 @@ CC = cc
 
 ##========== FLAGS ==========##
 
-CFLAGS = #-Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = $(LIBS)
 LIBS = -I$(INCLUDE_DIR)
 LIBFT = $(LIBFT_DIR)/libft.a

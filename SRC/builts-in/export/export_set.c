@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
+/*   export_set.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:31:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/22 20:31:15 by gangouil         ###   ########.fr       */
+/*   Updated: 2024/04/03 17:20:29 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
 #include <builts_in.h>
+#include <minishell.h>
 
 static t_env	*parse_char_env(t_env *env, char *char_env, int j, int append)
 {
@@ -23,8 +23,8 @@ static t_env	*parse_char_env(t_env *env, char *char_env, int j, int append)
 	if (append == 0)
 		var = ft_substr(char_env, j + 1, ft_strlen(char_env));
 	else
-		var = ft_str_reajoin(get_env_var(env, name), \
-		ft_substr(char_env, j + 2, ft_strlen(char_env)), 1, 1);
+		var = ft_str_reajoin(get_env_var(env, name), ft_substr(char_env, j + 2,
+					ft_strlen(char_env)), 1, 1);
 	new_env = ft_envnew(name, var, NULL);
 	if (!new_env || !name || !var)
 	{
@@ -46,8 +46,9 @@ static char	*is_export_valid(t_env *env, char *arg)
 	i = 0;
 	if (!is_evenly_quoted(arg, 0)) // check en fin de minishell si necessaire
 		return (NULL);
-	arg = expand_var(env, arg, 0); // was used to expand the values
-	//arg = ft_strdup(arg); //replaced by this to keep the same behaviour without expanding
+	arg = expand_var(env, arg, 1, 0); // was used to expand the values
+	// arg = ft_strdup(arg);
+		//replaced by this to keep the same behaviour without expanding
 	if (!arg || !arg[0] || arg[0] == '=' || (arg[0] >= '0' && arg[0] <= '9'))
 	{
 		if (arg)
@@ -73,7 +74,7 @@ static int	get_export_values(t_env **env, char *expand_arg)
 	int		j;
 	char	*name;
 	t_env	*new_env;
-	
+
 	j = 0;
 	while (expand_arg[j] && expand_arg[j] != '=' && expand_arg[j] != '+')
 		j++;
@@ -98,7 +99,6 @@ static int	get_export_values(t_env **env, char *expand_arg)
 int	export(t_env **env, char **args)
 {
 	int		i;
-	int		j;
 	char	*expand_arg;
 
 	i = 1; // change to 1 after testing
@@ -135,7 +135,7 @@ int	env_array_to_list(t_env **env, char **char_env)
 		new_env = parse_char_env(*env, char_env[i], j, 0);
 		if (!new_env)
 		{
-			ft_envclear(*env); //malloc error
+			ft_envclear(*env); // malloc error
 			return (0);
 		}
 		ft_envadd_back(env, new_env);

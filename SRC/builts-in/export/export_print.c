@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   export_print.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:07:51 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/28 02:07:53 by gangouil         ###   ########.fr       */
+/*   Updated: 2024/04/02 10:57:17 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
 #include <builts_in.h>
+#include <minishell.h>
 
 static char	**env_sort(char **env)
 {
@@ -117,9 +117,8 @@ char	**env_list_to_array(t_env *env)
 
 int	print_export(t_env *env)
 {
-	char	**char_env;
-	int		i;
-	int		j;
+	char **char_env;
+	int i;
 
 	i = 0;
 	char_env = env_formatted_array(env);

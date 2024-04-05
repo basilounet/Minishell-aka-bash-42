@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:41:56 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/22 15:05:33 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/02 10:06:49 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef enum e_type
 typedef struct s_command
 {
 	t_tokens			*args;
+	char				**char_args;
 	t_tokens			*redirects;
 }						t_command;
 
@@ -49,6 +50,7 @@ typedef struct s_node
 		t_command		cmd;
 		t_tree			tree;
 	};
+	int	**pipes[2];
 }						t_node;
 
 t_node					*ft_treenew(e_symbol ope, t_node *left, t_node *right, t_tokens *redirs);
