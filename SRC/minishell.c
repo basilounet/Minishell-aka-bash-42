@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/03 18:07:47 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/08 14:38:49 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void	print_node(t_node *node, int depth)
 	}
 }
 
+
 /*static char *test[] = {"bla =bli", "bloups", "blagz=", \
 	" ", "\"blarbouste\"", "zg\"oug", "bi\"z\"bou", "bi\"z'\"baz", \
 	"blax='", "blax=''", "bist=ouri", "bist==ouri", "blorgux=test", \
@@ -92,13 +93,12 @@ void	print_node(t_node *node, int depth)
 	"miaousse=\'\"\'$USER\'\"\'", "_zblox=b", "1two3=", "one23=", \
 	"b_3=", "bip=swag", "A=\"guy2bezbar\"", "A", "bix=", "bix+=bloarg", \
 	"biop", "biop+=$bip", "moufette", NULL};
-static char *test2[] = {"export", NULL};*/
+static char *test2[] = {"export", NULL};
 static char *test3[] = {"c*", "*", "t*", "*a*", "*ak*", "**", "*s", \
-	"*cases", "cases*", "cas*es", "case*s", "c*ases", NULL};
+	"*cases", "cases*", "cas*es", "case*s", "c*ases", NULL};*/
 
-static void	temp_execution(t_env *env, char *line)
+static void	temp_execution(t_ms *ms, char *line)
 {
-	char		**argumentatos;
 	t_tokens	*tokens;
 	t_node		*node;
 
@@ -116,54 +116,9 @@ static void	temp_execution(t_env *env, char *line)
 		free(line);
 		return ;
 	}
-	print_node(node, 0);
-	//execute_cmd();
+	prepare_and_execute(ms, node);
 	free_node(node);
 	ft_tokclear(&tokens);
-	if (ft_strncmp(line, "exit", 4) == 0)
-	{
-		free(line);
-	}
-	else if (ft_strncmp(line, "wctest", 6) == 0)
-	{
-		int	i = 0;
-		char *result;
-		while(test3[i])
-		{
-			printf("wc : %s\n", test3[i]);
-			result = wildcards(env, test3[i]);
-			printf("%s", result);
-			free(result);
-			printf("\n\n");
-			i++;
-		}
-	}
-	else if (ft_strncmp(line, "export", 6) == 0)
-	{
-		argumentatos = ft_split(line, ' ');
-		export(&env, argumentatos);
-		ft_free_map(argumentatos, ft_maplen(argumentatos));
-	}
-	else if (ft_strncmp(line, "cd", 2) == 0)
-	{
-		argumentatos = ft_split(line, ' ');
-		cd(&env, argumentatos);
-		ft_free_map(argumentatos, ft_maplen(argumentatos));
-	}
-	else if (ft_strncmp(line, "echo", 4) == 0)
-	{
-		argumentatos = ft_split(line, ' ');
-		echo(argumentatos);
-		ft_free_map(argumentatos, ft_maplen(argumentatos));
-	}
-	else if (ft_strncmp(line, "unset", 5) == 0)
-	{
-		argumentatos = ft_split(line, ' ');
-		unset(&env, argumentatos);
-		ft_free_map(argumentatos, ft_maplen(argumentatos));
-	}
-	else if (ft_strncmp(line, "env", 3) == 0)
-		print_env(env);
 	if (line)
 		free(line);
 	return ;
@@ -190,7 +145,7 @@ int	main(int ac, char **av, char **char_env)
 		if (g_exitcode != -2147483647)
 		{
 			add_history(line);
-			temp_execution(ms.env, line);
+			temp_execution(&ms, line);
 		}
 		free(ms.prompt);
 		ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);

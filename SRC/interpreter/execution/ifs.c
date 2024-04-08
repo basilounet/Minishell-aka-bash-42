@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 20:51:20 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/03 13:00:02 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/08 13:34:37 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	*change_ifs(char *str, char *should_remove)
 	{
 		j = 0;
 		if (should_remove[i] == 'y')
-	        state = change_state(str[i], state, NULL, i);
+	        state = change_state(str + i, state, NULL, i);
 		while (state == 0 && ifs[j])
 			if (str[i] == ifs[j++])
 				str[i] = -1;
@@ -45,7 +45,7 @@ int	should_split_ifs(char *str)
 	state = 0;
 	while (str[i])
 	{
-		state = change_state(str[i], state, NULL, i);
+		state = change_state(str + i, state, NULL, i);
 		if (state == 0 && str[i] == '$')
 			return (1);
 		i++;
@@ -70,10 +70,7 @@ void	split_ifs(t_tokens **tokens)
 	tok_list = NULL;
 	i = 0;
 	while (split[++i])
-	{
-		ft_tokadd_back(&tok_list, ft_toknew(0, NULL,NULL));
-		ft_toklast(tok_list)->arg = split[i];
-	}
+		ft_tokadd_back(&tok_list, ft_toknew(0, split[i], NULL));
 	free(split);
 	tok_last = ft_toklast(tok_list);
 	tok_last->next = (*tokens)->next;

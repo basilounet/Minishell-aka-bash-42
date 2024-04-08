@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 16:48:34 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/03 18:45:45 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/05 14:45:36 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,25 +24,26 @@ int	len_env_name(char *str)
 	return (len);
 }
 
-int	change_state(char c, int state, char *shld_remove, int i)
+int	change_state(char *str, int state, char *shld_remove, int i)
 {
 	int	new_state;
 
 	new_state = state;
-	if (c == '\"' && state == 0)
+	if (str[0] == '\"' && state == 0)
 		new_state = 1;
-	else if (c == '\'' && state == 0)
+	else if (str[0] == '\'' && state == 0)
 		new_state = 2;
-	else if (c == '\"' && state == 1)
+	else if (str[0] == '\"' && state == 1)
 		new_state = 0;
-	else if (c == '\'' && state == 2)
+	else if (str[0] == '\'' && state == 2)
 		new_state = 0;
-	if (shld_remove && new_state != state)
+	if (shld_remove && (new_state != state || (state == 0 && str[0] == '$'
+				&& (str[1] == '\'' || str[1] == '\"'))))
 		shld_remove[i] = 'y';
 	return (new_state);
 }
 
-int	expanded_line_len(t_env *env, char *line, int ignore_quotes, int state)
+int	exp_len(t_env *env, char *line, t_expand_args args, int state)
 {
 	char	*var_name;
 	int		len;
@@ -52,26 +53,25 @@ int	expanded_line_len(t_env *env, char *line, int ignore_quotes, int state)
 	len = 0;
 	while (line[i])
 	{
-		if (ignore_quotes)
-			state = change_state(line[i], state, NULL, 0);
-		if (line[i] == '$' && len_env_name(line + i + 1) && state == 2)
-			len += len_env_name(line + i + 1);
-		else if (line[i] == '$' && len_env_name(line + i + 1) && state != 2)
+		if (!args.ign_qte)
+			state = change_state(line + i, state, NULL, 0);
+		if (line[i] == '$' && len_env_name(line + i + 1) && state != 2
+			&& args.should_expand)
 		{
 			var_name = ft_substr(line, i + 1, len_env_name(line + i + 1));
 			len += ft_strlen(ft_getenv(env, var_name));
-			if (var_name)
-				free(var_name);
+			ft_free_ptr(1, var_name);
 		}
 		else
 			len++;
-		if (line[i++] == '$' && len_env_name(line + i) && state != 2)
+		if (line[i++] == '$' && len_env_name(line + i) && state != 2
+			&& args.should_expand)
 			i += len_env_name(line + i);
 	}
 	return (len);
 }
 
-char	*remove_quotes(char *str, char *should_remove, int ignore_quotes,
+char	*remove_quotes(char *str, char *qte, int ignore_quotes,
 		int should_change_ifs)
 {
 	char	*line;
@@ -82,53 +82,88 @@ char	*remove_quotes(char *str, char *should_remove, int ignore_quotes,
 	j = 0;
 	if (ignore_quotes)
 	{
-		ft_free_ptr(1, should_remove);
+		ft_free_ptr(1, qte);
 		return (str);
 	}
-	line = ft_calloc(sizeof(char), ft_strlen(str) - ft_countc(str, 'y') + 1);
-	if (!line || !str || !should_remove)
+	line = ft_calloc(sizeof(char), ft_strlen(str) - ft_countc(qte, 'y') + 1);
+	if (!line || !str || !qte)
 	{
-		ft_free_ptr(3, str, should_remove, line);
+		ft_free_ptr(3, str, qte, line);
 		return (NULL);
 	}
 	if (should_change_ifs)
-		str = change_ifs(str, should_remove);
+		str = change_ifs(str, qte);
 	while (str[++i])
-		if (should_remove[i] == 'n')
+		if (qte[i] == 'n')
 			line[j++] = str[i];
-	ft_free_ptr(2, str, should_remove);
+	ft_free_ptr(2, str, qte);
 	return (line);
 }
 
-char	*expand_var(t_env *env, char *original, int ignore_quotes,
-		int should_change_ifs)
+t_expand	expand(t_env *env, char *str, t_expand expand, t_expand_args args)
 {
-	char	*qte;
-	char	*name;
-	char	*line;
-	int		state;
-	int		i;
-
-	line = ft_calloc(sizeof(char), expanded_line_len(env, original, ignore_quotes, 0) + 1);
-	qte = ft_calloc(sizeof(char), expanded_line_len(env, original, ignore_quotes, 0) + 1);
-	ft_memset(qte, 'n', expanded_line_len(env, original, ignore_quotes, 0) * (qte != NULL));
-	state = 0;
-	i = 0;
-	while (line && qte && original && original[i])
+	if (!args.ign_qte)
+		expand.state = change_state(str + expand.i, expand.state, expand.qte,
+				ft_strlen(expand.line));
+	if (str[expand.i] == '$' && len_env_name(str + expand.i + 1)
+		&& expand.state != 2 && args.should_expand)
 	{
-		if (ignore_quotes)
-			state = change_state(original[i], state, qte, ft_strlen(line));
-		if (original[i] == '$' && len_env_name(original + i + 1) && state != 2)
+		expand.name = ft_substr(str, expand.i + 1, len_env_name(str + expand.i
+					+ 1));
+		ft_strncpy(expand.line + ft_strlen(expand.line), ft_getenv(env,
+				expand.name), ft_strlen(ft_getenv(env, expand.name)) + 1);
+		ft_free_ptr(1, expand.name);
+	}
+	else
+		expand.line[ft_strlen(expand.line)] = str[expand.i];
+	if (str[expand.i++] == '$' && len_env_name(str + expand.i)
+		&& expand.state != 2 && args.should_expand)
+		expand.i += len_env_name(str + expand.i);
+	return (expand);
+}
+
+char	*expand_var(t_env *env, char *str, t_expand_args args)
+{
+	t_expand	expand_var;
+
+	ft_memset(&expand_var, 0, sizeof(t_expand));
+	expand_var.line = ft_calloc(sizeof(char), exp_len(env, str, args, 0) + 1);
+	expand_var.qte = ft_calloc(sizeof(char), exp_len(env, str, args, 0) + 1);
+	ft_memset(expand_var.qte, 'n', exp_len(env, str, args, 0)
+		* (expand_var.qte != NULL));
+	while (expand_var.line && expand_var.qte && str && str[expand_var.i])
+		expand_var = expand(env, str, expand_var, args);
+	return (remove_quotes(expand_var.line, expand_var.qte, args.ign_qte,
+			args.shld_ch_ifs));
+}
+
+/*
+char	*expand_var(t_env *env, char *str, int ign_qte, int should_change_ifs)
+{
+	t_expand	exp;
+
+	ft_memset(&exp, 0, sizeof(t_expand));
+	exp.line = ft_calloc(sizeof(char), exp_len(env, str, ign_qte, 0) + 1);
+	exp.qte = ft_calloc(sizeof(char), exp_len(env, str, ign_qte, 0) + 1);
+	ft_memset(exp.qte, 'n', exp_len(env, str, ign_qte, 0) * (exp.qte != NULL));
+	while (exp.line && exp.qte && str && str[exp.i])
+	{
+		if (!ign_qte)
+			exp.state = change_state(str[exp.i], exp.state, exp.qte,
+					ft_strlen(exp.line));
+		if (str[exp.i] == '$' && len_env_name(str + exp.i + 1)
+			&& exp.state != 2)
 		{
-			name = ft_substr(original, i + 1, len_env_name(original + i + 1));
-			ft_strncpy(line + ft_strlen(line), ft_getenv(env, name),
-				ft_strlen(ft_getenv(env, name)) + 1);
-			ft_free_ptr(1, name);
+			exp.name = ft_substr(str, exp.i + 1, len_env_name(str + exp.i + 1));
+			ft_strncpy(exp.line + ft_strlen(exp.line), ft_getenv(env, exp.name),
+				ft_strlen(ft_getenv(env, exp.name)) + 1);
+			ft_free_ptr(1, exp.name);
 		}
 		else
-			line[ft_strlen(line)] = original[i];
-		if (original[i++] == '$' && len_env_name(original + i) && state != 2)
-			i += len_env_name(original + i);
+			exp.line[ft_strlen(exp.line)] = str[exp.i];
+		if (str[exp.i++] == '$' && len_env_name(str + exp.i) && exp.state != 2)
+			exp.i += len_env_name(str + exp.i);
 	}
-	return (remove_quotes(line, qte, ignore_quotes, should_change_ifs));
+	return (remove_quotes(exp.line, exp.qte, ign_qte, should_change_ifs));
 }
+*/

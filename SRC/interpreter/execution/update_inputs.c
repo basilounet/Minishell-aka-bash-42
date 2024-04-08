@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:18:03 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/01 14:08:51 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/08 13:31:52 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@ void	add_redirect_node(t_node *node, t_tokens *token)
 
 	if (!token)
 		return ;
-	new_redirect = ft_toknew(token->symbol, NULL, NULL);
+	new_redirect = ft_toknew(token->symbol, ft_strdup(token->arg), NULL);
 	if (!new_redirect)
 		return ;
-	new_redirect->arg = ft_strdup(token->arg);
+	if (new_redirect->symbol == T_OUTPUT)
+		new_redirect->symbol = T_APPEND;
 	if (node->type == T_TREE)
 		ft_tokadd_front(&node->tree.redirects, new_redirect);
 	else

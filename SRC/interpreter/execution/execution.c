@@ -6,23 +6,52 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 14:50:58 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/02 14:53:11 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/08 14:44:06 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void    execute_node(t_ms *ms, t_node *node, int is_in_pipe)
+
+void	execute_cmd(t_execution execution, t_node *node)
 {
-    ft_printf("is_in_pipe : %d, is_last_pipe : %d\n\n", is_in_pipe, !is_in_pipe);
-    if (node->type == T_TREE)
-    {
-        execute_node(ms, node->tree.left, is_in_pipe || node->tree.operator == T_PIPE);
-        execute_node(ms, node->tree.right, is_in_pipe); 
-    }
+	int	pid;
+
+	expand_args(execution.ms, node);
+	expand_redirects(execution.ms, node);
+	execution.input = get_input_fd(execution.ms, node->cmd.redirects);
+	execution.output = get_output_fd(node->cmd.redirects);
+	if (node->cmd.args)
+		check_command(execution.ms, &node->cmd.args->arg);
+	transform_to_chars(node);
+	//ft_print_map(node->cmd.char_args);
+	if (g_exitcode != 0 || !node->cmd.args)
+		return ;
+	pid = fork();
+	if (pid < 0)
+		ft_printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa FORK BOMB\n");
+	if (pid == 0)
+		child(execution, node);
+	else
+		parent(execution);
 }
 
-/*
-A aa aa a && B bb b bbbb  | (C && D d && DD) | E e
-( cat   <a >     b<d > b< f < a c && (cat < a ds> ad > f < d || ls )) | rev
-*/
+void	execute_node(t_execution execution, t_node *node)
+{
+	if (node->type == T_TREE)
+	{
+		if (node->tree.operator == T_PIPE)
+			pipe(execution.right_pipe);
+		execute_node(execution, node->tree.left);
+		if (node->tree.operator == T_PIPE)
+		{
+			execution.left_pipe[READ] = execution.right_pipe[READ];
+			execution.left_pipe[WRITE] = execution.right_pipe[WRITE];
+			execution.right_pipe[READ] = -1;
+			execution.right_pipe[WRITE] = -1;
+		}
+		execute_node(execution, node->tree.right);
+	}
+	else
+        execute_cmd(execution, node);
+}

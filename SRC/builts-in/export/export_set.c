@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:31:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/03 17:20:29 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/08 14:23:52 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static char	*is_export_valid(t_env *env, char *arg)
 	i = 0;
 	if (!is_evenly_quoted(arg, 0)) // check en fin de minishell si necessaire
 		return (NULL);
-	arg = expand_var(env, arg, 1, 0); // was used to expand the values
+	arg = expand_var(env, arg, (t_expand_args){0, 1, 1}); // was used to expand the values
 	// arg = ft_strdup(arg);
 		//replaced by this to keep the same behaviour without expanding
 	if (!arg || !arg[0] || arg[0] == '=' || (arg[0] >= '0' && arg[0] <= '9'))

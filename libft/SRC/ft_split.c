@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 01:17:03 by marvin            #+#    #+#             */
-/*   Updated: 2024/03/14 17:32:30 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/04 12:59:21 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	**ft_split(char const *s, char c)
 	char	**array;
 
 	if (!s)
-		return (0);
+		return (NULL);
 	array = ft_calloc(sizeof(char *), count_word(s, c) + 1);
 	if (!array)
 		return (NULL);
