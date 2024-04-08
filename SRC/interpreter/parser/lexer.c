@@ -60,7 +60,7 @@ static void	lex_string(t_tokens *tokens, char *line, int *i)
 	else
 		tokens->arg = ft_substrc(line, i_start, *i + 1);
 	if (!tokens->arg)
-		print_error(1, 1, "baseshell: unclosed quote"); //error code a determiner
+		perr(1, 1, "baseshell: unclosed quote"); //error code a determiner
 }
 
 int	lexer(t_tokens **tokens, char *line)

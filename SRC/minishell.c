@@ -14,7 +14,7 @@
 #include <parser.h>
 #include <builts_in.h>
 
-char	*symbol_to_char(e_symbol symbol)
+static char	*sym_to_char(e_symbol symbol)
 {
 	if (symbol == T_PIPE)
 		return ("|");
@@ -76,7 +76,7 @@ void	print_node(t_node *node, int depth)
 		print_pad(depth);
 		printf("<tree>\n");
 		print_pad(++depth);
-		printf("operator = %s\n", symbol_to_char(node->tree.operator));
+		printf("operator = %s\n", sym_to_char(node->tree.operator));
 		print_node(node->tree.left, depth + 1);
 		print_node(node->tree.right, depth + 1);
 		print_pad(depth);
@@ -112,9 +112,11 @@ static void	temp_execution(t_env *env, char *line)
 	node = parse_prompt(&tokens);
 	if (!node)
 	{
+		ft_tokclear(&tokens);
 		free(line);
 		return ;
 	}
+	print_node(node, 0);
 	//execute_cmd();
 	free_node(node);
 	ft_tokclear(&tokens);

@@ -55,8 +55,12 @@ void	ft_tokadd_back(t_tokens **stack, t_tokens *new)
 
 void	ft_tokadd_front(t_tokens **stack, t_tokens *new)
 {
-	if (!new || !stack)
+	if (!new)
+	if (!*stack)
+	{
+		*stack = new;
 		return ;
+	}
 	ft_toklast(new)->next = *stack;
 	*stack = new;
 }

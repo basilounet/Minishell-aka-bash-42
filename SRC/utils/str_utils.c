@@ -81,7 +81,7 @@ int	is_existing_dir(char *path)
 	return (0);
 }
 
-void print_error(int exit_code, int n, ...)
+void perr(int exit_code, int n, ...)
 {
 	va_list	args;
 	char	*to_print;

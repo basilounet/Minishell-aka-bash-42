@@ -47,7 +47,8 @@ typedef struct s_minishell
 char	*tokens_to_string(t_tokens *tokens);
 char		*ft_getenv(t_env *env, char *to_get);
 int	is_existing_dir(char *path);
-void print_error(int exit_code, int n, ...);
+void perr(int exit_code, int n, ...);
+char					*symbol_to_char(t_tokens *token);
 
 /*========== PROMPTS ==========*/
 

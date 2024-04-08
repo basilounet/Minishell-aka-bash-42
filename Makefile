@@ -1,7 +1,9 @@
 ##========== SOURCES ==========##
 
 SRC =	interpreter/parser/lexer.c \
-		interpreter/parser/parser.c \
+		interpreter/parser/parse_cmd.c \
+		interpreter/parser/parse_logex.c \
+		interpreter/parser/parse_utils.c \
 		interpreter/expansion/expand.c \
 		interpreter/expansion/wildcards.c \
 		interpreter/execution/update_inputs.c \

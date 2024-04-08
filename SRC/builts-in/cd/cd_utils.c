@@ -24,7 +24,7 @@ int cd_set_pwd(t_env **env)
 		return (1);
 	if (!getcwd(cwd, 512))
 	{
-		print_error(1, 2, "baseshell: cd: ", strerror(errno));
+		perr(1, 2, "baseshell: cd: ", strerror(errno));
 		return (0);
 	}
 	newpwd = ft_strjoin("PWD=", cwd);

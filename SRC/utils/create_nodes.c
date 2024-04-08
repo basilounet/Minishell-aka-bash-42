@@ -13,7 +13,7 @@
 #include <parser.h>
 #include <stdlib.h>
 
-t_node	*ft_nodenew(e_type type, t_command cmd, t_tree tree)
+t_node	*ft_nodenew(t_type type, t_command cmd, t_tree tree)
 {
 	t_node	*stack;
 

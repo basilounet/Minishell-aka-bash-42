@@ -18,12 +18,12 @@ static int	cd_errors(t_env **env, char **args)
 	cd_set_pwd(env);
 	if (args[1] && args[2])
 	{
-		print_error(1, 1, "baseshell: cd: too many arguments");
+		perr(1, 1, "baseshell: cd: too many arguments");
 		return (0);
 	}
 	if (!ft_getenv(*env, "HOME") && !args[1])
 	{
-		print_error(1, 1, "baseshell: cd: HOME not set");
+		perr(1, 1, "baseshell: cd: HOME not set");
 		return (0);
 	}
 	return (1);
@@ -40,7 +40,7 @@ static int	cd_set_newpwd(t_env **env)
 	ft_bzero(cwd, 512);
 	if (!getcwd(cwd, 512))
 	{
-		print_error(1, 2, "baseshell: cd: ", strerror(errno));
+		perr(1, 2, "baseshell: cd: ", strerror(errno));
 		return (0);
 	}
 	pwd_curpath = ft_strjoin("PWD=", cwd);
@@ -63,7 +63,7 @@ static int	go_to_dir(t_env **env, char *curpath, char *arg)
 		free(curpath);
 		if (!ft_getenv(*env, "OLDPWD"))
 		{
-			print_error(1, 1, "baseshell: cd: OLDPWD not set");
+			perr(1, 1, "baseshell: cd: OLDPWD not set");
 			return (0);
 		}
 		curpath = ft_strdup(ft_getenv(*env, "OLDPWD"));
@@ -72,7 +72,7 @@ static int	go_to_dir(t_env **env, char *curpath, char *arg)
 	}
 	if (chdir(curpath) < 0)
 	{
-		print_error(1, 4, "baseshell: cd: ", arg, ": ", strerror(errno));
+		perr(1, 4, "baseshell: cd: ", arg, ": ", strerror(errno));
 		free(curpath);
 		return (0);
 	}
