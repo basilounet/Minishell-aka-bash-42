@@ -44,10 +44,6 @@ static char	*is_export_valid(char *arg)
 	int	i;
 
 	i = 0;
-<<<<<<< HEAD
-=======
-	(void)env;
->>>>>>> refs/remotes/origin/main
 	arg = ft_strdup(arg);
 	if (!arg || !arg[0] || arg[0] == '=' || (arg[0] >= '0' && arg[0] <= '9'))
 	{

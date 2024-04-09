@@ -16,7 +16,7 @@ void	execute_cmd(t_execution execution, t_node *node)
 {
 	int	pid;
 
-	g_exitcode = 0;
+	execution.ms->exit_code = 0;
 	expand_args(execution.ms, node);
 	expand_redirects(execution.ms, node);
 	execution.input = get_input_fd(execution.ms, node->cmd.redirects);
@@ -24,18 +24,13 @@ void	execute_cmd(t_execution execution, t_node *node)
 	if (node->cmd.args)
 		check_command(execution.ms, &node->cmd.args->arg);
 	transform_to_chars(node);
-<<<<<<< HEAD
-	//ft_print_map(node->cmd.char_args);
-	if (execution.ms->exit_code != 0 || !node->cmd.args)
-=======
 	// ft_print_map(node->cmd.char_args);
-	if (g_exitcode != 0 || !node->cmd.args)
->>>>>>> refs/remotes/origin/main
+	if (execution.ms->exit_code != 0 || !node->cmd.args)
 		return ;
 	if (execution.is_in_pipe || !(is_built_in(node->cmd.args->arg)
 			&& execute_built_ins(execution, node)))
 	{
-		execution.ms->pids = add_pid_space(execution.ms->pids);
+		execution.ms->pids = add_pid_space(execution.ms, execution.ms->pids);
 		pid = fork();
 		execution.ms->pids[pids_len(execution.ms->pids) - 1] = pid;
 		if (pid < 0)
@@ -66,8 +61,8 @@ void	execute_node(t_execution execution, t_node *node)
 		if (node->tree.operator != T_PIPE)
 			wait_pids(execution.ms);
 		if (node->tree.operator == T_PIPE || (node->tree.operator == T_AND
-				&& g_exitcode == 0) || (node->tree.operator == T_OR
-				&& g_exitcode != 0))
+				&& execution.ms->exit_code == 0) || (node->tree.operator == T_OR
+				&& execution.ms->exit_code != 0))
 			execute_node(execution, node->tree.right);
 	}
 	else

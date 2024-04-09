@@ -70,13 +70,8 @@ static bool	get_files(t_tokens **files, DIR *directory, char *wc)
 		curfile = readdir(directory);
 		if (!curfile && errno)
 		{
-<<<<<<< HEAD
 			perr(1, 2, 1, "wildcards: ", strerror(errno));
 			return (false);	
-=======
-			perr(1, 2, "baseshell: wildcards: ", strerror(errno));
-			return (false);
->>>>>>> refs/remotes/origin/main
 		}
 		if (!curfile)
 			return (true);

@@ -54,6 +54,7 @@ typedef struct s_node
 	};
 }						t_node;
 
+void	get_new_file(t_ms *ms, char **stop);
 int						lexer(t_ms *ms, t_tokens **tokens, char *line);
 int						parse_redlist(t_ms *ms, t_node *node, t_tokens **tokens);
 char					*symbol_to_char(t_tokens *token);

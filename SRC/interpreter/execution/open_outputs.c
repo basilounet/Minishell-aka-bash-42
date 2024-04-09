@@ -66,7 +66,6 @@ void	get_new_file(t_ms *ms, char **stop)
 
 static void	open_redirects(t_tokens *redirects)
 {
-	(void)ms;
 	while (redirects)
 	{
 		if (redirects->symbol == T_OUTPUT)

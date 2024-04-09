@@ -40,7 +40,7 @@ int	pids_len(int *pids)
 	return (len + 1);
 }
 
-int	*add_pid_space(int *pids)
+int	*add_pid_space(t_ms *ms, int *pids)
 {
 	int	*new_pids;
     int len;
@@ -50,7 +50,7 @@ int	*add_pid_space(int *pids)
 	new_pids = malloc(sizeof(int) * len);
 	if (!new_pids)
 	{
-		g_exitcode = 1;
+		ms->exit_code = 1;
 		return (NULL);
 	}
     i = -1;
@@ -78,8 +78,8 @@ void wait_pids(t_ms *ms)
 		{
 			ft_printf("waiting for pid : %d\n", ms->pids[i]);
 			wait4(ms->pids[i++], &status, 0, NULL);
-			g_exitcode = WEXITSTATUS(status);
-			ft_printf("exit_code : %d\n", g_exitcode);
+			ms->exit_code = WEXITSTATUS(status);
+			ft_printf("exit_code : %d\n", ms->exit_code);
 		}
 		free(ms->pids);
 		ms->pids = NULL;

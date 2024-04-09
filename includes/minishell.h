@@ -128,16 +128,12 @@ void	check_command(t_ms *ms, char **cmd);
 void	expand_here_doc(t_ms *ms, char *name);
 int	execute_built_ins(t_execution execution, t_node *node);
 
-<<<<<<< HEAD
-void	get_new_file(t_ms *ms, char **stop);
-=======
 void wait_pids(t_ms *ms);
-int	*add_pid_space(int *pids);
+int	*add_pid_space(t_ms *ms, int *pids);
 int pids_len(int *pids);
 void	print_pid(int *pids);
 
 
->>>>>>> refs/remotes/origin/main
 void	child(t_execution execution, t_node *node);
 void	parent(t_execution execution);
 void		try_close_fd(int fd);

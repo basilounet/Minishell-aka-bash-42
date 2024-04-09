@@ -49,7 +49,7 @@ int	execute_built_ins(t_execution execution, t_node *node)
 	else
 		return (0);
 	if (execution.is_in_pipe)
-		exit(g_exitcode);
+		exit(execution.ms->exit_code);
 	dup2(std_out, STDOUT_FILENO);
 	close(std_out);
 	return (1);

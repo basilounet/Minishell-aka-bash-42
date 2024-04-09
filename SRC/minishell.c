@@ -116,8 +116,8 @@ static void	temp_execution(t_ms *ms, char *line)
 		free(line);
 		return ;
 	}
-	printf("exit code = %d\n", ms->exit_code);
 	prepare_and_execute(ms, node);
+	printf("exit code = %d\n", ms->exit_code);
 	free_node(node);
 	ft_tokclear(&tokens);
 	if (line)
@@ -145,18 +145,9 @@ int	main(int ac, char **av, char **char_env)
 		line = readline(ms.prompt);
 		if (!line)
 			break ;
-<<<<<<< HEAD
 		if (line[0] != '\0')
 			add_history(line);
 		temp_execution(&ms, line);
-=======
-		if (g_exitcode != -2147483647)
-		{
-			if (line[0] != '\0')
-				add_history(line);
-			temp_execution(&ms, line);
-		}
->>>>>>> refs/remotes/origin/main
 		free(ms.prompt);
 		ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
 	}
