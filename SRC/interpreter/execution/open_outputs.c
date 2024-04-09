@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 15:24:53 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/04 19:17:32 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/08 19:30:05 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,11 @@ void	unlink_here_docs(t_ms *ms)
 	while (i < ms->heredoc_number)
 	{
 		name = ft_str_reajoin("here_doc_", ft_itoa(i), 0, 1);
-		unlink(name);
 		if (name)
+		{
+			unlink(name);
 			free(name);
+		}
 		i++;
 	}
 }
@@ -35,7 +37,7 @@ void	get_new_file(t_ms *ms, char **stop)
 	char	*history;
 	int		fd;
 
-	str = expand_var(ms->env, *stop, (t_expand_args){0, 0, 0});
+	str = expand_var(ms->env, *stop, (t_expand_args){0});
 	ft_free_ptr(1, *stop);
 	*stop = str;
 	str = ft_str_reajoin("here_doc_", ft_itoa(ms->heredoc_number), 0, 1);
@@ -62,7 +64,7 @@ void	get_new_file(t_ms *ms, char **stop)
 	ft_free_ptr(1, str);
 }
 
-static void	open_redirects(t_ms *ms, t_tokens *redirects)
+static void	open_redirects(t_tokens *redirects)
 {
 	(void)ms;
 	while (redirects)
@@ -85,8 +87,8 @@ void	open_all_outputs(t_ms *ms, t_node *node)
 	{
 		open_all_outputs(ms, node->tree.left);
 		open_all_outputs(ms, node->tree.right);
-		open_redirects(ms, node->tree.redirects);
+		open_redirects(node->tree.redirects);
 	}
 	else
-		open_redirects(ms, node->cmd.redirects);
+		open_redirects(node->cmd.redirects);
 }

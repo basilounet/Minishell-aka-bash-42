@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/08 14:38:49 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/09 13:02:54 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,19 +138,30 @@ int	main(int ac, char **av, char **char_env)
 	if (env_array_to_list(&(ms.env), char_env) == 0)
 		return (1);
 	ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
+	set_interactive_mode(1);
 	while (1)
 	{
 		set_interactive_mode(1);
 		line = readline(ms.prompt);
 		if (!line)
 			break ;
+<<<<<<< HEAD
 		if (line[0] != '\0')
 			add_history(line);
 		temp_execution(&ms, line);
+=======
+		if (g_exitcode != -2147483647)
+		{
+			if (line[0] != '\0')
+				add_history(line);
+			temp_execution(&ms, line);
+		}
+>>>>>>> refs/remotes/origin/main
 		free(ms.prompt);
 		ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
 	}
 	rl_clear_history();
 	free(ms.prompt);
 	ft_envclear(ms.env);
+	ft_free_map(ms.envp, ft_maplen(ms.envp));
 }

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/08 14:22:18 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/09 11:26:17 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,7 @@ void	prepare_and_execute(t_ms *ms, t_node *node)
 	update_outputs(node);
 	reset_envp(ms);
 	//print_node(node, 0);
-	execute_node((t_execution){ms, {-1, -1}, {-1, -1}, -1, -1, -1}, node);
+	execute_node((t_execution){ms, {-1, -1}, {-1, -1}, -1, -1, 0}, node);
+	wait_pids(ms);
 	unlink_here_docs(ms);
 }

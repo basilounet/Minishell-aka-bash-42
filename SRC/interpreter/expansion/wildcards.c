@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   wildcards.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 14:39:24 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/05 14:39:40 by gangouil         ###   ########.fr       */
+/*   Updated: 2024/04/09 13:04:44 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
 #include <builts_in.h>
+#include <minishell.h>
 
 static DIR	*ft_open_directory(t_env *env)
 {
@@ -36,8 +36,8 @@ static DIR	*ft_open_directory(t_env *env)
 
 static bool	is_in_wildcard(char *name, char *wc)
 {
-	int		i;
-	int		j;
+	int	i;
+	int	j;
 
 	i = 0;
 	j = 0;
@@ -57,7 +57,7 @@ static bool	is_in_wildcard(char *name, char *wc)
 	return (true);
 }
 
-static bool get_files(t_tokens **files, DIR *directory, char *wc)
+static bool	get_files(t_tokens **files, DIR *directory, char *wc)
 {
 	struct dirent	*curfile;
 	int				i;
@@ -70,8 +70,13 @@ static bool get_files(t_tokens **files, DIR *directory, char *wc)
 		curfile = readdir(directory);
 		if (!curfile && errno)
 		{
+<<<<<<< HEAD
 			perr(1, 2, 1, "wildcards: ", strerror(errno));
 			return (false);	
+=======
+			perr(1, 2, "baseshell: wildcards: ", strerror(errno));
+			return (false);
+>>>>>>> refs/remotes/origin/main
 		}
 		if (!curfile)
 			return (true);
@@ -85,7 +90,7 @@ static bool get_files(t_tokens **files, DIR *directory, char *wc)
 	return (true);
 }
 
-static void sort_files(t_tokens *files)
+static void	sort_files(t_tokens *files)
 {
 	t_tokens	*start;
 	t_tokens	*tmp;

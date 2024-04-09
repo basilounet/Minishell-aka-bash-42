@@ -14,6 +14,7 @@ SRC =	interpreter/parser/lexer.c \
 		interpreter/execution/execution.c \
 		interpreter/execution/execution_utils.c \
 		interpreter/execution/fork.c \
+		interpreter/execution/pids.c \
 		utils/create_tokens.c \
 		utils/builts_in_utils.c \
 		utils/create_nodes.c \

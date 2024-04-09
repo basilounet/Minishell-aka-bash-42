@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:17:52 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/08 13:17:52 by gangouil         ###   ########.fr       */
+/*   Updated: 2024/04/08 20:55:46 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,13 @@ int	parse_redlist(t_ms *ms, t_node *node, t_tokens **tokens)
 			return (0);
 		}
 		(*tokens)->symbol = symbol;
+<<<<<<< HEAD
 		redlist_add(ms, node, tokens, symbol);
 		if (parse_redlist(ms, node, tokens) == 0)
+=======
+		redlist_add(node, tokens);
+		if (parse_redlist(node, tokens) == 0)
+>>>>>>> refs/remotes/origin/main
 			return (0);
 	}
 	return (1);
