@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <parser.h>
+#include <minishell.h>
 
 char	*symbol_to_char(t_tokens *token)
 {
@@ -37,7 +37,7 @@ char	*symbol_to_char(t_tokens *token)
 	return (NULL);
 }
 
-int	is_symbol_set(int n, int exclude, e_symbol compared, ...)
+int	is_symbol_set(int n, int exclude, t_symbol compared, ...)
 {
 	int		current_arg;
 	va_list	args;
@@ -62,7 +62,7 @@ int	is_symbol_set(int n, int exclude, e_symbol compared, ...)
 	return (exclude);
 }
 
-int	parenth_check(t_tokens *tokens)
+int	parenth_check(t_ms *ms, t_tokens *tokens)
 {
 	int	balance;
 
@@ -80,9 +80,9 @@ int	parenth_check(t_tokens *tokens)
 	if (balance > 0 || balance < 0)
 	{
 		if (balance > 0)
-			printf("baseshell: syntax error near unexpected token `('\n");
+			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`('");
 		if (balance < 0)
-			printf("baseshell: syntax error near unexpected token `)'\n");
+			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`)'");
 		return (0);
 	}
 	return (1);

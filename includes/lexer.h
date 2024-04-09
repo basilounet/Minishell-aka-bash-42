@@ -40,23 +40,21 @@ typedef enum e_symbol
 	T_RPARENTH,
 	T_OR,
 	T_AND,
-}					e_symbol;
+}					t_symbol;
 
 /*
  * Tokens data structure
  */
 typedef struct s_tokens
 {
-	e_symbol		symbol;
+	t_symbol		symbol;
 	char			*arg;
 	struct s_tokens	*next;
 }					t_tokens;
 
-int					lexer(t_tokens **tokens, char *line);
-
 // Stack utils functions
-void perr(int exit_code, int n, ...);
-t_tokens			*ft_toknew(e_symbol symbol, char *arg, t_tokens *next);
+int perr(int exit_code, int n, int bs, ...);
+t_tokens			*ft_toknew(t_symbol symbol, char *arg, t_tokens *next);
 t_tokens			*ft_toklast(t_tokens *stack);
 void				ft_tokadd_back(t_tokens **stack, t_tokens *new);
 void				ft_tokadd_front(t_tokens **stack, t_tokens *new);

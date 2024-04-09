@@ -74,7 +74,7 @@ void	expand_redirects(t_ms *ms, t_node *node)
 			{
 				ft_printf("baseshell: ambiguous redirect\n");
 				free(tmp_char);
-				g_exitcode = 1;
+				ms->exit_code = 1;
 				return ;
 			}
 			ft_free_ptr(1, tmp_char);
@@ -106,7 +106,7 @@ void	check_command(t_ms *ms, char **cmd)
 		free(str);
 	}
 	ft_printf("baseshell: %s : command not found\n", *cmd);
-	g_exitcode = 127;
+	ms->exit_code = 127;
 }
 
 void	reset_envp(t_ms *ms)
@@ -115,12 +115,12 @@ void	reset_envp(t_ms *ms)
 		ft_free_map(ms->envp, ft_maplen(ms->envp));
 	ms->envp = ft_split(ft_getenv(ms->env, "PATH"), ':');
 	if (!ms->envp)
-		g_exitcode = 1;
+		ms->exit_code = 1;
 }
 
 void	prepare_and_execute(t_ms *ms, t_node *node)
 {
-	g_exitcode = 0;
+	ms->exit_code = 0;
 	ms->heredoc_number = 0;
 	ms->root_node = node;
 	open_all_outputs(ms, node);

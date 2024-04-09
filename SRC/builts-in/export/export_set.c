@@ -39,16 +39,12 @@ static t_env	*parse_char_env(t_env *env, char *char_env, int j, int append)
 	return (new_env);
 }
 
-static char	*is_export_valid(t_env *env, char *arg)
+static char	*is_export_valid(char *arg)
 {
 	int	i;
 
 	i = 0;
-	if (!is_evenly_quoted(arg, 0)) // check en fin de minishell si necessaire
-		return (NULL);
-	arg = expand_var(env, arg, (t_expand_args){0, 1, 1}); // was used to expand the values
-	// arg = ft_strdup(arg);
-		//replaced by this to keep the same behaviour without expanding
+	arg = ft_strdup(arg);
 	if (!arg || !arg[0] || arg[0] == '=' || (arg[0] >= '0' && arg[0] <= '9'))
 	{
 		if (arg)
@@ -106,7 +102,7 @@ int	export(t_env **env, char **args)
 		print_export(*env);
 	while (args[i])
 	{
-		expand_arg = is_export_valid(*env, args[i]);
+		expand_arg = is_export_valid(args[i]);
 		if (!expand_arg)
 		{
 			i++;

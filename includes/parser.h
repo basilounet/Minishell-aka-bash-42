@@ -16,9 +16,11 @@
 # include <lexer.h>
 # include <libft.h>
 # include <stdio.h>
-/*
- * Container type
- */
+
+# define SYN_ERR "syntax error near unexpected token "
+
+typedef struct s_minishell t_ms;
+
 typedef enum e_type
 {
 	T_CMD,
@@ -36,7 +38,7 @@ typedef struct s_node	t_node;
 
 typedef struct s_binary_tree
 {
-	e_symbol			operator;
+	t_symbol			operator;
 	t_node				*left;
 	t_node				*right;
 	t_tokens			*redirects;
@@ -50,22 +52,22 @@ typedef struct s_node
 		t_command		cmd;
 		t_tree			tree;
 	};
-	int	**pipes[2];
 }						t_node;
 
-int	parse_redlist(t_node *node, t_tokens **tokens);
-char	*symbol_to_char(t_tokens *token);
-int						is_symbol_set(int n, int exclude, e_symbol compared, ...);
-int						parenth_check(t_tokens *tokens);
-t_node					*ft_treenew(e_symbol ope, t_node *left, t_node *right, t_tokens *redirs);
+int						lexer(t_ms *ms, t_tokens **tokens, char *line);
+int						parse_redlist(t_ms *ms, t_node *node, t_tokens **tokens);
+char					*symbol_to_char(t_tokens *token);
+int						is_symbol_set(int n, int exclude, t_symbol compared, ...);
+int						parenth_check(t_ms *ms, t_tokens *tokens);
+t_node					*ft_treenew(t_symbol ope, t_node *left, t_node *right, t_tokens *redirs);
 t_node					*ft_nodenew(t_type type, t_command cmd, t_tree tree);
 t_command				ft_cmdnew(t_tokens *args, t_tokens *redirects);
-void					free_node(t_node *node);
-t_node					*parse_prompt(t_tokens **tokens);
-t_node					*parse_logex(t_tokens **tokens);
-t_node					*parse_pipeline(t_tokens **tokens);
-t_node					*parse_command(t_tokens **tokens);
-t_node					*parse_brace(t_tokens **tokens);
-t_node					*parse_simple_command(t_tokens **tokens);
+t_node					*free_node(t_node *node);
+t_node					*parse_prompt(t_ms *ms, t_tokens **tokens);
+t_node					*parse_logex(t_ms *ms, t_tokens **tokens);
+t_node					*parse_pipeline(t_ms *ms, t_tokens **tokens);
+t_node					*parse_command(t_ms *ms, t_tokens **tokens);
+t_node					*parse_brace(t_ms *ms, t_tokens **tokens);
+t_node					*parse_simple_command(t_ms *ms, t_tokens **tokens);
 
 #endif

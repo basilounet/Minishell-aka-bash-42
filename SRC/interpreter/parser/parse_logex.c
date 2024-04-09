@@ -10,31 +10,32 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <parser.h>
+#include <minishell.h>
 
-t_node	*parse_prompt(t_tokens **tokens)
+t_node	*parse_prompt(t_ms *ms, t_tokens **tokens)
 {
 	t_node *node;
 
-	if (!parenth_check(*tokens))
+	if (!parenth_check(ms, *tokens))
 		return (NULL);
-	node = parse_logex(tokens);
+	node = parse_logex(ms, tokens);
 	if (node && *tokens)
 	{
-		printf("baseshell: syntax error near unexpected token `%s'\n", symbol_to_char(*tokens));
+		ms->exit_code = perr(2, 4, 1, SYN_ERR, "`", \
+			symbol_to_char(*tokens), "'");
 		free_node(node);
 		return (NULL);
 	}
 	return (node);
 }
 
-t_node	*parse_logex(t_tokens **tokens)
+t_node	*parse_logex(t_ms *ms, t_tokens **tokens)
 {
     t_node		*node;
 	t_node		*right;
-	e_symbol	symbol;
+	t_symbol	symbol;
 
-	node = parse_pipeline(tokens);
+	node = parse_pipeline(ms, tokens);
 	while (node && *tokens && ((*tokens)->symbol == T_OR
 		|| (*tokens)->symbol == T_AND))
 	{
@@ -42,11 +43,11 @@ t_node	*parse_logex(t_tokens **tokens)
 		free(ft_tokpop(tokens));
 		if (!*tokens)
 		{
-			printf("baseshell: syntax error near unexpected token `newline'\n");
+			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`newline'");
 			free_node(node);
 			return (NULL);
 		}
-		right = parse_pipeline(tokens);
+		right = parse_pipeline(ms, tokens);
 		if (!right)
 		{
 			free_node(node);
@@ -57,22 +58,22 @@ t_node	*parse_logex(t_tokens **tokens)
 	return (node);
 }
 
-t_node *parse_pipeline(t_tokens **tokens)
+t_node	*parse_pipeline(t_ms *ms, t_tokens **tokens)
 {
 	t_node	*node;
 	t_node	*right;
 
-	node = parse_command(tokens);
+	node = parse_command(ms, tokens);
 	if (node && *tokens && (*tokens)->symbol == T_PIPE)
 	{
 		free(ft_tokpop(tokens));
 		if (!*tokens)
 		{
-			printf("baseshell: syntax error near unexpected token `newline'\n");
+			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`newline'");
 			free_node(node);
 			return (NULL);
 		}
-		right = parse_pipeline(tokens);
+		right = parse_pipeline(ms, tokens);
 		if (!right)
 		{
 			free_node(node);
@@ -83,20 +84,20 @@ t_node *parse_pipeline(t_tokens **tokens)
 	return (node);
 }
 
-t_node *parse_brace(t_tokens **tokens)
+t_node *parse_brace(t_ms *ms, t_tokens **tokens)
 {
 	t_node	*node;
 
 	free(ft_tokpop(tokens));
 	if (*tokens && (*tokens)->symbol == T_RPARENTH)
 	{
-		perr(2, 1, "baseshell: syntax error near unexpected token `)'");
+		ms->exit_code = perr(2, 2, 1, SYN_ERR, "`)'");
 		return (NULL);
 	}
-	node = parse_logex(tokens);
+	node = parse_logex(ms, tokens);
 	if (*tokens && (*tokens)->symbol == T_RPARENTH)
 		free(ft_tokpop(tokens));
-	if (*tokens && node && parse_redlist(node, tokens) == 0)
+	if (*tokens && node && parse_redlist(ms, node, tokens) == 0)
 	{
 		free_node(node);
 		return (NULL);

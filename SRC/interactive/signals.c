@@ -12,22 +12,28 @@
 
 #include <minishell.h>
 
-void	exit_shell(int sig)
+void	display_nl(int sig)
 {
-	(void)sig;
-	g_exitcode = -2147483648;
+	g_sig = sig;
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("\0", 0);
 	rl_redisplay();
 }
 
+void	exit_heredoc(int sig)
+{
+	g_sig = sig;
+	printf("\n");
+}
+
 void	set_interactive_mode(int set)
 {
 	if (set == 1)
 	{
-		signal(SIGINT, &exit_shell);
+		signal(SIGINT, &display_nl);
 		signal(SIGQUIT, SIG_IGN);
 		return ;
 	}
+	signal(SIGINT, &exit_heredoc);
 }

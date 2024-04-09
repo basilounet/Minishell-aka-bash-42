@@ -32,6 +32,7 @@ void	unlink_here_docs(t_ms *ms)
 void	get_new_file(t_ms *ms, char **stop)
 {
 	char	*str;
+	char	*history;
 	int		fd;
 
 	str = expand_var(ms->env, *stop, (t_expand_args){0, 0, 0});
@@ -43,12 +44,16 @@ void	get_new_file(t_ms *ms, char **stop)
 	if (fd < 0)
 		return ;
 	str = readline("> ");
+	history = ft_strdup(str);
 	while (ft_strcmp(str, *stop))
 	{
+		add_history(history);
 		str = ft_str_reajoin(str, "\n", 1, 0);
 		ft_putstr_fd(str, fd);
 		ft_free_ptr(1, str);
 		str = readline("> ");
+		history = ft_str_reajoin(history, "\n", 1, 0);
+		history = ft_str_reajoin(history, str, 1, 0);
 	}
 	if (!str)
 		ft_printf("baseshell: warning: here-document delimited by end-of-file \
@@ -59,17 +64,9 @@ void	get_new_file(t_ms *ms, char **stop)
 
 static void	open_redirects(t_ms *ms, t_tokens *redirects)
 {
+	(void)ms;
 	while (redirects)
 	{
-		if (redirects->symbol == T_HEREDOC)
-		{
-			if ((ft_countc(redirects->arg, '\"') || ft_countc(redirects->arg, '\'')))
-				redirects->symbol = T_INPUT;
-			get_new_file(ms, &redirects->arg);
-			free(redirects->arg);
-			redirects->arg = ft_str_reajoin("here_doc_",
-					ft_itoa(ms->heredoc_number++), 0, 1);
-		}
 		if (redirects->symbol == T_OUTPUT)
 			try_close_fd(open(redirects->arg, O_CREAT | O_WRONLY | O_TRUNC,
 					0644));

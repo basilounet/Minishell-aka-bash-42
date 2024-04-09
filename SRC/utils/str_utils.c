@@ -81,13 +81,14 @@ int	is_existing_dir(char *path)
 	return (0);
 }
 
-void perr(int exit_code, int n, ...)
+int perr(int exit_code, int n, int bs, ...)
 {
 	va_list	args;
 	char	*to_print;
 
-	va_start(args, n);
-	g_exitcode = exit_code;
+	va_start(args, bs);
+	if (bs)
+		printf("baseshell: ");
 	while (n)
 	{
 		to_print = va_arg(args, char *);
@@ -102,6 +103,7 @@ void perr(int exit_code, int n, ...)
 	}
 	printf("\n");
 	va_end(args);
+	return (exit_code);
 }
 
 char	*tokens_to_string(t_tokens *tokens)

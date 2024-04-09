@@ -38,10 +38,10 @@ t_command	ft_cmdnew(t_tokens *args, t_tokens *redirects)
 	return (cmd);
 }
 
-void	free_node(t_node *node)
+t_node	*free_node(t_node *node)
 {
 	if (!node)
-		return ;
+		return (NULL);
 	if (node->type == T_CMD)
 	{	
 		ft_tokclear(&node->cmd.args);
@@ -52,7 +52,7 @@ void	free_node(t_node *node)
 		node->cmd.redirects = NULL;
 		node->cmd.char_args = NULL;
 		free(node);
-		return ;
+		return (NULL);
 	}
 	ft_tokclear(&node->tree.redirects);
 	if (node->tree.left)
@@ -63,9 +63,10 @@ void	free_node(t_node *node)
 	node->tree.left = NULL;
 	node->tree.right = NULL;
 	free(node);
+	return (NULL);
 }
 
-t_node	*ft_treenew(e_symbol ope, t_node *left, t_node *right, t_tokens *redirs)
+t_node	*ft_treenew(t_symbol ope, t_node *left, t_node *right, t_tokens *redirs)
 {
 	t_tree	stack;
 	t_node	*node;

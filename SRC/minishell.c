@@ -14,7 +14,7 @@
 #include <parser.h>
 #include <builts_in.h>
 
-static char	*sym_to_char(e_symbol symbol)
+static char	*sym_to_char(t_symbol symbol)
 {
 	if (symbol == T_PIPE)
 		return ("|");
@@ -103,19 +103,20 @@ static void	temp_execution(t_ms *ms, char *line)
 	t_node		*node;
 
 	tokens = NULL;
-	if (lexer(&tokens, line) == 0)
+	if (lexer(ms, &tokens, line) == 0)
 	{
 		ft_tokclear(&tokens);
 		free(line);
 		return ; //malloc error
 	}
-	node = parse_prompt(&tokens);
+	node = parse_prompt(ms, &tokens);
 	if (!node)
 	{
 		ft_tokclear(&tokens);
 		free(line);
 		return ;
 	}
+	printf("exit code = %d\n", ms->exit_code);
 	prepare_and_execute(ms, node);
 	free_node(node);
 	ft_tokclear(&tokens);
@@ -124,7 +125,7 @@ static void	temp_execution(t_ms *ms, char *line)
 	return ;
 }
 
-int	g_exitcode;
+int g_sig;
 
 int	main(int ac, char **av, char **char_env)
 {
@@ -139,14 +140,13 @@ int	main(int ac, char **av, char **char_env)
 	ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
 	while (1)
 	{
+		set_interactive_mode(1);
 		line = readline(ms.prompt);
 		if (!line)
 			break ;
-		if (g_exitcode != -2147483647)
-		{
+		if (line[0] != '\0')
 			add_history(line);
-			temp_execution(&ms, line);
-		}
+		temp_execution(&ms, line);
 		free(ms.prompt);
 		ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
 	}

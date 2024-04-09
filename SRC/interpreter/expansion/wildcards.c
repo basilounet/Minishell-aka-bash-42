@@ -24,13 +24,13 @@ static DIR	*ft_open_directory(t_env *env)
 	{
 		if (!getcwd(cwd, 512))
 		{
-			perr(1, 2, "baseshell: wildcards: ", strerror(errno));
+			perr(1, 2, 1, "wildcards: ", strerror(errno));
 			return (NULL);
 		}
 		directory = opendir(cwd);
 	}
 	if (!directory)
-		perr(1, 2, "baseshell: wildcards: ", strerror(errno));
+		perr(1, 2, 1, "wildcards: ", strerror(errno));
 	return (directory);
 }
 
@@ -70,7 +70,7 @@ static bool get_files(t_tokens **files, DIR *directory, char *wc)
 		curfile = readdir(directory);
 		if (!curfile && errno)
 		{
-			perr(1, 2, "baseshell: wildcards: ", strerror(errno));
+			perr(1, 2, 1, "wildcards: ", strerror(errno));
 			return (false);	
 		}
 		if (!curfile)

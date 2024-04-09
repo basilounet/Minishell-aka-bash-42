@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <lexer.h>
+#include <minishell.h>
 
 static int	is_symbol(char *c, int i)
 {
@@ -35,7 +35,7 @@ static int	is_symbol(char *c, int i)
 	return (T_ARG);
 }
 
-static void	lex_string(t_tokens *tokens, char *line, int *i)
+static void	lex_string(t_ms *ms, t_tokens *tokens, char *line, int *i)
 {
 	int	dquoted;
 	int	squoted;
@@ -60,10 +60,10 @@ static void	lex_string(t_tokens *tokens, char *line, int *i)
 	else
 		tokens->arg = ft_substrc(line, i_start, *i + 1);
 	if (!tokens->arg)
-		perr(1, 1, "baseshell: unclosed quote"); //error code a determiner
+		ms->exit_code = perr(1, 1, 1, "unclosed quote"); //error code a determiner
 }
 
-int	lexer(t_tokens **tokens, char *line)
+int	lexer(t_ms *ms, t_tokens **tokens, char *line)
 {
 	int			i;
 	t_tokens	*new_token;
@@ -79,7 +79,7 @@ int	lexer(t_tokens **tokens, char *line)
 		if (!new_token)
 			return (0);
 		if (new_token->symbol == T_ARG)
-			lex_string(new_token, line, &i);
+			lex_string(ms, new_token, line, &i);
 		ft_tokadd_back(tokens, new_token);
 		if (new_token->symbol == T_ARG && new_token->arg == NULL)
 			return (0);

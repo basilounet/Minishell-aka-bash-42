@@ -10,10 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <parser.h>
+#include <minishell.h>
 
-static void	redlist_add(t_node *node, t_tokens **tokens)
+static void	redlist_add(t_ms *ms, t_node *node, t_tokens **tokens, t_symbol sym)
 {
+	g_sig = 0;
+	set_interactive_mode(0);
+	if (sym == T_HEREDOC)
+	{
+		if ((ft_countc((*tokens)->arg, '\"')
+			|| ft_countc((*tokens)->arg, '\'')))
+			(*tokens)->symbol = T_INPUT;
+		get_new_file(ms, &(*tokens)->arg);
+		free((*tokens)->arg);
+		(*tokens)->arg = ft_str_reajoin("here_doc_",
+			ft_itoa(ms->heredoc_number++), 0, 1);
+		if (g_sig == SIGINT)
+			ms->exit_code = 130;
+	}
+	set_interactive_mode(1);
 	if (node->type == T_CMD)
 		ft_tokadd_back(&node->cmd.redirects, *tokens);
 	else
@@ -21,9 +36,9 @@ static void	redlist_add(t_node *node, t_tokens **tokens)
 	ft_tokpop(tokens);
 }
 
-int	parse_redlist(t_node *node, t_tokens **tokens)
+int	parse_redlist(t_ms *ms, t_node *node, t_tokens **tokens)
 {
-	e_symbol	symbol;
+	t_symbol	symbol;
 
 	if (*tokens && is_symbol_set(4, 0, (*tokens)->symbol, T_APPEND, T_HEREDOC,
 			T_INPUT, T_OUTPUT))
@@ -32,40 +47,41 @@ int	parse_redlist(t_node *node, t_tokens **tokens)
 		free(ft_tokpop(tokens));
 		if (*tokens && (*tokens)->symbol != T_ARG)
 		{
-			perr(2, 3, "baseshell: syntax error near unexpected token `", \
+			ms->exit_code = perr(2, 4, 1, SYN_ERR, "`", \
 				symbol_to_char(*tokens), "'");
 			return (0);
 		}
 		if (!*tokens)
 		{
-			perr(2, 1, "baseshell: syntax error near unexpected \
-				token `newline'");
+			perr(2, 2, 1, SYN_ERR, "`newline'");
 			return (0);
 		}
-		redlist_add(node, tokens);
-		if (parse_redlist(node, tokens) == 0)
+		(*tokens)->symbol = symbol;
+		redlist_add(ms, node, tokens, symbol);
+		if (parse_redlist(ms, node, tokens) == 0)
 			return (0);
 	}
 	return (1);
 }
 
-t_node		*parse_command(t_tokens **tokens)
+t_node		*parse_command(t_ms *ms, t_tokens **tokens)
 {
 	t_node		*node;
 
 	if (*tokens && is_symbol_set(3, 0, (*tokens)->symbol, T_PIPE, T_AND, T_OR))
 	{
-		printf("baseshell: syntax error near unexpected token `%s'\n", symbol_to_char(*tokens));
+		ms->exit_code = perr(2, 4, 1, SYN_ERR, "`", \
+			symbol_to_char(*tokens), "'");
 		return (NULL);
 	}
 	if (*tokens && (*tokens)->symbol == T_LPARENTH)
-		node = parse_brace(tokens);
+		node = parse_brace(ms, tokens);
 	else
 	{
-		node = parse_simple_command(tokens);
+		node = parse_simple_command(ms, tokens);
 		if (node && *tokens && (*tokens)->symbol == T_LPARENTH)
 		{
-			printf("baseshell: syntax error near unexpected token `('\n");
+			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`('");
 			free_node(node);
 			return (NULL);
 		}
@@ -73,7 +89,7 @@ t_node		*parse_command(t_tokens **tokens)
 	return (node);
 }
 
-t_node   *parse_simple_command(t_tokens **tokens)
+t_node   *parse_simple_command(t_ms *ms, t_tokens **tokens)
 {
 	t_command	cmd;
 	t_node		*node;
@@ -87,7 +103,7 @@ t_node   *parse_simple_command(t_tokens **tokens)
 	{
 		if ((*tokens)->symbol != T_ARG)
 		{
-			if (parse_redlist(node, tokens) == 0)
+			if (parse_redlist(ms, node, tokens) == 0)
 			{
 				ft_tokclear(&cmd.args);
 				free_node(node);

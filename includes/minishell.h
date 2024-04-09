@@ -12,6 +12,7 @@
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
+
 # include <builts_in.h>
 # include <libft.h>
 # include <parser.h>
@@ -34,13 +35,15 @@
 # define MAGENTA "\001\033[0;95m\002"
 # define CYAN "\001\033[0;96m\002"
 # define WHITE "\001\033[0;97m\002"
+# define SYN_ERR "syntax error near unexpected token "
 
-extern int	g_exitcode;
+extern int	g_sig;
 
 typedef struct s_minishell
 {
 	t_env	*env;
 	char	*prompt;
+	int		exit_code;
 	int		heredoc_number;
 	t_node	*root_node;
 	char	**envp;
@@ -75,7 +78,7 @@ typedef struct s_expand_args
 char	*tokens_to_string(t_tokens *tokens);
 char		*ft_getenv(t_env *env, char *to_get);
 int	is_existing_dir(char *path);
-void perr(int exit_code, int n, ...);
+int perr(int exit_code, int n, int bs, ...);
 char					*symbol_to_char(t_tokens *token);
 
 /*========== PROMPTS ==========*/
@@ -120,6 +123,7 @@ void	check_command(t_ms *ms, char **cmd);
 void	expand_here_doc(t_ms *ms, char *name);
 int	execute_built_ins(t_execution execution, t_node *node);
 
+void	get_new_file(t_ms *ms, char **stop);
 void	child(t_execution execution, t_node *node);
 void	parent(t_execution execution);
 void		try_close_fd(int fd);

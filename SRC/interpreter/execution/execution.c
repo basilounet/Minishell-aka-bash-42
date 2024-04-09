@@ -12,7 +12,6 @@
 
 #include <minishell.h>
 
-
 void	execute_cmd(t_execution execution, t_node *node)
 {
 	int	pid;
@@ -25,7 +24,7 @@ void	execute_cmd(t_execution execution, t_node *node)
 		check_command(execution.ms, &node->cmd.args->arg);
 	transform_to_chars(node);
 	//ft_print_map(node->cmd.char_args);
-	if (g_exitcode != 0 || !node->cmd.args)
+	if (execution.ms->exit_code != 0 || !node->cmd.args)
 		return ;
 	pid = fork();
 	if (pid < 0)

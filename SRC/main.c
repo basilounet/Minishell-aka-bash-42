@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-char	*symbol_to_char(e_symbol symbol)
+char	*symbol_to_char(t_symbol symbol)
 {
 	if (symbol == T_PIPE)
 		return ("|");
