@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/08 14:38:49 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/08 20:33:53 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,8 @@ int	main(int ac, char **av, char **char_env)
 			break ;
 		if (g_exitcode != -2147483647)
 		{
-			add_history(line);
+			if (line[0] != '\0')
+				add_history(line);
 			temp_execution(&ms, line);
 		}
 		free(ms.prompt);
@@ -153,4 +154,5 @@ int	main(int ac, char **av, char **char_env)
 	rl_clear_history();
 	free(ms.prompt);
 	ft_envclear(ms.env);
+	ft_free_map(ms.envp, ft_maplen(ms.envp));
 }

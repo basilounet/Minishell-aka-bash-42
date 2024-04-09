@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:48:16 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/19 17:20:09 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/08 20:01:30 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,12 @@ static int	cd_set_newpwd(t_env **env)
 	char 	*pwd_curpath;
 	char	cwd[512];
 
+	pwd_curpath = ft_str_reajoin("OLDPWD=", \
+		ft_strdup(ft_getenv(*env, "PWD")), 0, 1);
 	if (ft_getenv(*env, "PWD"))
-		if (!export(env, (char *[]){"export", "OLDPWD=$PWD", NULL}))
+		if (!export(env, (char *[]){"export", pwd_curpath, NULL}))
 			return (0); //malloc error
+	free(pwd_curpath);
 	ft_bzero(cwd, 512);
 	if (!getcwd(cwd, 512))
 	{

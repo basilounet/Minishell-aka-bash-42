@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 02:50:01 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/08 15:33:25 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/08 20:23:49 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ int	execute_built_ins(t_execution execution, t_node *node)
 		env(execution.ms->env);
 	else
 		return (0);
-	ft_printf("executing %s\n", node->cmd.args->arg);
-	exit(0);
+	if (execution.is_in_pipe)
+		exit(0);
 	return (1);
 /////////////////////////////////////////////////////////////////////////////////
 }

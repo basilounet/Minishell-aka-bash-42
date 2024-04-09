@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/08 14:15:55 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/08 19:58:26 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_minishell
 	int		heredoc_number;
 	t_node	*root_node;
 	char	**envp;
+	int		*pids;
 }			t_ms;
 
 typedef struct s_execution
@@ -53,7 +54,7 @@ typedef struct s_execution
 	int		right_pipe[2];
 	int		input;
 	int		output;
-	int		pipe_len;
+	int		is_in_pipe;
 }			t_execution;
 
 typedef struct s_expand
@@ -119,6 +120,11 @@ void	transform_to_chars(t_node *node);
 void	check_command(t_ms *ms, char **cmd);
 void	expand_here_doc(t_ms *ms, char *name);
 int	execute_built_ins(t_execution execution, t_node *node);
+
+int	*add_pid_space(int *pids);
+int pids_len(int *pids);
+void	print_pid(int *pids);
+
 
 void	child(t_execution execution, t_node *node);
 void	parent(t_execution execution);

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 16:48:34 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/05 14:45:36 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/08 20:30:13 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,34 +136,3 @@ char	*expand_var(t_env *env, char *str, t_expand_args args)
 	return (remove_quotes(expand_var.line, expand_var.qte, args.ign_qte,
 			args.shld_ch_ifs));
 }
-
-/*
-char	*expand_var(t_env *env, char *str, int ign_qte, int should_change_ifs)
-{
-	t_expand	exp;
-
-	ft_memset(&exp, 0, sizeof(t_expand));
-	exp.line = ft_calloc(sizeof(char), exp_len(env, str, ign_qte, 0) + 1);
-	exp.qte = ft_calloc(sizeof(char), exp_len(env, str, ign_qte, 0) + 1);
-	ft_memset(exp.qte, 'n', exp_len(env, str, ign_qte, 0) * (exp.qte != NULL));
-	while (exp.line && exp.qte && str && str[exp.i])
-	{
-		if (!ign_qte)
-			exp.state = change_state(str[exp.i], exp.state, exp.qte,
-					ft_strlen(exp.line));
-		if (str[exp.i] == '$' && len_env_name(str + exp.i + 1)
-			&& exp.state != 2)
-		{
-			exp.name = ft_substr(str, exp.i + 1, len_env_name(str + exp.i + 1));
-			ft_strncpy(exp.line + ft_strlen(exp.line), ft_getenv(env, exp.name),
-				ft_strlen(ft_getenv(env, exp.name)) + 1);
-			ft_free_ptr(1, exp.name);
-		}
-		else
-			exp.line[ft_strlen(exp.line)] = str[exp.i];
-		if (str[exp.i++] == '$' && len_env_name(str + exp.i) && exp.state != 2)
-			exp.i += len_env_name(str + exp.i);
-	}
-	return (remove_quotes(exp.line, exp.qte, ign_qte, should_change_ifs));
-}
-*/
