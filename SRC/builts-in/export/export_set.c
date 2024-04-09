@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:31:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/08 18:51:01 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/09 17:41:30 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ static char	*is_export_valid(t_env *env, char *arg)
 
 	i = 0;
 	(void)env;
-	if (!is_evenly_quoted(arg, 0)) // check en fin de minishell si necessaire
-		return (NULL);
 	arg = ft_strdup(arg);
 	if (!arg || !arg[0] || arg[0] == '=' || (arg[0] >= '0' && arg[0] <= '9'))
 	{

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/08 19:58:26 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/09 17:18:26 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@
 # include <string.h>
 # include <errno.h>
 # include <stdbool.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <sys/wait.h>
 
 # define BASE_COLOR "\001\033[0;39m\002"
 # define GRAY "\001\033[0;90m\002"
@@ -121,6 +125,7 @@ void	check_command(t_ms *ms, char **cmd);
 void	expand_here_doc(t_ms *ms, char *name);
 int	execute_built_ins(t_execution execution, t_node *node);
 
+void wait_pids(t_ms *ms);
 int	*add_pid_space(int *pids);
 int pids_len(int *pids);
 void	print_pid(int *pids);

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 02:50:01 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/08 20:23:49 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/09 17:11:15 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@ void	try_close_fd(int fd)
 
 int	execute_built_ins(t_execution execution, t_node *node)
 {
+	int	std_out;
+	
+	if (!execution.is_in_pipe)
+	{
+		std_out = dup(STDOUT_FILENO);
+		if (execution.output >= 0)
+			dup2(execution.output, STDOUT_FILENO);
+	}
 	if (!ft_strcmp(node->cmd.args->arg, "echo"))
 		echo(node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "cd"))
@@ -41,9 +49,10 @@ int	execute_built_ins(t_execution execution, t_node *node)
 	else
 		return (0);
 	if (execution.is_in_pipe)
-		exit(0);
+		exit(g_exitcode);
+	dup2(std_out, STDOUT_FILENO);
+	close(std_out);
 	return (1);
-/////////////////////////////////////////////////////////////////////////////////
 }
 
 void	child(t_execution execution, t_node *node)
@@ -71,3 +80,7 @@ void	parent(t_execution execution)
 	try_close_fd(execution.input);
 	try_close_fd(execution.output);
 }
+
+/*
+cat a | cat -e | cat -e | cat -e
+*/
