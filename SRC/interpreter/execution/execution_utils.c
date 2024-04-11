@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 13:59:12 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/07 16:10:26 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/11 15:07:45 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ t_tokens	*get_input_tok(t_tokens *tokens)
 	last_input = NULL;
 	while (tmp)
 	{
-		if (tmp->symbol == T_INPUT || tmp->symbol == T_HEREDOC)
+		if (tmp->symbol == T_FINAL_INPUT || tmp->symbol == T_FINAL_HEREDOC)
 			last_input = tmp;
 		tmp = tmp->next;
 	}
@@ -61,26 +61,19 @@ t_tokens	*get_output_tok(t_tokens *tokens)
 	last_output = NULL;
 	while (tmp)
 	{
-		if (tmp->symbol == T_OUTPUT || tmp->symbol == T_APPEND)
+		if (tmp->symbol == T_FINAL_OUTPUT || tmp->symbol == T_FINAL_APPEND)
 			last_output = tmp;
 		tmp = tmp->next;
 	}
 	return (last_output);
 }
 
-int	get_input_fd(t_ms *ms, t_tokens *tokens)
+int	get_input_fd(t_tokens *tokens)
 {
 	tokens = get_input_tok(tokens);
 	if (!tokens)
 		return (-1);
-	if (tokens->symbol == T_INPUT)
-		return (open(tokens->arg, O_CREAT | O_WRONLY | O_TRUNC, 0644));
-	if (tokens->symbol == T_HEREDOC)
-	{
-		expand_here_doc(ms, tokens->arg);
-		return (open(tokens->arg, O_CREAT | O_WRONLY | O_APPEND, 0777));
-	}
-	return (-1);
+	return (open(tokens->arg, O_RDONLY));
 }
 
 int	get_output_fd(t_tokens *tokens)
@@ -88,9 +81,9 @@ int	get_output_fd(t_tokens *tokens)
 	tokens = get_output_tok(tokens);
 	if (!tokens)
 		return (-1);
-	if (tokens->symbol == T_OUTPUT)
+	if (tokens->symbol == T_FINAL_OUTPUT)
 		return (open(tokens->arg, O_CREAT | O_WRONLY | O_TRUNC, 0644));
-	if (tokens->symbol == T_APPEND)
+	if (tokens->symbol == T_FINAL_APPEND)
 		return (open(tokens->arg, O_CREAT | O_WRONLY | O_APPEND, 0777));
 	return (-1);
 }

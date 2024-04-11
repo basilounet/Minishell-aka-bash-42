@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/09 13:02:54 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/10 18:27:06 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,27 +99,26 @@ static char *test3[] = {"c*", "*", "t*", "*a*", "*ak*", "**", "*s", \
 
 static void	temp_execution(t_ms *ms, char *line)
 {
-	t_tokens	*tokens;
 	t_node		*node;
 
-	tokens = NULL;
-	if (lexer(ms, &tokens, line) == 0)
+	ms->tokens = NULL;
+	if (lexer(ms, &ms->tokens, line) == 0)
 	{
-		ft_tokclear(&tokens);
+		ft_tokclear(&ms->tokens);
 		free(line);
 		return ; //malloc error
 	}
-	node = parse_prompt(ms, &tokens);
+	node = parse_prompt(ms, &ms->tokens);
 	if (!node)
 	{
-		ft_tokclear(&tokens);
+		ft_tokclear(&ms->tokens);
 		free(line);
 		return ;
 	}
 	prepare_and_execute(ms, node);
 	printf("exit code = %d\n", ms->exit_code);
 	free_node(node);
-	ft_tokclear(&tokens);
+	ft_tokclear(&ms->tokens);
 	if (line)
 		free(line);
 	return ;
@@ -130,7 +129,6 @@ int g_sig;
 int	main(int ac, char **av, char **char_env)
 {
 	t_ms		ms;
-	char		*line;
 
 	(void)ac;
 	(void)av;
@@ -142,12 +140,12 @@ int	main(int ac, char **av, char **char_env)
 	while (1)
 	{
 		set_interactive_mode(1);
-		line = readline(ms.prompt);
-		if (!line)
+		ms.line = readline(ms.prompt);
+		if (!ms.line)
 			break ;
-		if (line[0] != '\0')
-			add_history(line);
-		temp_execution(&ms, line);
+		if (ms.line[0] != '\0')
+			add_history(ms.line);
+		temp_execution(&ms, ms.line);
 		free(ms.prompt);
 		ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
 	}

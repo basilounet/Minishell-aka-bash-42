@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 20:51:20 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/08 13:34:37 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/11 12:57:49 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ int	should_split_ifs(char *str)
 
 	i = 0;
 	state = 0;
+	if (str[0] == 0)
+		return (1);
 	while (str[i])
 	{
 		state = change_state(str + i, state, NULL, i);

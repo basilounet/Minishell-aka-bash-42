@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:18:25 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/24 20:49:21 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/11 14:30:50 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,29 +17,37 @@
 
 /*
  * Tokens types
- * T_ARG,		// 0 cat
- * T_PIPE,		// 1 |
- * T_INPUT,		// 2 <
- * T_HEREDOC,	// 3 <<
- * T_OUTPUT,	// 4 >
- * T_APPEND,	// 5 >>
- * T_LPARENTH,	// 6 (
- * T_RPARENTH,	// 7 )
- * T_OR,		// 8 ||
- * T_AND,		// 9  &&
+ * T_ARG,			// 0 cat
+ * T_PIPE,			// 1 |
+ * T_OUTPUT,		// 2 >
+ * T_APPEND,		// 3 >>
+ * T_INPUT,			// 4 <
+ * T_HEREDOC,		// 5 <<
+ * T_FINAL_OUTPUT,	// 6 >	FINAL
+ * T_FINAL_APPEND,	// 7 >>	FINAL
+ * T_FINAL_INPUT,	// 8 <	FINAL
+ * T_FINAL_HEREDOC,	// 9 <<	FINAL
+ * T_LPARENTH,		// 10 (
+ * T_RPARENTH,		// 11 )
+ * T_OR,			// 12 ||
+ * T_AND,			// 13  &&
  */
 typedef enum e_symbol
 {
 	T_ARG,
 	T_PIPE,
-	T_INPUT,
-	T_HEREDOC,
 	T_OUTPUT,
 	T_APPEND,
+	T_INPUT,
+	T_HEREDOC,
+	T_FINAL_OUTPUT,
+	T_FINAL_APPEND,
+	T_FINAL_INPUT,
+	T_FINAL_HEREDOC,
 	T_LPARENTH,
 	T_RPARENTH,
 	T_OR,
-	T_AND,
+	T_AND
 }					t_symbol;
 
 /*

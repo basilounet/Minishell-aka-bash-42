@@ -6,13 +6,13 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/09 11:26:17 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/11 15:33:43 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void	transform_to_chars(t_node *node)
+void	transform_to_chars(t_ms *ms, t_node *node)
 {
 	t_tokens	*tmp_tok;
 	int			i;
@@ -26,7 +26,10 @@ void	transform_to_chars(t_node *node)
 		node->cmd.char_args = ft_calloc(sizeof(char *),
 				ft_toksize(node->cmd.args) + 1);
 		if (!node->cmd.char_args)
+		{
+			ms->exit_code = 1;
 			return ;
+		}
 		while (tmp_tok)
 		{
 			node->cmd.char_args[i++] = tmp_tok->arg;
@@ -66,11 +69,12 @@ void	expand_redirects(t_ms *ms, t_node *node)
 		tmp_tok = node->cmd.redirects;
 	while (tmp_tok)
 	{
-		if (tmp_tok->symbol != T_HEREDOC)
+		if (T_OUTPUT <= tmp_tok->symbol && tmp_tok->symbol <= T_INPUT)
 		{
 			tmp_char = tmp_tok->arg;
 			tmp_tok->arg = expand_var(ms->env, tmp_char, (t_expand_args){0, 1, 1});
-			if (should_split_ifs(tmp_char) && ft_countc(tmp_tok->arg, -1))
+			check_input(ms, tmp_tok);
+			if ((should_split_ifs(tmp_char) && ft_countc(tmp_tok->arg, -1)) || tmp_tok->arg[0] == 0)
 			{
 				ft_printf("baseshell: ambiguous redirect\n");
 				free(tmp_char);
@@ -79,8 +83,11 @@ void	expand_redirects(t_ms *ms, t_node *node)
 			}
 			ft_free_ptr(1, tmp_char);
 		}
-		if (tmp_tok)
-			tmp_tok = tmp_tok->next;
+		else if (tmp_tok->symbol == T_HEREDOC)
+			expand_here_doc(ms, tmp_tok->arg);
+		if (T_OUTPUT <= tmp_tok->symbol && tmp_tok->symbol <= T_HEREDOC)
+			tmp_tok->symbol += 4;
+		tmp_tok = tmp_tok->next;
 	}
 }
 
@@ -124,8 +131,6 @@ void	prepare_and_execute(t_ms *ms, t_node *node)
 	ms->heredoc_number = 0;
 	ms->root_node = node;
 	open_all_outputs(ms, node);
-	update_inputs(node);
-	update_outputs(node);
 	reset_envp(ms);
 	//print_node(node, 0);
 	execute_node((t_execution){ms, {-1, -1}, {-1, -1}, -1, -1, 0}, node);

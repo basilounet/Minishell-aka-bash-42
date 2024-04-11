@@ -6,12 +6,29 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 14:50:19 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/05 17:18:59 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/11 15:43:23 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
-#include <parser.h>
+
+void	check_input(t_ms *ms, t_tokens *token)
+{
+	int	fd;
+
+	if (!token || !token->arg)
+	{
+		ms->exit_code = 1;
+		return ;
+	}
+	fd = open(token->arg, O_RDONLY);
+	if (fd < 0)
+	{
+		ms->exit_code = perr(1, 1, 1, strerror(errno));
+		return ;
+	}
+	close(fd);
+}
 
 void	transform_heredoc_into_inputs(t_node *node, char *name)
 {
@@ -76,7 +93,5 @@ void	update_outputs(t_node *node)
 				get_output_tok(node->tree.redirects));
 		add_redirect_node(node->tree.right,
 			get_output_tok(node->tree.redirects));
-		update_outputs(node->tree.left);
-		update_outputs(node->tree.right);
 	}
 }

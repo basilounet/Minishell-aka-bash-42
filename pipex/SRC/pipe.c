@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 17:54:18 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/14 14:51:04 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/09 19:00:52 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,28 +67,28 @@ void	last_pipe(t_px *px, int original_files[2], int new_pipe[2])
 
 void	all_pipes(t_px *px, int input_files[2])
 {
-	int		new_pipe[2];
-	int		old_pipe[2];
+	int		right_pipe[2];
+	int		left_pipe[2];
 	pid_t	pid;
 	int		i;
 
-	first_pipe(px, input_files, new_pipe);
+	first_pipe(px, input_files, right_pipe);
 	while (++px->index <= px->total_cmd - 2)
 	{
-		old_pipe[0] = new_pipe[0];
-		old_pipe[1] = new_pipe[1];
-		if (pipe(new_pipe) == -1)
-			pipe_func_error(px, old_pipe, new_pipe, input_files);
+		left_pipe[0] = right_pipe[0];
+		left_pipe[1] = right_pipe[1];
+		if (pipe(right_pipe) == -1)
+			pipe_func_error(px, left_pipe, right_pipe, input_files);
 		pid = fork();
 		px->pid[px->index] = pid;
 		if (pid < 0)
 			error(px, FORK_ERROR);
 		if (pid == 0)
-			pipex_child(px, old_pipe, new_pipe, input_files);
+			pipex_child(px, left_pipe, right_pipe, input_files);
 		else
-			pipex_parent(px, old_pipe, new_pipe);
+			pipex_parent(px, left_pipe, right_pipe);
 	}
-	last_pipe(px, input_files, new_pipe);
+	last_pipe(px, input_files, right_pipe);
 	i = 0;
 	while (i < px->total_cmd)
 		waitpid(px->pid[i++], NULL, 0);
