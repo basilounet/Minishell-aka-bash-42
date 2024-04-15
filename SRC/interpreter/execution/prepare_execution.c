@@ -6,11 +6,12 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/11 15:33:43 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/15 21:27:13 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+#include <builts_in.h>
 
 void	transform_to_chars(t_ms *ms, t_node *node)
 {
@@ -49,7 +50,13 @@ void	expand_args(t_ms *ms, t_node *node)
 	while (tmp_tok)
 	{
 		tmp_char = tmp_tok->arg;
-		tmp_tok->arg = expand_var(ms->env, tmp_char, (t_expand_args){0, 1, 1});
+		tmp_tok->arg = expand_var(ms->env, tmp_char, (t_expand_args){0, 1, 1, 1});
+		if (tmp_tok->arg[0] == 0)
+		{
+			shift_tokens(&tmp_tok);
+			free(tmp_char);
+			continue ;
+		}
 		if (should_split_ifs(tmp_char))
 			split_ifs(&tmp_tok);
 		free(tmp_char);
@@ -58,7 +65,7 @@ void	expand_args(t_ms *ms, t_node *node)
 	}
 }
 
-void	expand_redirects(t_ms *ms, t_node *node)
+int	expand_redirects(t_ms *ms, t_node *node)
 {
 	t_tokens	*tmp_tok;
 	char		*tmp_char;
@@ -72,23 +79,24 @@ void	expand_redirects(t_ms *ms, t_node *node)
 		if (T_OUTPUT <= tmp_tok->symbol && tmp_tok->symbol <= T_INPUT)
 		{
 			tmp_char = tmp_tok->arg;
-			tmp_tok->arg = expand_var(ms->env, tmp_char, (t_expand_args){0, 1, 1});
-			check_input(ms, tmp_tok);
+			tmp_tok->arg = expand_var(ms->env, tmp_char, (t_expand_args){0, 1, 1, 1});
 			if ((should_split_ifs(tmp_char) && ft_countc(tmp_tok->arg, -1)) || tmp_tok->arg[0] == 0)
 			{
-				ft_printf("baseshell: ambiguous redirect\n");
 				free(tmp_char);
-				ms->exit_code = 1;
-				return ;
+				ms->exit_code = perr(1, 1, 1, "ambiguous redirect\n");
+				return (1);
 			}
 			ft_free_ptr(1, tmp_char);
+			if (check_input(ms, tmp_tok))
+				return (1);
 		}
 		else if (tmp_tok->symbol == T_HEREDOC)
-			expand_here_doc(ms, tmp_tok->arg);
+			expand_here_doc(ms, tmp_tok);
 		if (T_OUTPUT <= tmp_tok->symbol && tmp_tok->symbol <= T_HEREDOC)
 			tmp_tok->symbol += 4;
 		tmp_tok = tmp_tok->next;
 	}
+	return (0);
 }
 
 void	check_command(t_ms *ms, char **cmd)
@@ -112,8 +120,7 @@ void	check_command(t_ms *ms, char **cmd)
 		}
 		free(str);
 	}
-	ft_printf("baseshell: %s : command not found\n", *cmd);
-	ms->exit_code = 127;
+	ms->exit_code = perr(127, 2, 1, *cmd, " : command not found");
 }
 
 void	reset_envp(t_ms *ms)
@@ -123,17 +130,21 @@ void	reset_envp(t_ms *ms)
 	ms->envp = ft_split(ft_getenv(ms->env, "PATH"), ':');
 	if (!ms->envp)
 		ms->exit_code = 1;
+	if (ms->char_env)
+		ft_free_map(ms->char_env, ft_maplen(ms->char_env));
+	ms->char_env = env_list_to_array(ms->env);
+	if (!ms->char_env)
+		ms->exit_code = 1;
 }
 
 void	prepare_and_execute(t_ms *ms, t_node *node)
 {
-	ms->exit_code = 0;
-	ms->heredoc_number = 0;
 	ms->root_node = node;
-	open_all_outputs(ms, node);
+	ms->exit_code = 0;
 	reset_envp(ms);
 	//print_node(node, 0);
-	execute_node((t_execution){ms, {-1, -1}, {-1, -1}, -1, -1, 0}, node);
+	execute_node((t_execution){ms, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, -1, -1, 0}, node, 0);
 	wait_pids(ms);
 	unlink_here_docs(ms);
+	ms->root_node = NULL;
 }

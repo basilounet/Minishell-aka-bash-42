@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 13:59:12 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/11 15:07:45 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:47:54 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,6 @@ int	has_input(t_tokens *tokens)
 
 	tmp = tokens;
 	while (tmp && tmp->symbol != T_INPUT && tmp->symbol != T_HEREDOC)
-		tmp = tmp->next;
-	if (tmp)
-		return (1);
-	return (0);
-}
-
-int	has_output(t_tokens *tokens)
-{
-	t_tokens	*tmp;
-
-	tmp = tokens;
-	while (tmp && tmp->symbol != T_OUTPUT && tmp->symbol != T_APPEND)
 		tmp = tmp->next;
 	if (tmp)
 		return (1);

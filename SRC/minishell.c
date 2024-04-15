@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/10 18:27:06 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/15 21:23:44 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,11 +97,24 @@ static char *test2[] = {"export", NULL};
 static char *test3[] = {"c*", "*", "t*", "*a*", "*ak*", "**", "*s", \
 	"*cases", "cases*", "cas*es", "case*s", "c*ases", NULL};*/
 
+void	ft_free_ms(t_ms *ms)
+{
+	free_node(ms->root_node);
+	ft_tokclear(&ms->tokens);
+	ft_free_ptr(1, ms->prompt);
+	ft_envclear(ms->env);
+	ft_free_map(ms->envp, ft_maplen(ms->envp));
+	ft_free_map(ms->char_env, ft_maplen(ms->char_env));
+	if (ms->pids)
+		free(ms->pids);
+}
+
 static void	temp_execution(t_ms *ms, char *line)
 {
 	t_node		*node;
 
 	ms->tokens = NULL;
+	ms->heredoc_number = 0;
 	if (lexer(ms, &ms->tokens, line) == 0)
 	{
 		ft_tokclear(&ms->tokens);
@@ -117,7 +130,7 @@ static void	temp_execution(t_ms *ms, char *line)
 	}
 	prepare_and_execute(ms, node);
 	printf("exit code = %d\n", ms->exit_code);
-	free_node(node);
+	node = free_node(node);
 	ft_tokclear(&ms->tokens);
 	if (line)
 		free(line);
@@ -150,7 +163,5 @@ int	main(int ac, char **av, char **char_env)
 		ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
 	}
 	rl_clear_history();
-	free(ms.prompt);
-	ft_envclear(ms.env);
-	ft_free_map(ms.envp, ft_maplen(ms.envp));
+	ft_free_ms(&ms);
 }

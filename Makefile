@@ -6,15 +6,15 @@ SRC =	interpreter/parser/lexer.c \
 		interpreter/parser/parse_utils.c \
 		interpreter/expansion/expand.c \
 		interpreter/expansion/wildcards.c \
-		interpreter/execution/update_inputs.c \
-		interpreter/execution/update_outputs.c \
-		interpreter/execution/prepare_execution.c \
-		interpreter/execution/ifs.c \
-		interpreter/execution/open_outputs.c \
 		interpreter/execution/execution.c \
 		interpreter/execution/execution_utils.c \
 		interpreter/execution/fork.c \
+		interpreter/execution/ifs.c \
+		interpreter/execution/open_outputs.c \
 		interpreter/execution/pids.c \
+		interpreter/execution/prepare_execution.c \
+		interpreter/execution/update_inputs.c \
+		interpreter/execution/update_outputs.c \
 		utils/create_tokens.c \
 		utils/builts_in_utils.c \
 		utils/create_nodes.c \

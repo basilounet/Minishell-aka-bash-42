@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/11 15:41:55 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/15 21:12:06 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,17 @@ typedef struct s_minishell
 	int			heredoc_number;
 	t_node		*root_node;
 	char		**envp;
+	 char		**char_env;
 	int			*pids;
 }				t_ms;
 
 typedef struct s_execution
 {
 	t_ms		*ms;
+	int			lower_pipe[2];
 	int			left_pipe[2];
 	int			right_pipe[2];
+	int			upper_pipe[2];
 	int			input;
 	int			output;
 	int			is_in_pipe;
@@ -80,6 +83,7 @@ typedef struct s_expand_args
 	int			ign_qte;
 	int			shld_ch_ifs;
 	int			should_expand;
+	int			expand_wc;
 }				t_expand_args;
 
 char			*tokens_to_string(t_tokens *tokens);
@@ -109,26 +113,26 @@ int				len_env_name(char *str);
 char			*expand_var(t_env *env, char *str, t_expand_args args);
 int				change_state(char *str, int state, char *shld_remove, int i);
 void			expand_args(t_ms *ms, t_node *node);
-void			expand_redirects(t_ms *ms, t_node *node);
+int			expand_redirects(t_ms *ms, t_node *node);
 
 /*========== EXECUTION ==========*/
 
 char			*change_ifs(char *str, char *should_remove);
 int				should_split_ifs(char *str);
-void			split_ifs(t_tokens **tokens);
+t_tokens	*split_ifs(t_tokens **tokens);
+t_tokens	*shift_tokens(t_tokens **tokens);
 
-void	check_input(t_ms *ms, t_tokens *token);
+int	check_input(t_ms *ms, t_tokens *token);
 void			prepare_and_execute(t_ms *ms, t_node *node);
 void			expand_tokens(t_ms *ms, t_node *node);
-void			execute_node(t_execution execution, t_node *node);
+void	execute_node(t_execution execution, t_node *node, t_symbol last_operator);
 void			update_inputs(t_node *node);
 void			update_outputs(t_node *node);
 void			add_redirect_node(t_node *node, t_tokens *token);
-void			open_all_outputs(t_ms *ms, t_node *node);
 void			unlink_here_docs(t_ms *ms);
 void			transform_to_chars(t_ms *ms, t_node *node);
 void			check_command(t_ms *ms, char **cmd);
-void			expand_here_doc(t_ms *ms, char *name);
+void	expand_here_doc(t_ms *ms, t_tokens *token);
 int				execute_built_ins(t_execution execution, t_node *node);
 
 void			wait_pids(t_ms *ms);
@@ -144,15 +148,14 @@ void			try_close_fd(int fd);
 
 void			reset_envp(t_ms *ms);
 
-int				has_input(t_tokens *tokens);
-int				has_output(t_tokens *tokens);
+int	has_input(t_tokens *tokens);
 t_tokens		*get_input_tok(t_tokens *tokens);
 t_tokens		*get_output_tok(t_tokens *tokens);
-int				is_append(t_command *cmd);
 int				get_input_fd(t_tokens *tokens);
 int				get_output_fd(t_tokens *tokens);
 
 void			print_node(t_node *node, int depth);
 void			print_tokens(t_tokens *tokens, int depth);
 int				ft_envsize(t_env *env);
+
 #endif

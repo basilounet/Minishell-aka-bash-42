@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 15:24:53 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/10 19:25:21 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/15 14:04:30 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,32 +57,4 @@ void	get_new_file(t_ms *ms, char **stop)
 (wanted `%s')\n", *stop);
 	close(fd);
 	ft_free_ptr(1, str);
-}
-
-static void	open_redirects(t_tokens *redirects)
-{
-	while (redirects)
-	{
-		if (redirects->symbol == T_OUTPUT)
-			try_close_fd(open(redirects->arg, O_CREAT | O_WRONLY | O_TRUNC,
-					0644));
-		if (redirects->symbol == T_APPEND)
-			try_close_fd(open(redirects->arg, O_CREAT | O_WRONLY | O_APPEND,
-					0777));
-		redirects = redirects->next;
-	}
-}
-
-void	open_all_outputs(t_ms *ms, t_node *node)
-{
-	if (!node)
-		return ;
-	if (node->type == T_TREE)
-	{
-		open_all_outputs(ms, node->tree.left);
-		open_all_outputs(ms, node->tree.right);
-		open_redirects(node->tree.redirects);
-	}
-	else
-		open_redirects(node->cmd.redirects);
 }

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 16:48:34 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/09 13:44:55 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/12 13:10:40 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ int	change_state(char *str, int state, char *shld_remove, int i)
 	if (shld_remove && (new_state != state || (state == 0 && str[0] == '$'
 				&& (str[1] == '\'' || str[1] == '\"'))))
 		shld_remove[i] = 'y';
+	if (str[0] == '*' && state == 0)
+		shld_remove[i] = 'w';
 	return (new_state);
 }
 
@@ -71,8 +73,7 @@ int	exp_len(t_env *env, char *line, t_expand_args args, int state)
 	return (len);
 }
 
-char	*remove_quotes(char *str, char *qte, int ignore_quotes,
-		int should_change_ifs)
+char	*remove_quotes(t_expand exp_var, t_expand_args args)
 {
 	char	*line;
 	int		i;
@@ -80,23 +81,24 @@ char	*remove_quotes(char *str, char *qte, int ignore_quotes,
 
 	i = -1;
 	j = 0;
-	if (ignore_quotes)
+	if (args.ign_qte)
 	{
-		ft_free_ptr(1, qte);
-		return (str);
+		ft_free_ptr(1, exp_var.qte);
+		return (exp_var.line);
 	}
-	line = ft_calloc(sizeof(char), ft_strlen(str) - ft_countc(qte, 'y') + 1);
-	if (!line || !str || !qte)
+	line = ft_calloc(sizeof(char), ft_strlen(exp_var.line)
+			- ft_countc(exp_var.qte, 'y') + 1);
+	if (!line || !exp_var.line || !exp_var.qte)
 	{
-		ft_free_ptr(3, str, qte, line);
+		ft_free_ptr(3, exp_var.line, exp_var.qte, line);
 		return (NULL);
 	}
-	if (should_change_ifs)
-		str = change_ifs(str, qte);
-	while (str[++i])
-		if (qte[i] == 'n')
-			line[j++] = str[i];
-	ft_free_ptr(2, str, qte);
+	if (args.shld_ch_ifs)
+		exp_var.line = change_ifs(exp_var.line, exp_var.qte);
+	while (exp_var.line[++i])
+		if (exp_var.qte[i] == 'n')
+			line[j++] = exp_var.line[i];
+	ft_free_ptr(2, exp_var.line, exp_var.qte);
 	return (line);
 }
 
@@ -133,6 +135,5 @@ char	*expand_var(t_env *env, char *str, t_expand_args args)
 		* (expand_var.qte != NULL));
 	while (expand_var.line && expand_var.qte && str && str[expand_var.i])
 		expand_var = expand(env, str, expand_var, args);
-	return (remove_quotes(expand_var.line, expand_var.qte, args.ign_qte,
-			args.shld_ch_ifs));
+	return (remove_quotes(expand_var, args));
 }
