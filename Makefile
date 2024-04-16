@@ -1,13 +1,16 @@
 ##========== SOURCES ==========##
 
-SRC =	interpreter/parser/lexer.c \
-		interpreter/parser/parse_cmd.c \
-		interpreter/parser/parse_logex.c \
-		interpreter/parser/parse_utils.c \
-		interpreter/expansion/expand.c \
-		interpreter/expansion/wildcards.c \
-		interpreter/execution/execution.c \
+SRC =	builts-in/cd/cd_utils.c \
+		builts-in/cd/cd.c \
+		builts-in/export/export_print.c \
+		builts-in/export/export_set.c \
+		builts-in/echo.c \
+		builts-in/env.c \
+		builts-in/pwd.c \
+		builts-in/unset.c \
+		interactive/signals.c \
 		interpreter/execution/execution_utils.c \
+		interpreter/execution/execution.c \
 		interpreter/execution/fork.c \
 		interpreter/execution/ifs.c \
 		interpreter/execution/open_outputs.c \
@@ -15,29 +18,28 @@ SRC =	interpreter/parser/lexer.c \
 		interpreter/execution/prepare_execution.c \
 		interpreter/execution/update_inputs.c \
 		interpreter/execution/update_outputs.c \
-		utils/create_tokens.c \
+		interpreter/expansion/expand.c \
+		interpreter/expansion/expand_utils.c \
+		interpreter/expansion/wildcards.c \
+		interpreter/parser/lexer.c \
+		interpreter/parser/parse_cmd.c \
+		interpreter/parser/parse_logex.c \
+		interpreter/parser/parse_utils.c \
 		utils/builts_in_utils.c \
 		utils/create_nodes.c \
 		utils/create_env.c \
-		utils/str_utils.c \
+		utils/print_node.c \
+		utils/create_tokens.c \
 		utils/prompt.c \
-		builts-in/env.c \
-		builts-in/pwd.c \
-		builts-in/export/export_print.c \
-		builts-in/export/export_set.c \
-		builts-in/unset.c \
-		builts-in/echo.c \
-		builts-in/cd/cd.c \
-		builts-in/cd/cd_utils.c \
-		interactive/signals.c
+		utils/str_utils.c
 
 MAIN = minishell.c
 
 ##========== NAMES ==========##
 
 NAME = minishell
-SRCS_DIR = SRC/
-OBJS_DIR = OBJ/
+SRCS_DIR = src/
+OBJS_DIR = obj/
 LIBFT_DIR = libft
 INCLUDE_DIR = includes
 
@@ -77,6 +79,7 @@ IS_PRINT = 1
 
 ifdef DEBUG
     CFLAGS += -g
+	LDFLAGS += -D DEBUG=42
 	DEBUG_MODE = 1
 endif
 
@@ -130,7 +133,7 @@ ifeq ($(IS_PRINT),1)
 	@for i in $$(seq 1 $$(expr 45 - $(INDEX) \* 45 / $(NUM_SRC))); do \
 		echo -n " "; \
 	done
-	@echo "$(BASE_COLOR)║"
+	@echo "$(BASE_COLOR)║" $(shell expr $(INDEX) \* 100 / $(NUM_SRC))%
 	@echo "╚==============================================╝"
 	@$(eval INDEX=$(shell expr $(INDEX) + 1))
 	@echo "Compiling : $<"

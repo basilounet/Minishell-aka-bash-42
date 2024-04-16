@@ -69,8 +69,8 @@ SRC = ft_abs.c \
 ##========== NAMES ==========##
 
 NAME = libft.a
-SRCS_DIR = SRC/
-OBJS_DIR = OBJ/
+SRCS_DIR = src/
+OBJS_DIR = obj/
 INCLUDE_DIR = ../includes
 
 ##========== OBJECTS ==========##
@@ -141,7 +141,7 @@ ifeq ($(IS_PRINT),1)
 	@for i in $$(seq 1 $$(expr 49 - $(INDEX) \* 50 / $(NUM_SRC))); do \
 		echo -n " "; \
 	done
-	@echo "$(BASE_COLOR)║"
+	@echo "$(BASE_COLOR)║" $(shell expr $(INDEX) \* 100 / $(NUM_SRC))%
 	@echo "╚==================================================╝"
 	@$(eval INDEX=$(shell expr $(INDEX) + 1))
 	@echo "Compiling : $<"

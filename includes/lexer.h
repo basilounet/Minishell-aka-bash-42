@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:18:25 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/15 21:12:24 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:28:13 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,14 @@ typedef struct s_tokens
 	struct s_tokens	*next;
 }					t_tokens;
 
-// Stack utils functions
-int perr(int exit_code, int n, int bs, ...);
+/*========== TOKENS ==========*/
+
 t_tokens			*ft_toknew(t_symbol symbol, char *arg, t_tokens *next);
 t_tokens			*ft_toklast(t_tokens *stack);
 void				ft_tokadd_back(t_tokens **stack, t_tokens *new);
 void				ft_tokadd_front(t_tokens **stack, t_tokens *new);
 void				ft_tokclear(t_tokens **stack);
 t_tokens			*ft_tokpop(t_tokens **stack);
-char				*ft_substrc(char *str, int start, int end);
 int					ft_toksize(t_tokens *tokens);
 
 #endif

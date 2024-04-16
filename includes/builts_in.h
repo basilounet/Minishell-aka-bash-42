@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/23 14:17:23 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/12 13:48:34 by bvasseur         ###   ########.fr       */
+/*   Created: 2024/04/16 13:33:23 by bvasseur          #+#    #+#             */
+/*   Updated: 2024/04/16 13:33:25 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,23 +23,46 @@ typedef struct s_env
 	struct s_env	*next;
 }					t_env;
 
-char				*wildcards(t_env *env, char *wc);
+/*========== CD ==========*/
+
+int					cd(t_env **env, char **args);
 int					cd_set_pwd(t_env **env);
 char				*check_cdpath(t_env **env, char *directory);
-void				set_interactive_mode(int set);
+
+/*========== EXPORT ==========*/
+
 int					print_export(t_env *env);
-int					is_evenly_quoted(char *str, int n);
-int					env_array_to_list(t_env **env, char **char_env);
 int					export(t_env **env, char **args);
+
+/*========== ECHO ==========*/
+
 void				echo(char **args);
+
+/*========== ENV ==========*/
+
+void				env(t_env *env);
+char				*ft_getenv(t_env *env, char *to_get);
 t_env				*ft_envnew(char *name, char *var, t_env *next);
 t_env				*ft_envlast(t_env *stack);
 char				*get_env_var(t_env *env, char *name);
 void				ft_envdel_one(t_env *stack);
-void				unset(t_env **env, char **args);
-void				unset_name(t_env **env, char *name);
 void				ft_envadd_back(t_env **stack, t_env *new);
 void				ft_envclear(t_env *stack);
-char	**env_list_to_array(t_env *env);
+char				**env_list_to_array(t_env *env);
+int					env_array_to_list(t_env **env, char **char_env);
+int					ft_envsize(t_env *env);
+
+/*========== PWD ==========*/
+
+void				pwd(void);
+
+/*========== UNSET ==========*/
+
+void				unset(t_env **env, char **args);
+void				unset_name(t_env **env, char *name);
+
+/*========== UTILS ==========*/
+
+int					is_built_in(char *command);
 
 #endif

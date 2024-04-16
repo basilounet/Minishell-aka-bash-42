@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/15 21:12:06 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/16 18:18:17 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include <errno.h>
 # include <libft.h>
 # include <parser.h>
-# include <pipex.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
@@ -40,23 +39,53 @@
 # define CYAN "\001\033[0;96m\002"
 # define WHITE "\001\033[0;97m\002"
 # define SYN_ERR "syntax error near unexpected token "
+# define WRITE 1
+# define READ 0
+
+# ifndef DEBUG
+#  define DEBUG 0
+# endif
 
 extern int		g_sig;
 
+/*
+ * minishell main structure
+ * contains :
+ * line
+ * env
+ * prompt
+ * envp
+ * char_env
+ * tokens
+ * pids
+ * heredoc_numbers
+ * exit_code
+ */
 typedef struct s_minishell
 {
+	char		*line;
 	t_env		*env;
 	char		*prompt;
-	t_tokens	*tokens;
-	char		*line;
-	int			exit_code;
-	int			heredoc_number;
-	t_node		*root_node;
 	char		**envp;
-	 char		**char_env;
+	char		**char_env;
+	t_tokens	*tokens;
 	int			*pids;
+	int			heredoc_number;
+	int			exit_code;
 }				t_ms;
 
+/*
+ * minishell execution structure
+ * contains :
+ * minishell structure
+ * lower_pipe
+ * left_pipe
+ * right_pipe
+ * upper_pipe
+ * input
+ * output
+ * is_in_pipe
+ */
 typedef struct s_execution
 {
 	t_ms		*ms;
@@ -71,7 +100,7 @@ typedef struct s_execution
 
 typedef struct s_expand
 {
-	char		*qte;
+	char		*mask;
 	char		*name;
 	char		*line;
 	int			state;
@@ -84,13 +113,18 @@ typedef struct s_expand_args
 	int			shld_ch_ifs;
 	int			should_expand;
 	int			expand_wc;
+	int			expand_special_cases;
 }				t_expand_args;
 
 char			*tokens_to_string(t_tokens *tokens);
-char			*ft_getenv(t_env *env, char *to_get);
-int				is_existing_dir(char *path);
+
+/*========== ERRORS ==========*/
+
 int				perr(int exit_code, int n, int bs, ...);
-char			*symbol_to_char(t_tokens *token);
+
+/*========== SIGNALS ==========*/
+
+void			set_interactive_mode(int set);
 
 /*========== PROMPTS ==========*/
 
@@ -99,63 +133,76 @@ char			*add_colors(char *str, char *(*color_pattern)(int, int));
 char			*moving_rainbow_pattern(int i, int len);
 char			*moving_france_pattern(int i, int len);
 
-/*========== BUILTS-IN ==========*/
+/*========== WILDCARDS ==========*/
 
-int				is_built_in(char *command);
-void			env(t_env *env);
-void			pwd(void);
-int				cd(t_env **env, char **args);
+char			*wildcards(t_env *env, char *wc);
+char			*symbol_to_char(t_tokens *token);
+int				is_existing_dir(char *path);
+int				is_evenly_quoted(char *str, int n);
 
 /*========== EXPAND ==========*/
 
+int				exp_len(t_env *env, char *line, t_expand_args args, int state);
+int				special_cases_total_len(t_ms *ms, char *str,
+					t_expand_args args);
 int				check_quotes(char *str);
 int				len_env_name(char *str);
-char			*expand_var(t_env *env, char *str, t_expand_args args);
+char			*expand_var(t_ms *ms, char *str, t_expand_args args);
 int				change_state(char *str, int state, char *shld_remove, int i);
 void			expand_args(t_ms *ms, t_node *node);
-int			expand_redirects(t_ms *ms, t_node *node);
+int				expand_redirects(t_ms *ms, t_node *node);
+void			expand_here_doc(t_ms *ms, t_tokens *token);
+void			expand_tokens(t_ms *ms, t_node *node);
 
 /*========== EXECUTION ==========*/
 
+/*----- IFS -----*/
+
 char			*change_ifs(char *str, char *should_remove);
 int				should_split_ifs(char *str);
-t_tokens	*split_ifs(t_tokens **tokens);
-t_tokens	*shift_tokens(t_tokens **tokens);
+t_tokens		*split_ifs(t_tokens **tokens);
+t_tokens		*shift_tokens(t_tokens **tokens);
 
-int	check_input(t_ms *ms, t_tokens *token);
-void			prepare_and_execute(t_ms *ms, t_node *node);
-void			expand_tokens(t_ms *ms, t_node *node);
-void	execute_node(t_execution execution, t_node *node, t_symbol last_operator);
+/*----- PIDS -----*/
+
+void			print_pid(int *pids);
+int				pids_len(int *pids);
+int				*add_pid_space(t_ms *ms, int *pids);
+void			wait_pids(t_ms *ms);
+
+/*----- REDIRECTIONS -----*/
+
 void			update_inputs(t_node *node);
 void			update_outputs(t_node *node);
 void			add_redirect_node(t_node *node, t_tokens *token);
-void			unlink_here_docs(t_ms *ms);
+int				check_input(t_ms *ms, t_tokens *token);
+
+/*----- EXECUTION -----*/
+
+void			prepare_and_execute(t_ms *ms, t_node *node);
 void			transform_to_chars(t_ms *ms, t_node *node);
 void			check_command(t_ms *ms, char **cmd);
-void	expand_here_doc(t_ms *ms, t_tokens *token);
+void			execute_node(t_execution execution, t_node *node,
+					t_symbol last_operator);
 int				execute_built_ins(t_execution execution, t_node *node);
-
-void			wait_pids(t_ms *ms);
-int				*add_pid_space(t_ms *ms, int *pids);
-int				pids_len(int *pids);
-void			print_pid(int *pids);
-
 void			child(t_execution execution, t_node *node);
 void			parent(t_execution execution);
+void			unlink_here_docs(t_ms *ms);
 void			try_close_fd(int fd);
 
-/*========== EXECUTION_UTILS ==========*/
+/*----- UTILS -----*/
 
 void			reset_envp(t_ms *ms);
-
-int	has_input(t_tokens *tokens);
+int				has_input(t_tokens *tokens);
 t_tokens		*get_input_tok(t_tokens *tokens);
 t_tokens		*get_output_tok(t_tokens *tokens);
 int				get_input_fd(t_tokens *tokens);
 int				get_output_fd(t_tokens *tokens);
+char			*ft_substrc(char *str, int start, int end);
+
+/*========== PRINT_NODE ==========*/
 
 void			print_node(t_node *node, int depth);
 void			print_tokens(t_tokens *tokens, int depth);
-int				ft_envsize(t_env *env);
 
 #endif
