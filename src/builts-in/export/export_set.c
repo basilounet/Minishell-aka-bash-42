@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:31:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/17 17:27:53 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:45:51 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,23 +92,12 @@ static int	get_export_values(t_env **env, char *expand_arg)
 	return (1);
 }
 
-static void	print_env(t_env *env)
-{
-	while (env)
-	{
-		printf("%s = %s\n", env->name, env->var);
-		env = env->next;
-	}
-	printf("bla\n");
-}
-
 int	export(t_env **env, char **args)
 {
 	int		i;
 	char	*expand_arg;
 
 	i = 1; // change to 1 after testing
-	print_env(*env);
 	if (!args[1])
 		print_export(*env);
 	while (args[i])

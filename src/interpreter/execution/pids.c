@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 16:49:25 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 13:42:17 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 20:15:29 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,10 @@ void	wait_pids(t_ms *ms)
 		while (ms->pids[i] != -1)
 		{
 			waitpid(ms->pids[i], &status, 0);
-			ms->exit_code = WEXITSTATUS(status);
+			if (WIFSIGNALED(status))
+				ms->exit_code = WTERMSIG(status) + 128;
+			else
+				ms->exit_code = WEXITSTATUS(status);
 			i++;
 		}
 		free(ms->pids);

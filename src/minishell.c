@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 13:13:25 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 19:34:41 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ int	main(int ac, char **av, char **char_env)
 		return (1);
 	ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
 	set_interactive_mode(1);
+	//export(&ms.env, (char *[]){"export", "BASE=base", NULL});
 	while (1)
 	{
 		set_interactive_mode(1);

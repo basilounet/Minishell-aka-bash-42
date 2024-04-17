@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 13:57:38 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 14:00:35 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 20:09:40 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	perr(int exit_code, int n, int bs, ...)
 
 	va_start(args, bs);
 	if (bs)
-		printf("baseshell: ");
+		write(2, "baseshell: ", 11);
 	while (n)
 	{
 		to_print = va_arg(args, char *);
@@ -98,10 +98,10 @@ int	perr(int exit_code, int n, int bs, ...)
 			n--;
 		}
 		else
-			printf("%s", to_print);
+			write(2, to_print, ft_strlen(to_print));
 		n--;
 	}
-	printf("\n");
+	write(2, "\n", 1);
 	va_end(args);
 	return (exit_code);
 }
@@ -114,7 +114,7 @@ char	*tokens_to_string(t_tokens *tokens)
 	str = NULL;
 	while (tokens)
 	{
-		quoted_str = ft_strjoin3("\"", tokens->arg, "\"");
+		quoted_str = ft_strjoin3("\377", tokens->arg, "\377");
 		if (!quoted_str)
 		{
 			if (str)

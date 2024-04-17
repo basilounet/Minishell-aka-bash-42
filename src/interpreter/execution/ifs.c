@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 20:51:20 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 17:20:44 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:32:28 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,66 +54,6 @@ int	should_split_ifs(char *str)
 	}
 	return (0);
 }
-/*
-t_tokens	*shift_tokens(t_tokens **tokens)
-{
-	t_tokens	*prev;
-	t_tokens	*next;
-	t_tokens	*tmp_tok;
-
-	tmp_tok = *tokens;
-	prev = NULL;
-	free(tmp_tok->arg);
-	while (tmp_tok->next)
-	{
-		prev = tmp_tok;
-		next = tmp_tok->next;
-		tmp_tok->arg = next->arg;
-		tmp_tok->next = NULL;
-		tmp_tok = next;
-		if (tmp_tok->next)
-			prev->next = tmp_tok;
-	}
-	free(tmp_tok);
-	if (prev)
-		prev->next = NULL;
-	tmp_tok = NULL;
-	if (!prev)
-		*tokens = NULL;
-	return (*tokens);
-}
-*/
-
-/*
-t_tokens	*shift_tokens(t_tokens **tokens)
-{
-	t_tokens	*tmp;
-	t_tokens	*prev;
-	t_tokens	*new;
-
-	prev = NULL;
-	tmp = *tokens;
-	while (tmp && tmp->arg[0])
-	{
-		prev = tmp;
-		tmp = tmp->next;
-	}
-	new = tmp;
-	free(tmp->arg);
-	while (tmp->next)
-	{
-		prev = tmp;
-		tmp->arg = tmp->next->arg;
-		tmp = tmp->next;
-	}
-	if (prev)
-		prev->next = NULL;
-	if (!new->next)
-		new = NULL
-	free(tmp);
-	tmp = NULL;
-	return (new);
-}*/
 
 t_tokens	*shift_tokens(t_tokens *tokens, t_tokens **tmp_tok)
 {
