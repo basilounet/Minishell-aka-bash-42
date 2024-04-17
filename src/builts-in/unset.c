@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 04:25:39 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/16 13:40:03 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:22:30 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,15 @@ void	unset_name(t_env **env, char *name)
 	if (!*env)
 		return ;
 	tmp = *env;
+	previous = NULL;
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->name, name) == 0)
 		{
 			next = tmp->next;
 			ft_envdel_one(tmp);
-			previous->next = next;
+			if (previous)
+				previous->next = next;
 			return ;
 		}
 		previous = tmp;

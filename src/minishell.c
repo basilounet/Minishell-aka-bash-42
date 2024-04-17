@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 12:56:53 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 13:13:25 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,10 @@ int			g_sig;
 	"miaousse=\'\"\'$USER\'\"\'", "_zblox=b", "1two3=", "one23=", \
 	"b_3=", "bip=swag", "A=\"guy2bezbar\"", "A", "bix=", "bix+=bloarg", \
 	"biop", "biop+=$bip", "moufette", NULL};
-static char *test2[] = {"export", NULL};*/
+static char *test2[] = {"export", NULL};
 static char *test3[] = {"*s", "*a*", "cas*es", "c*", "*", "t*", "*ak*", "**", \
 	"*cases", "cases*", "case*s", "c*ases", NULL};
-static char *test4[] = {"*\"t\"", "t\'*\'", "\"\'t\'\"*", "\'t\'*", NULL};
+static char *test4[] = {"*\"t\"", "t\'*\'", "\"\'t\'\"*", "\'t\'*", NULL};*/
 
 int	main(int ac, char **av, char **char_env)
 {
@@ -76,25 +76,6 @@ int	main(int ac, char **av, char **char_env)
 
 	(void)ac;
 	(void)av;
-	int	i;
-	i = 0;
-	while (test4[i])
-	{
-		char	*sousteeease;
-		sousteeease = wildcards(test4[i]);
-		printf("wc = %s\n%s\n", test4[i], sousteeease);
-		free(sousteeease);
-		i++;
-	}
-	i = 0;
-	while (test3[i])
-	{
-		char	*sousteeease;
-		sousteeease = wildcards(test3[i]);
-		printf("wc = %s\n%s\n", test3[i], sousteeease);
-		free(sousteeease);
-		i++;
-	}
 	ft_memset((void *)&ms, 0, sizeof(t_ms));
 	if (env_array_to_list(&(ms.env), char_env) == 0)
 		return (1);

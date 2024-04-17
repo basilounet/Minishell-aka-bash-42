@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 11:32:19 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:14:39 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ int				check_quotes(char *str);
 int				len_env_name(char *str);
 char			*expand_var(t_ms *ms, char *str, t_expand_args args);
 int				change_state(char *str, int state, char *shld_remove, int i);
-void			expand_args(t_ms *ms, t_node *node);
+int			expand_args(t_ms *ms, t_node *node);
 int				expand_redirects(t_ms *ms, t_node *node);
 void			expand_here_doc(t_ms *ms, t_tokens *token);
 void			expand_tokens(t_ms *ms, t_node *node);
@@ -164,7 +164,7 @@ void			expand_tokens(t_ms *ms, t_node *node);
 char			*change_ifs(char *str, char *should_remove);
 int				should_split_ifs(char *str);
 t_tokens		*split_ifs(t_tokens **tokens);
-t_tokens		*shift_tokens(t_tokens **tokens);
+t_tokens		*shift_tokens(t_tokens *tokens, t_tokens **tmp_tok);
 
 /*----- PIDS -----*/
 
