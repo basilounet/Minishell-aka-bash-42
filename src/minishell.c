@@ -68,7 +68,7 @@ int			g_sig;
 static char *test2[] = {"export", NULL};*/
 static char *test3[] = {"*s", "*a*", "cas*es", "c*", "*", "t*", "*ak*", "**", \
 	"*cases", "cases*", "case*s", "c*ases", NULL};
-static char *test4[] = {"*\"t\"", "t\'*\'", "\"\'t\'\"*", "\'t\'*", NULL};
+static char *test4[] = {"*\"t\"", "*d\'e\'\"\"s", "t\'*\'", "\"\'t\'\"*", "\'t\'*", NULL};
 
 int	main(int ac, char **av, char **char_env)
 {
