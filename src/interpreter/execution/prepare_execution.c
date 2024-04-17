@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 17:05:38 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 12:54:24 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void	check_command(t_ms *ms, char **cmd)
 			&& !access(*cmd, X_OK)))
 		return ;
 	i = -1;
-	while (ms->envp[++i])
+	while (ms->envp && ms->envp[++i])
 	{
 		str = ft_strjoin3(ms->envp[i], "/", *cmd);
 		if (!str)
@@ -132,8 +132,6 @@ void	reset_envp(t_ms *ms)
 	if (ms->envp)
 		ft_free_map(ms->envp, ft_maplen(ms->envp));
 	ms->envp = ft_split(ft_getenv(ms->env, "PATH"), ':');
-	if (!ms->envp)
-		ms->exit_code = perr(1, 1, 1, "A malloc error occured");
 	if (ms->char_env)
 		ft_free_map(ms->char_env, ft_maplen(ms->char_env));
 	ms->char_env = env_list_to_array(ms->env);
@@ -144,11 +142,19 @@ void	reset_envp(t_ms *ms)
 void	prepare_and_execute(t_ms *ms, t_node *node)
 {
 	ms->exit_code = 0;
+	ms->root_node = node;
 	reset_envp(ms);
 	if (DEBUG)
 		print_node(node, 0);
+	if (ms->exit_code)
+	{
+		unlink_here_docs(ms);
+		return ;
+	}
+	ms->tokens = NULL;
 	execute_node((t_execution){ms, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, -1,
 		-1, 0}, node, 0);
 	wait_pids(ms);
 	unlink_here_docs(ms);
+	ms->root_node = NULL;
 }
