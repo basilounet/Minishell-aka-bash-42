@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 18:18:17 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 11:32:19 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ extern int		g_sig;
  * prompt
  * envp
  * char_env
+ * root_node
  * tokens
  * pids
  * heredoc_numbers
@@ -68,6 +69,7 @@ typedef struct s_minishell
 	char		*prompt;
 	char		**envp;
 	char		**char_env;
+	t_node		*root_node;
 	t_tokens	*tokens;
 	int			*pids;
 	int			heredoc_number;
@@ -121,6 +123,7 @@ char			*tokens_to_string(t_tokens *tokens);
 /*========== ERRORS ==========*/
 
 int				perr(int exit_code, int n, int bs, ...);
+void			ft_free_ms(t_ms *ms);
 
 /*========== SIGNALS ==========*/
 

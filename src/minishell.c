@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 14:03:15 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 12:56:53 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@
 
 void	ft_free_ms(t_ms *ms)
 {
-	ft_tokclear(&ms->tokens);
+	//ft_tokclear(&ms->tokens);
 	ft_free_ptr(1, ms->prompt);
 	ft_envclear(ms->env);
 	ft_free_map(ms->envp, ft_maplen(ms->envp));
 	ft_free_map(ms->char_env, ft_maplen(ms->char_env));
+	free_node(ms->root_node);
 	if (ms->pids)
 		free(ms->pids);
 }

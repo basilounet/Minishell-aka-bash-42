@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 18:45:27 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/03/15 14:58:41 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 11:29:14 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,13 @@ char	**ft_free_map(char **map, size_t len)
 	if (!map)
 		return (NULL);
 	while (i < len)
+	{
 		if (map[i++])
+		{
 			free(map[i - 1]);
+			map[i - 1] = NULL;
+		}
+	}
 	free(map);
 	map = NULL;
 	return (NULL);

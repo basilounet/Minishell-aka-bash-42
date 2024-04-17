@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 02:50:01 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 13:43:23 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 11:21:10 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ void	child(t_execution execution, t_node *node)
 				node)))
 		execve(node->cmd.char_args[0], node->cmd.char_args,
 			execution.ms->char_env);
+	ft_free_ms(execution.ms);
 	exit(execution.ms->exit_code);
 }
 
