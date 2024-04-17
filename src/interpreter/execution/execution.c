@@ -76,6 +76,7 @@ static void	execute_cmd(t_execution execution, t_node *node)
 	}
 	execution.ms->pids = add_pid_space(execution.ms, execution.ms->pids);
 	pid = fork();
+	set_interactive_mode(2);
 	execution.ms->pids[pids_len(execution.ms->pids) - 1] = pid;
 	if (pid < 0)
 		execution.ms->exit_code = perr(1, 1, 1, strerror(errno));

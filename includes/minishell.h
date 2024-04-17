@@ -142,6 +142,11 @@ char    		*wildcards(char *char_wc);
 char			*symbol_to_char(t_tokens *token);
 int				is_existing_dir(char *path);
 int				is_evenly_quoted(char *str, int n);
+t_wc				*ft_wcnew(t_symbol symbol, char *arg, t_wc *next);
+t_wc				*ft_wclast(t_wc *stack);
+void				ft_wcadd_back(t_wc **stack, t_wc *new);
+bool				ft_wcnew_back(t_wc **tokens, t_symbol symbol, char *arg);
+void				ft_wcclear(t_wc **stack);
 
 /*========== EXPAND ==========*/
 

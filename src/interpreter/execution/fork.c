@@ -74,6 +74,7 @@ int	execute_built_ins(t_execution execution, t_node *node)
 
 void	child(t_execution execution, t_node *node)
 {
+	set_interactive_mode(3);
 	execution.input = get_input_fd(node->cmd.redirects);
 	execution.output = get_output_fd(node->cmd.redirects);
 	execution.ms->exit_code = 0;

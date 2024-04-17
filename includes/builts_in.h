@@ -13,6 +13,7 @@
 #ifndef BUILTS_IN_H
 # define BUILTS_IN_H
 
+# include <lexer.h>
 # include <dirent.h>
 # include <sys/stat.h>
 # include <libft.h>
@@ -23,6 +24,14 @@ typedef struct s_env
 	char			*var;
 	struct s_env	*next;
 }					t_env;
+
+typedef struct s_wc
+{
+	t_symbol		symbol;
+	char			*wc;
+	char			*mask;
+	struct s_wc		*next;
+}					t_wc;
 
 /*========== CD ==========*/
 
@@ -60,11 +69,13 @@ void				pwd(void);
 /*========== UNSET ==========*/
 
 void				unset(t_env **env, char **args);
-void				unset_name(t_env **env, char *name);
+t_env				*unset_name(t_env *env, char *name);
 
 /*========== EXIT ==========*/
 
 int					ft_exit(int *exit_code, char **args);
+
+/*========== WILDCARD ==========*/
 
 /*========== UTILS ==========*/
 

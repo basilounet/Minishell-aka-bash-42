@@ -28,32 +28,35 @@ void	unset(t_env **env, char **args)
 			*env = tmp;
 		}
 		else
-			unset_name(env, args[i]);
+			*env = unset_name(*env, args[i]);
 		i++;
 	}
 }
 
-void	unset_name(t_env **env, char *name)
+t_env	*unset_name(t_env *env, char *name)
 {
-	t_env	*tmp;
+	t_env	*first;
 	t_env	*previous;
 	t_env	*next;
 
-	if (!*env)
-		return ;
-	tmp = *env;
+	if (!env)
+		return (NULL);
+	first = env;
 	previous = NULL;
-	while (tmp)
+	while (env)
 	{
-		if (ft_strcmp(tmp->name, name) == 0)
-		{
-			next = tmp->next;
-			ft_envdel_one(tmp);
+		if (ft_strcmp(env->name, name) == 0)
+		{		
+			next = env->next;
+			if (first == env)
+				first = next;
+			ft_envdel_one(env);
 			if (previous)
 				previous->next = next;
-			return ;
+			return (first);
 		}
-		previous = tmp;
-		tmp = tmp->next;
+		previous = env;
+		env = env->next;
 	}
+	return (first);
 }

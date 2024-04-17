@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 19:34:41 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 20:17:43 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ int			g_sig;
 static char *test2[] = {"export", NULL};
 static char *test3[] = {"*s", "*a*", "cas*es", "c*", "*", "t*", "*ak*", "**", \
 	"*cases", "cases*", "case*s", "c*ases", NULL};
-static char *test4[] = {"*\"t\"", "t\'*\'", "\"\'t\'\"*", "\'t\'*", NULL};*/
+static char *test4[] = {"*\"t\"", "*d\'e\'\"\"s", "t\'*\'", "\"\'t\'\"*", "\'t\'*", NULL};
+*/
 
 int	main(int ac, char **av, char **char_env)
 {
@@ -79,9 +80,9 @@ int	main(int ac, char **av, char **char_env)
 	ft_memset((void *)&ms, 0, sizeof(t_ms));
 	if (env_array_to_list(&(ms.env), char_env) == 0)
 		return (1);
+	//ft_envclear(ms.env);
+	//ms.env = NULL;
 	ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
-	set_interactive_mode(1);
-	//export(&ms.env, (char *[]){"export", "BASE=base", NULL});
 	while (1)
 	{
 		set_interactive_mode(1);

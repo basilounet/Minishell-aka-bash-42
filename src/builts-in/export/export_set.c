@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:31:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/17 17:45:51 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 20:18:22 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ static int	get_export_values(t_env **env, char *expand_arg)
 		new_env = parse_char_env(*env, expand_arg, j, 1);
 	if (!new_env)
 		return (0); // malloc error
-	unset_name(env, new_env->name);
+	*env = unset_name(*env, new_env->name);
 	ft_envadd_back(env, new_env);
 	return (1);
 }
@@ -97,7 +97,7 @@ int	export(t_env **env, char **args)
 	int		i;
 	char	*expand_arg;
 
-	i = 1; // change to 1 after testing
+	i = 1;
 	if (!args[1])
 		print_export(*env);
 	while (args[i])

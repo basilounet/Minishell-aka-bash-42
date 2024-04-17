@@ -40,5 +40,18 @@ void	set_interactive_mode(int set)
 		signal(SIGQUIT, SIG_IGN);
 		return ;
 	}
+	if (set == 2)
+	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, SIG_IGN);
+		return ;
+	}
+	if (set == 3)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		return ;
+	}
+	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &exit_heredoc);
 }

@@ -31,6 +31,7 @@ SRC =	builts-in/cd/cd_utils.c \
 		utils/create_env.c \
 		utils/print_node.c \
 		utils/create_tokens.c \
+		utils/create_wc.c \
 		utils/prompt.c \
 		utils/str_utils.c
 

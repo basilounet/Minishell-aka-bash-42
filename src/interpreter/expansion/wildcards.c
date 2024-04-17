@@ -29,18 +29,28 @@ static DIR	*ft_open_directory(void)
 	return (directory);
 }
 
-static char	get_next_char(t_tokens *wc)
+static char	get_next_char(t_wc *wc)
 {
+	int	i;
+
 	while (wc)
 	{
 		if (wc->symbol == T_ARG)
-			return (wc->arg[0]);
+		{
+			i = 0;
+			while (wc->wc[i])
+			{
+				if (wc->mask[i] != '1')
+					return (wc->wc[i]);
+				i++;
+			}
+		}
 		wc = wc->next;
 	}
 	return ('\0');
 }
 
-static bool	is_wc_file(char *name, char *wc, char *mask)
+static bool	is_wc_file(char *name, t_wc *wc, int is_end)
 {
 	int	i;
 	int	j;
@@ -48,32 +58,37 @@ static bool	is_wc_file(char *name, char *wc, char *mask)
 
 	i = 0;
 	j = 0;
-	len = ft_strlen(wc) + ft_countc(mask, '1');
-	while (wc[i] && i < len)
+	if (is_end)
+		len = ft_strlen(name) + ft_strlen(wc->wc);
+	else
+		len = ft_strlen(wc->wc) + ft_countc(wc->mask, '1');
+	while (wc->wc[i] && i < len)
 	{
-		if (mask[i] == '1')
+		if (wc->mask[i] == '1')
 		{
 			i++;
 			continue ;
 		}
-		if (wc[i] != name[j])
+		if (wc->wc[i] != name[j])
 			return (false);
 		i++;
 		j++;
 	}
+	if (is_end && name[j])
+		return (false);
 	return (true);
 }
 
-static bool	is_in_wildcard(char *name, t_tokens *wc, char *mask)
+static bool	is_in_wildcard(char *name, t_wc *wc)
 {
 	int		i;
 	char	next_char;
 
 	i = 0;
-	while (wc)
+	while (wc->next)
 	{
 		if (wc->symbol == T_ARG)
-			if (!is_wc_file(&name[i], wc->arg, mask))
+			if (!is_wc_file(&name[i], wc, 0))
 				return (false);
 		if (wc->symbol == T_WILDCARD)
 		{
@@ -81,18 +96,19 @@ static bool	is_in_wildcard(char *name, t_tokens *wc, char *mask)
 			i = ft_strrichr(name, next_char);
 			if (next_char != name[i])
 				return (false);
-			while (wc && wc->symbol == T_WILDCARD)
+			while (wc->next && wc->symbol == T_WILDCARD)
 				wc = wc->next;
 			continue ;
 		}
 		wc = wc->next;
 	}
-	if (name[i + 1])
-		return (false);
+	if (wc->symbol == T_ARG)
+		if (!is_wc_file(&name[i], wc, 1))
+			return (false);
 	return (true);
 }
 
-static bool	get_files(t_tokens **files, DIR *directory, t_tokens *wc, char *mask)
+static bool	get_files(t_tokens **files, DIR *directory, t_wc *wc)
 {
 	struct dirent	*curfile;
 	int				i;
@@ -110,8 +126,7 @@ static bool	get_files(t_tokens **files, DIR *directory, t_tokens *wc, char *mask
 		}
 		if (!curfile)
 			return (true);
-		if (curfile->d_name[0] == '.' || !is_in_wildcard(curfile->d_name, wc, \
-			mask))
+		if (curfile->d_name[0] == '.' || !is_in_wildcard(curfile->d_name, wc))
 			continue ;
 		new_token = ft_toknew(T_ARG, ft_strdup(curfile->d_name), NULL);
 		if (!new_token)
@@ -174,11 +189,34 @@ static void	quote_mask(char *wc, char *mask)
 	//printf("mask = %s\n", mask);
 }
 
-static char	*get_wc_result(t_tokens *files, DIR *dir, t_tokens *wc, char *mask)
+static bool	mask_wc(t_wc *wc)
+{
+	while (wc)
+	{
+		if (wc->symbol == T_ARG)
+		{
+			wc->mask = ft_calloc(ft_strlen(wc->wc) + 1, 1);
+			if (!wc->mask)
+				return (false);
+			quote_mask(wc->wc, wc->mask);
+		}
+		wc = wc->next;
+	}
+	return (true);
+}
+
+static char	*get_wc_result(t_tokens *files, DIR *dir, t_wc *wc)
 {
 	char	*wc_result;
 
-	if (!get_files(&files, dir, wc, mask))
+	if (!mask_wc(wc))
+	{
+		ft_tokclear(&files);
+		ft_wcclear(&wc);
+		closedir(dir);
+		return (NULL);
+	}
+	if (!get_files(&files, dir, wc))
 	{
 		ft_tokclear(&files);
 		closedir(dir);
@@ -186,14 +224,13 @@ static char	*get_wc_result(t_tokens *files, DIR *dir, t_tokens *wc, char *mask)
 	}
 	sort_files(files);
 	wc_result = tokens_to_string(files);
-	free(mask);
 	ft_tokclear(&files);
-	ft_tokclear(&wc);
+	ft_wcclear(&wc);
 	closedir(dir);
 	return (wc_result);
 }
 
-static bool	get_next_wc(t_tokens **wc, char *char_wc, char *mask, int *i)
+static bool	get_next_wc(t_wc **wc, char *char_wc, char *mask, int *i)
 {
 	char		*wc_part;
 	int			j;
@@ -207,24 +244,24 @@ static bool	get_next_wc(t_tokens **wc, char *char_wc, char *mask, int *i)
 	}
 	if (j == *i || *i == 0)
 	{
-		ft_toknew_back(wc, T_WILDCARD, NULL);
+		ft_wcnew_back(wc, T_WILDCARD, NULL);
 		return (true);
 	}
 	wc_part = ft_substrc(char_wc, j, *i);
-	if (!ft_toknew_back(wc, T_ARG, wc_part))
+	if (!ft_wcnew_back(wc, T_ARG, wc_part))
 	{
 		ft_free_ptr(1, wc_part);
 		return (false);
 	}
 	if (char_wc[*i])
-		ft_toknew_back(wc, T_WILDCARD, NULL);
+		ft_wcnew_back(wc, T_WILDCARD, NULL);
 	return (true);
 }
 
-static t_tokens	*get_wc_parts(char *char_wc, char *mask)
+static t_wc	*get_wc_parts(char *char_wc, char *mask)
 {
-	t_tokens	*wc;
-	int			i;
+	t_wc	*wc;
+	int		i;
 
 	i = 0;
 	wc = NULL;
@@ -232,20 +269,20 @@ static t_tokens	*get_wc_parts(char *char_wc, char *mask)
 	{
 		if (!get_next_wc(&wc, char_wc, mask, &i))
 		{
-			ft_tokclear(&wc);
+			ft_wcclear(&wc);
 			return (NULL);
 		}
 		if (char_wc[i])
 			i++;
 		if (!char_wc[i] && char_wc[i - 1] == '*')
-			ft_toknew_back(&wc, T_WILDCARD, NULL);
+			ft_wcnew_back(&wc, T_WILDCARD, NULL);
 	}
 	return (wc);
 }
 
 char	*wildcards(char *char_wc)
 {
-	t_tokens	*wc;
+	t_wc		*wc;
 	t_tokens	*files;
 	DIR			*directory;
 	char		*mask;
@@ -256,18 +293,16 @@ char	*wildcards(char *char_wc)
 		return (NULL);
 	quote_mask(char_wc, mask);
 	wc = get_wc_parts(char_wc, mask);
+	free(mask);
 	//print_tokens(wc, 0);
 	//printf("\n");
 	if (!wc)
-	{
-		ft_free_ptr(2, mask, wc);
 		return (NULL);
-	}
 	directory = ft_open_directory();
 	if (!directory)
 	{
-		ft_free_ptr(2, mask, wc);
+		ft_free_ptr(1, wc);
 		return (NULL);
 	}
-	return (get_wc_result(files, directory, wc, mask));
+	return (get_wc_result(files, directory, wc));
 }

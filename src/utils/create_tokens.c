@@ -77,7 +77,7 @@ void	ft_tokclear(t_tokens **stack)
 		if ((*stack)->arg)
 			free((*stack)->arg);
 		free(*stack);
-		*stack = NULL;
+		//*stack = NULL;
 		*stack = tmp;
 	}
 	*stack = NULL;
