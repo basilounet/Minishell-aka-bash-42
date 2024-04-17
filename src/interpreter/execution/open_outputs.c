@@ -42,19 +42,26 @@ void	get_new_file(t_ms *ms, char **stop)
 	str = ft_str_reajoin("here_doc_", ft_itoa(ms->heredoc_number), 0, 1);
 	fd = open(str, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	ft_free_ptr(1, str);
+	str = NULL;
 	if (fd < 0)
 		return ;
-	str = readline("> ");
-	while (ft_strcmp(str, *stop))
+	g_sig = 0;
+	while (1)
 	{
-		str = ft_str_reajoin(str, "\n", 1, 0);
+		str = readline("> ");
+		if (ft_strcmp(str, *stop) == 0)
+			break ;
+		if (g_sig == SIGINT)
+		{
+			ms->exit_code = 130;
+			break ;
+		}
 		ft_putstr_fd(str, fd);
 		ft_free_ptr(1, str);
-		str = readline("> ");
 	}
-	if (!str)
+	if (!str && g_sig != SIGINT)
 		ft_printf("baseshell: warning: here-document delimited by end-of-file \
-(wanted `%s')\n", *stop);
+(wanted `%s')\n", *stop); // doesnt change exit code
 	close(fd);
 	ft_free_ptr(1, str);
 }

@@ -92,6 +92,12 @@ t_tokens	*split_ifs(t_tokens **tokens)
 	if (!split)
 		return (*tokens);
 	free((*tokens)->arg);
+	if (!split[0])
+	{
+		free(split);
+		(*tokens)->arg = NULL;
+		return (*tokens);
+	}
 	(*tokens)->arg = split[0];
 	tok_list = NULL;
 	i = 0;

@@ -14,6 +14,7 @@
 # define LEXER_H
 # include <libft.h>
 # include <stddef.h>
+# include <stdbool.h>
 
 /*
  * Tokens types
@@ -47,7 +48,8 @@ typedef enum e_symbol
 	T_LPARENTH,
 	T_RPARENTH,
 	T_OR,
-	T_AND
+	T_AND,
+	T_WILDCARD,
 }					t_symbol;
 
 /*
@@ -63,6 +65,7 @@ typedef struct s_tokens
 /*========== TOKENS ==========*/
 
 t_tokens			*ft_toknew(t_symbol symbol, char *arg, t_tokens *next);
+bool				ft_toknew_back(t_tokens **tokens, t_symbol symbol, char *arg);
 t_tokens			*ft_toklast(t_tokens *stack);
 void				ft_tokadd_back(t_tokens **stack, t_tokens *new);
 void				ft_tokadd_front(t_tokens **stack, t_tokens *new);
