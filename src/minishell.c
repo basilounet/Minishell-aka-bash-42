@@ -57,12 +57,43 @@ static void	temp_execution(t_ms *ms, char *line)
 
 int			g_sig;
 
+/*static char *test[] = {"bla =bli", "bloups", "blagz=", \
+	" ", "\"blarbouste\"", "zg\"oug", "bi\"z\"bou", "bi\"z'\"baz", \
+	"blax='", "blax=''", "bist=ouri", "bist==ouri", "blorgux=test", \
+	"bi\"s\"carosse", "", "bip=", "biap=titou", "bop=\"\"", "bap", \
+	"miaousse=\'\"\'$USER\'\"\'", "_zblox=b", "1two3=", "one23=", \
+	"b_3=", "bip=swag", "A=\"guy2bezbar\"", "A", "bix=", "bix+=bloarg", \
+	"biop", "biop+=$bip", "moufette", NULL};
+static char *test2[] = {"export", NULL};*/
+static char *test3[] = {"*s", "*a*", "cas*es", "c*", "*", "t*", "*ak*", "**", \
+	"*cases", "cases*", "case*s", "c*ases", NULL};
+static char *test4[] = {"*\"t\"", "t\'*\'", "\"\'t\'\"*", "\'t\'*", NULL};
+
 int	main(int ac, char **av, char **char_env)
 {
 	t_ms	ms;
 
 	(void)ac;
 	(void)av;
+	int	i;
+	i = 0;
+	while (test4[i])
+	{
+		char	*sousteeease;
+		sousteeease = wildcards(test4[i]);
+		printf("wc = %s\n%s\n", test4[i], sousteeease);
+		free(sousteeease);
+		i++;
+	}
+	i = 0;
+	while (test3[i])
+	{
+		char	*sousteeease;
+		sousteeease = wildcards(test3[i]);
+		printf("wc = %s\n%s\n", test3[i], sousteeease);
+		free(sousteeease);
+		i++;
+	}
 	ft_memset((void *)&ms, 0, sizeof(t_ms));
 	if (env_array_to_list(&(ms.env), char_env) == 0)
 		return (1);
