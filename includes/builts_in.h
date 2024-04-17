@@ -61,6 +61,10 @@ void				pwd(void);
 void				unset(t_env **env, char **args);
 void				unset_name(t_env **env, char *name);
 
+/*========== EXIT ==========*/
+
+int					ft_exit(t_ms *ms, char **args);
+
 /*========== UTILS ==========*/
 
 int					is_built_in(char *command);

@@ -23,8 +23,13 @@ void	display_nl(int sig)
 
 void	exit_heredoc(int sig)
 {
+	char	c;
+
 	g_sig = sig;
-	printf("\n");
+	c = '\n';
+	ioctl(0, TIOCSTI, &c);
+	rl_on_new_line();
+	rl_replace_line("", 0);
 }
 
 void	set_interactive_mode(int set)

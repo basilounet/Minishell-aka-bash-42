@@ -6,6 +6,7 @@ SRC =	builts-in/cd/cd_utils.c \
 		builts-in/export/export_set.c \
 		builts-in/echo.c \
 		builts-in/env.c \
+		builts-in/exit.c \
 		builts-in/pwd.c \
 		builts-in/unset.c \
 		interactive/signals.c \

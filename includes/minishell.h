@@ -13,21 +13,21 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <parser.h>
 # include <builts_in.h>
 # include <errno.h>
-# include <libft.h>
-# include <parser.h>
+//# include <libft.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
-# include <stdbool.h>
-# include <stdio.h>
+//# include <stdbool.h>
+//# include <stdio.h>
 # include <string.h>
 # include <sys/resource.h>
 # include <sys/time.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-# include <termios.h>
+# include <sys/ioctl.h>
 
 # define BASE_COLOR "\001\033[0;39m\002"
 # define GRAY "\001\033[0;90m\002"
@@ -138,7 +138,7 @@ char			*moving_france_pattern(int i, int len);
 
 /*========== WILDCARDS ==========*/
 
-char			*wildcards(t_env *env, char *wc);
+char    		*wildcards(char *char_wc);
 char			*symbol_to_char(t_tokens *token);
 int				is_existing_dir(char *path);
 int				is_evenly_quoted(char *str, int n);

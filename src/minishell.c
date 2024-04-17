@@ -36,9 +36,10 @@ static void	temp_execution(t_ms *ms, char *line)
 	{
 		ft_tokclear(&ms->tokens);
 		free(line);
-		ms->exit_code = perr(1, 1, 1, "A malloc error occured");
 		return ;
 	}
+	if (!ms->tokens)
+		return ;
 	node = parse_prompt(ms, &ms->tokens);
 	if (!node)
 	{

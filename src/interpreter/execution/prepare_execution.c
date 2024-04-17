@@ -58,7 +58,7 @@ void	expand_args(t_ms *ms, t_node *node)
 			free(tmp_char);
 			continue ;
 		}
-		if (should_split_ifs(tmp_char))
+		if (should_split_ifs(tmp_char) || ft_countc(tmp_tok->arg, -1))
 			split_ifs(&tmp_tok);
 		free(tmp_char);
 		if (tmp_tok)

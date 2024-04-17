@@ -14,7 +14,7 @@
 # define PARSER_H
 
 # include <lexer.h>
-# include <libft.h>
+//# include <libft.h>
 # include <stdio.h>
 
 # define SYN_ERR "syntax error near unexpected token "
