@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 14:50:19 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 17:05:55 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 13:59:57 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ void	expand_here_doc(t_ms *ms, t_tokens *token)
 	i = 0;
 	while (map[i])
 	{
-		str = ft_str_reajoin(expand_var(ms, map[i++], (t_expand_args){1, 0,
-					1, 0, 0}), "\n", 1, 0);
+		str = expand_var(ms, map[i++], (t_expand_args){1, 0,
+					1, 0, 0});
 		ft_putstr_fd(str, fd);
 		ft_free_ptr(1, str);
 	}

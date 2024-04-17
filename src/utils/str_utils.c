@@ -114,7 +114,7 @@ char	*tokens_to_string(t_tokens *tokens)
 	str = NULL;
 	while (tokens)
 	{
-		quoted_str = ft_strjoin3("\"", tokens->arg, "\"");
+		quoted_str = ft_strjoin3("\377", tokens->arg, "\377");
 		if (!quoted_str)
 		{
 			if (str)
@@ -127,15 +127,4 @@ char	*tokens_to_string(t_tokens *tokens)
 		tokens = tokens->next;
 	}
 	return (str);
-}
-
-bool	ft_toknew_back(t_tokens **tokens, t_symbol symbol, char *arg)
-{
-	t_tokens	*new;
-
-	new = ft_toknew(symbol, arg, NULL);
-	if (!new)
-		return (false);
-	ft_tokadd_back(tokens, new);
-	return (true); 
 }

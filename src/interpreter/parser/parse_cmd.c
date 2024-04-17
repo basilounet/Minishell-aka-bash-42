@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:17:52 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/16 13:59:12 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 13:45:36 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	redlist_add(t_ms *ms, t_node *node, t_tokens **tokens, t_symbol sym)
 			(*tokens)->symbol = T_INPUT;
 		get_new_file(ms, &(*tokens)->arg);
 		free((*tokens)->arg);
-		(*tokens)->arg = ft_str_reajoin("here_doc_",
+		(*tokens)->arg = ft_str_reajoin("/tmp/here_doc_",
 				ft_itoa(ms->heredoc_number++), 0, 1);
 		if (g_sig == SIGINT)
 			ms->exit_code = 130;

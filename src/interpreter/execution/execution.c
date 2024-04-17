@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 14:50:58 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 18:48:35 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 16:05:50 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,11 @@ static void	execute_cmd(t_execution execution, t_node *node)
 {
 	int	pid;
 
-	expand_args(execution.ms, node);
+	if (expand_args(execution.ms, node))
+	{
+		parent(execution);
+		return ;
+	}
 	if (!execution.is_in_pipe && node->cmd.args
 		&& is_built_in(node->cmd.args->arg))
 	{
@@ -72,6 +76,7 @@ static void	execute_cmd(t_execution execution, t_node *node)
 	}
 	execution.ms->pids = add_pid_space(execution.ms, execution.ms->pids);
 	pid = fork();
+	set_interactive_mode(2);
 	execution.ms->pids[pids_len(execution.ms->pids) - 1] = pid;
 	if (pid < 0)
 		execution.ms->exit_code = perr(1, 1, 1, strerror(errno));

@@ -73,12 +73,14 @@ void	wait_pids(t_ms *ms)
 	if (ms->pids)
 	{
 		i = 0;
+		set_interactive_mode(2);
 		while (ms->pids[i] != -1)
 		{
 			waitpid(ms->pids[i], &status, 0);
 			ms->exit_code = WEXITSTATUS(status);
 			i++;
 		}
+		set_interactive_mode(3);
 		free(ms->pids);
 		ms->pids = NULL;
 	}

@@ -31,10 +31,8 @@ int	cd_set_pwd(t_env **env)
 	if (!newpwd)
 		return (0);
 	if (!export(env, (char *[]){"export", newpwd, NULL}))
-	{
-		free(newpwd);
 		return (0);
-	}
+	free(newpwd);
 	return (1);
 }
 

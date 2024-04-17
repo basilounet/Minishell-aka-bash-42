@@ -34,6 +34,8 @@ char	*remove_quotes(t_expand exp_var, t_expand_args args)
 	}
 	if (args.shld_ch_ifs)
 		exp_var.line = change_ifs(exp_var.line, exp_var.mask);
+	//exp_var.line = wildcards(exp_var.line);
+	//printf("line = %s\n", exp_var.line);
 	while (exp_var.line[++i])
 		if (exp_var.mask[i] == 'n')
 			line[j++] = exp_var.line[i];

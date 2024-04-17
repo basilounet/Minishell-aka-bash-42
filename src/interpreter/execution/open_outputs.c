@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 15:24:53 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 17:04:59 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 13:59:06 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	unlink_here_docs(t_ms *ms)
 	name = NULL;
 	while (i < ms->heredoc_number)
 	{
-		name = ft_str_reajoin("here_doc_", ft_itoa(i), 0, 1);
+		name = ft_str_reajoin("/tmp/here_doc_", ft_itoa(i), 0, 1);
 		if (name)
 		{
 			unlink(name);
@@ -39,7 +39,7 @@ void	get_new_file(t_ms *ms, char **stop)
 	str = expand_var(ms, *stop, (t_expand_args){0});
 	ft_free_ptr(1, *stop);
 	*stop = str;
-	str = ft_str_reajoin("here_doc_", ft_itoa(ms->heredoc_number), 0, 1);
+	str = ft_str_reajoin("/tmp/here_doc_", ft_itoa(ms->heredoc_number), 0, 1);
 	fd = open(str, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	ft_free_ptr(1, str);
 	str = NULL;
@@ -57,11 +57,12 @@ void	get_new_file(t_ms *ms, char **stop)
 			break ;
 		}
 		ft_putstr_fd(str, fd);
+		ft_putstr_fd("\n", fd);
 		ft_free_ptr(1, str);
 	}
 	if (!str && g_sig != SIGINT)
 		ft_printf("baseshell: warning: here-document delimited by end-of-file \
-(wanted `%s')\n", *stop); // doesnt change exit code
+(wanted `%s')\n", *stop);
 	close(fd);
 	ft_free_ptr(1, str);
 }

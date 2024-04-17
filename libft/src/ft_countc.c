@@ -41,3 +41,21 @@ size_t	ft_countcn(char *str, char c, int n)
 			count++;
 	return (count);
 }
+
+size_t	ft_countcnm(char *str, char c, int n, char *mask)
+{
+	size_t	count;
+	int		i;
+
+	i = 0;
+	count = 0;
+	if (!str)
+		return (0);
+	while (str[i] && i < n)
+	{
+		if (mask[i] != '2' && str[i] == c)
+			count++;
+		i++;
+	}
+	return (count);
+}

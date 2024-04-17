@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 12:54:24 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:14:26 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,11 @@ void	transform_to_chars(t_ms *ms, t_node *node)
 	}
 }
 
-void	expand_args(t_ms *ms, t_node *node)
+int	expand_args(t_ms *ms, t_node *node)
 {
 	t_tokens	*tmp_tok;
 	char		*tmp_char;
 
-	if (node->type == T_TREE)
-		return ;
 	tmp_tok = node->cmd.args;
 	while (tmp_tok)
 	{
@@ -54,7 +52,7 @@ void	expand_args(t_ms *ms, t_node *node)
 				1, 1});
 		if (tmp_tok->arg[0] == 0)
 		{
-			shift_tokens(&tmp_tok);
+			node->cmd.args = shift_tokens(node->cmd.args, &tmp_tok);
 			free(tmp_char);
 			continue ;
 		}
@@ -64,6 +62,9 @@ void	expand_args(t_ms *ms, t_node *node)
 		if (tmp_tok)
 			tmp_tok = tmp_tok->next;
 	}
+	if (!node->cmd.args)
+		return (1);
+	return (0);
 }
 
 int	expand_redirects(t_ms *ms, t_node *node)
@@ -86,7 +87,7 @@ int	expand_redirects(t_ms *ms, t_node *node)
 				|| tmp_tok->arg[0] == 0)
 			{
 				free(tmp_char);
-				ms->exit_code = perr(1, 1, 1, "ambiguous redirect\n");
+				ms->exit_code = perr(1, 1, 1, "ambiguous redirect");
 				return (1);
 			}
 			ft_free_ptr(1, tmp_char);
