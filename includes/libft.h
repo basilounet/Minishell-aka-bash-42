@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+# include <limits.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1023
 # endif
@@ -46,6 +47,7 @@ int					ft_rand(int a, int b);
 int					ft_atoi_base(char *str, char *base);
 int					ft_atoi(const char *str);
 long				ft_atol(const char *str);
+long long			ft_atoll(const char *str);
 char				*ft_itoa(int n);
 char				*ft_itob(unsigned long n, const char *base);
 int					ft_btoi(char *str, const char *base);
@@ -64,6 +66,7 @@ int					ft_toupper(int c);
 
 size_t				ft_countc(char *str, char c);
 size_t				ft_countcn(char *str, char c, int n);
+size_t				ft_countcnm(char *str, char c, int n, char *mask);
 char				*ft_strcat(char *dest, const char *src);
 char				*ft_strchr(const char *str, int to_find);
 int					ft_strrichr(const char *str, char to_find);

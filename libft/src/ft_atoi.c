@@ -57,3 +57,32 @@ long	ft_atol(const char *str)
 	}
 	return (number * sign);
 }
+
+long long	ft_atoll(const char *str)
+{
+	long long	number;
+	int			sign;
+	int			i;
+
+	i = 0;
+	sign = 1;
+	number = 0;
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || \
+	str[i] == '\v' || str[i] == '\r' || str[i] == '\f')
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+		if (str[i++] == '-')
+			sign *= -1;
+	while ('0' <= str[i] && str[i] <= '9')
+	{
+		if (sign == 1 && ((unsigned long long)((number * 10 + \
+			(str[i] - '0')) * sign)) > LLONG_MAX)
+			return (-1);
+		if (sign == -1 && ((unsigned long long)((number * 10 + \
+			(str[i] - '0')))) > (unsigned long long)LLONG_MAX + 1)
+			return (-1);
+		number = number * 10 + (str[i] - '0');
+		i++;
+	}
+	return (number * sign);
+}

@@ -15,6 +15,7 @@
 
 # include <dirent.h>
 # include <sys/stat.h>
+# include <libft.h>
 
 typedef struct s_env
 {
@@ -63,7 +64,7 @@ void				unset_name(t_env **env, char *name);
 
 /*========== EXIT ==========*/
 
-int					ft_exit(t_ms *ms, char **args);
+int					ft_exit(int *exit_code, char **args);
 
 /*========== UTILS ==========*/
 
