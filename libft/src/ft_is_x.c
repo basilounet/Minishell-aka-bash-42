@@ -32,7 +32,7 @@ int	ft_isdigit(int c)
 	return ('0' <= c && c <= '9');
 }
 
-int	ft_isprint(int c)
+int	ft_isifs(int c)
 {
-	return (c >= 32 && c < 127);
+	return (c == '\n' || c == ' ' || c == '\t');
 }

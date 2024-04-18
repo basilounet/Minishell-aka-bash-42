@@ -84,34 +84,64 @@ t_tokens	*shift_tokens(t_tokens *tokens, t_tokens **tmp_tok)
 	return (first);
 }
 
-
-t_tokens	*split_ifs(t_tokens **tokens)
+static void	add_ifs(char **split, t_tokens **tokens, int is_wildcard)
 {
 	t_tokens	*tok_list;
 	t_tokens	*tok_last;
-	char		**split;
 	int			i;
 
+	tok_list = NULL;
+	tok_last = NULL;
+	i = 0;
+	while (split[++i])
+	{
+		if (is_wildcard)
+			ft_tokadd_back(&tok_list, ft_toknew(T_WILDCARD, split[i], NULL));
+		else
+			ft_tokadd_back(&tok_list, ft_toknew(T_ARG, split[i], NULL));
+	}
+	free(split);
+	if (i != 1)
+	{
+		tok_last = ft_toklast(tok_list);
+		tok_last->next = (*tokens)->next;
+		(*tokens)->next = tok_list;
+	}
+}
+
+void	split_ifs(t_tokens **tokens, int is_wildcard)
+{
+//	t_tokens	*tok_list;
+//	t_tokens	*tok_last;
+	char		**split;
+//	int			i;
+
 	if (ft_countc((*tokens)->arg, -1) == 0)
-		return (*tokens);
+		return ;//return (*tokens);
 	split = ft_split((*tokens)->arg, -1);
 	if (!split)
-		return (*tokens);
+		return ;//return (*tokens);
 	free((*tokens)->arg);
 	if (!split[0])
 	{
 		free(split);
 		(*tokens)->arg = NULL;
-		return (*tokens);
+	//	return (*tokens);
+		return ;
 	}
 	(*tokens)->arg = split[0];
-	tok_list = NULL;
+	add_ifs(split, tokens, is_wildcard);
+	/*tok_list = NULL;
 	i = 0;
 	while (split[++i])
 		ft_tokadd_back(&tok_list, ft_toknew(0, split[i], NULL));
 	free(split);
-	tok_last = ft_toklast(tok_list);
-	tok_last->next = (*tokens)->next;
-	(*tokens)->next = tok_list;
-	return (tok_last);
+	tok_last = NULL;
+	if (i != 1)
+	{
+		tok_last = ft_toklast(tok_list);
+		tok_last->next = (*tokens)->next;
+		(*tokens)->next = tok_list;
+	}*/
+	//return (tok_last);
 }

@@ -12,34 +12,47 @@
 
 #include <minishell.h>
 
+static t_expand	get_final_expand(t_ms *ms, t_expand exp_var, t_expand_args args)
+{
+	char	*pre_wc;
+
+	exp_var.is_wildcard = 0;
+	if (exp_var.line && args.shld_ch_ifs)
+		exp_var.line = change_ifs(exp_var.line, exp_var.mask);
+	pre_wc = ft_strdup(exp_var.line);
+	if (exp_var.line && args.expand_wc)
+		exp_var.line = place_wildcards(ms, exp_var);
+	if (ft_strcmp(pre_wc, exp_var.line) == 0)
+	{
+		if (exp_var.line && !args.ign_qte)
+			exp_var.line = remove_quotes(exp_var, args);
+	}
+	else
+		exp_var.is_wildcard = 1;
+	ft_free_ptr(2, pre_wc, exp_var.mask);
+	return (exp_var);
+}
+
 char	*remove_quotes(t_expand exp_var, t_expand_args args)
 {
 	char	*line;
 	int		i;
 	int		j;
 
+	(void)args;
 	i = -1;
 	j = 0;
-	if (args.ign_qte)
-	{
-		ft_free_ptr(1, exp_var.mask);
-		return (exp_var.line);
-	}
 	line = ft_calloc(sizeof(char), ft_strlen(exp_var.line)
 			- ft_countc(exp_var.mask, 'y') + 1);
 	if (!line || !exp_var.line || !exp_var.mask)
 	{
-		ft_free_ptr(3, exp_var.line, exp_var.mask, line);
+		ft_free_ptr(2, exp_var.line, line);
 		return (NULL);
 	}
-	if (args.shld_ch_ifs)
-		exp_var.line = change_ifs(exp_var.line, exp_var.mask);
-	//exp_var.line = wildcards(exp_var.line);
-	//printf("line = %s\n", exp_var.line);
 	while (exp_var.line[++i])
 		if (exp_var.mask[i] == 'n')
 			line[j++] = exp_var.line[i];
-	ft_free_ptr(2, exp_var.line, exp_var.mask);
+	ft_free_ptr(1, exp_var.line);
 	return (line);
 }
 
@@ -95,7 +108,7 @@ t_expand	expand(t_ms *ms, char *str, t_expand expand, t_expand_args args)
 	return (expand);
 }
 
-char	*expand_var(t_ms *ms, char *str, t_expand_args args)
+t_expand	expand_var(t_ms *ms, char *str, t_expand_args args)
 {
 	t_expand	expand_var;
 
@@ -107,11 +120,11 @@ char	*expand_var(t_ms *ms, char *str, t_expand_args args)
 	if (!expand_var.line || !expand_var.mask || !str)
 	{
 		ft_free_ptr(2, expand_var.line, expand_var.mask);
-		return (NULL);
+		return ((t_expand){0});
 	}
 	ft_memset(expand_var.mask, 'n', exp_len(ms->env, str, args, 0)
 		+ special_cases_total_len(ms, str, args));
 	while (str[expand_var.i])
 		expand_var = expand(ms, str, expand_var, args);
-	return (remove_quotes(expand_var, args));
+	return (get_final_expand(ms, expand_var, args));
 }

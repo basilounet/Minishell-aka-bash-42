@@ -44,23 +44,25 @@ int	execute_built_ins(t_execution execution, t_node *node)
 			dup2(execution.output, STDOUT_FILENO);
 	}
 	if (!ft_strcmp(node->cmd.args->arg, "echo"))
-		echo(node->cmd.char_args);
+		echo(execution.ms, node->cmd.char_args);
+	else if (!ft_strcmp(node->cmd.args->arg, "exit"))
+		ft_exit(execution.ms, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "cd"))
-		cd(&execution.ms->env, node->cmd.char_args);
+		cd(execution.ms, &execution.ms->env, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "pwd"))
-		pwd();
+		pwd(execution.ms);
 	else if (!ft_strcmp(node->cmd.args->arg, "export"))
 	{
-		export(&execution.ms->env, node->cmd.char_args);
+		export(execution.ms, &execution.ms->env, node->cmd.char_args);
 		reset_envp(execution.ms);
 	}
 	else if (!ft_strcmp(node->cmd.args->arg, "unset"))
 	{
-		unset(&execution.ms->env, node->cmd.char_args);
+		unset(execution.ms, &execution.ms->env, node->cmd.char_args);
 		reset_envp(execution.ms);
 	}
 	else if (!ft_strcmp(node->cmd.args->arg, "env"))
-		env(execution.ms->env);
+		env(execution.ms, execution.ms->env);
 	else
 		return (0);
 	if (execution.is_in_pipe)

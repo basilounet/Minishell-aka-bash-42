@@ -10,11 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <builts_in.h>
-#include <libft.h>
-#include <stdio.h>
+#include <minishell.h>
 
-void	echo(char **args)
+//rajouter exit code
+void	echo(t_ms *ms, char **args)
 {
 	int	i;
 	int	newline;
@@ -35,4 +34,5 @@ void	echo(char **args)
 	}
 	if (newline)
 		ft_putstr_fd("\n", 1);
+	ms->exit_code = 0;
 }

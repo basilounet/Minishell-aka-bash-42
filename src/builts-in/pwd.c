@@ -12,7 +12,7 @@
 
 #include <minishell.h>
 
-void	pwd(void)
+void	pwd(t_ms *ms)
 {
 	char	*pwd;
 
@@ -20,4 +20,5 @@ void	pwd(void)
 	ft_printf("%s\n", pwd);
 	if (pwd)
 		free(pwd);
+	ms->exit_code = 0;
 }

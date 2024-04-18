@@ -107,6 +107,7 @@ typedef struct s_expand
 	char		*line;
 	int			state;
 	int			i;
+	int			is_wildcard;
 }				t_expand;
 
 typedef struct s_expand_args
@@ -138,7 +139,7 @@ char			*moving_france_pattern(int i, int len);
 
 /*========== WILDCARDS ==========*/
 
-char    		*wildcards(char *char_wc);
+char    		*wildcards(t_ms *ms, char *char_wc);
 char			*symbol_to_char(t_tokens *token);
 int				is_existing_dir(char *path);
 int				is_evenly_quoted(char *str, int n);
@@ -147,20 +148,23 @@ t_wc				*ft_wclast(t_wc *stack);
 void				ft_wcadd_back(t_wc **stack, t_wc *new);
 bool				ft_wcnew_back(t_wc **tokens, t_symbol symbol, char *arg);
 void				ft_wcclear(t_wc **stack);
+void	quote_mask(char *wc, char *mask);
 
 /*========== EXPAND ==========*/
 
+char			*place_wildcards(t_ms *ms, t_expand exp_var);
 int				exp_len(t_env *env, char *line, t_expand_args args, int state);
 int				special_cases_total_len(t_ms *ms, char *str,
 					t_expand_args args);
 int				check_quotes(char *str);
 int				len_env_name(char *str);
-char			*expand_var(t_ms *ms, char *str, t_expand_args args);
+t_expand		expand_var(t_ms *ms, char *str, t_expand_args args);
 int				change_state(char *str, int state, char *shld_remove, int i);
 int			expand_args(t_ms *ms, t_node *node);
 int				expand_redirects(t_ms *ms, t_node *node);
 void			expand_here_doc(t_ms *ms, t_tokens *token);
 void			expand_tokens(t_ms *ms, t_node *node);
+char	*remove_quotes(t_expand exp_var, t_expand_args args);
 
 /*========== EXECUTION ==========*/
 
@@ -168,7 +172,7 @@ void			expand_tokens(t_ms *ms, t_node *node);
 
 char			*change_ifs(char *str, char *should_remove);
 int				should_split_ifs(char *str);
-t_tokens		*split_ifs(t_tokens **tokens);
+void	split_ifs(t_tokens **tokens, int is_wildcard);
 t_tokens		*shift_tokens(t_tokens *tokens, t_tokens **tmp_tok);
 
 /*----- PIDS -----*/
@@ -200,7 +204,7 @@ void			try_close_fd(int fd);
 
 /*----- UTILS -----*/
 
-void			reset_envp(t_ms *ms);
+int			reset_envp(t_ms *ms);
 int				has_input(t_tokens *tokens);
 t_tokens		*get_input_tok(t_tokens *tokens);
 t_tokens		*get_output_tok(t_tokens *tokens);

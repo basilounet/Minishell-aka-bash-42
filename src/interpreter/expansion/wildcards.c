@@ -13,19 +13,19 @@
 #include <builts_in.h>
 #include <minishell.h>
 
-static DIR	*ft_open_directory(void)
+static DIR	*ft_open_directory(t_ms *ms)
 {
 	DIR		*directory;
 	char	cwd[512];
 
 	if (!getcwd(cwd, 512))
 	{
-		perr(1, 2, 1, "wildcards: ", strerror(errno));
+		ms->exit_code = perr(1, 2, 1, "wildcards: ", strerror(errno));
 		return (NULL);
 	}
 	directory = opendir(cwd);
 	if (!directory)
-		perr(1, 2, 1, "wildcards: ", strerror(errno));
+		ms->exit_code = perr(1, 2, 1, "wildcards: ", strerror(errno));
 	return (directory);
 }
 
@@ -108,7 +108,7 @@ static bool	is_in_wildcard(char *name, t_wc *wc)
 	return (true);
 }
 
-static bool	get_files(t_tokens **files, DIR *directory, t_wc *wc)
+static bool	get_files(t_tokens **files, DIR *directory, t_wc *wc, int *exit_code)
 {
 	struct dirent	*curfile;
 	int				i;
@@ -121,7 +121,7 @@ static bool	get_files(t_tokens **files, DIR *directory, t_wc *wc)
 		curfile = readdir(directory);
 		if (!curfile && errno)
 		{
-			perr(1, 2, 1, "wildcards: ", strerror(errno));
+			*exit_code = perr(1, 2, 1, "wildcards: ", strerror(errno));
 			return (false);	
 		}
 		if (!curfile)
@@ -160,7 +160,7 @@ static void	sort_files(t_tokens *files)
 	}
 }
 
-static void	quote_mask(char *wc, char *mask)
+void	quote_mask(char *wc, char *mask)
 {
 	int		i;
 	bool	squote;
@@ -205,7 +205,7 @@ static bool	mask_wc(t_wc *wc)
 	return (true);
 }
 
-static char	*get_wc_result(t_tokens *files, DIR *dir, t_wc *wc)
+static char	*get_wc_result(t_tokens *files, DIR *dir, t_wc *wc, char *char_wc)
 {
 	char	*wc_result;
 
@@ -216,7 +216,7 @@ static char	*get_wc_result(t_tokens *files, DIR *dir, t_wc *wc)
 		closedir(dir);
 		return (NULL);
 	}
-	if (!get_files(&files, dir, wc))
+	if (!get_files(&files, dir, wc, wc->exit_code))
 	{
 		ft_tokclear(&files);
 		closedir(dir);
@@ -227,6 +227,8 @@ static char	*get_wc_result(t_tokens *files, DIR *dir, t_wc *wc)
 	ft_tokclear(&files);
 	ft_wcclear(&wc);
 	closedir(dir);
+	if (!wc_result)
+		wc_result = ft_strdup(char_wc);
 	return (wc_result);
 }
 
@@ -280,7 +282,7 @@ static t_wc	*get_wc_parts(char *char_wc, char *mask)
 	return (wc);
 }
 
-char	*wildcards(char *char_wc)
+char	*wildcards(t_ms *ms, char *char_wc)
 {
 	t_wc		*wc;
 	t_tokens	*files;
@@ -298,11 +300,12 @@ char	*wildcards(char *char_wc)
 	//printf("\n");
 	if (!wc)
 		return (NULL);
-	directory = ft_open_directory();
+	directory = ft_open_directory(ms);
 	if (!directory)
 	{
 		ft_free_ptr(1, wc);
 		return (NULL);
 	}
-	return (get_wc_result(files, directory, wc));
+	wc->exit_code = &ms->exit_code;
+	return (get_wc_result(files, directory, wc, char_wc));
 }

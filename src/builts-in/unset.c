@@ -13,7 +13,7 @@
 #include <builts_in.h>
 #include <minishell.h>
 
-void	unset(t_env **env, char **args)
+void	unset(t_ms *ms, t_env **env, char **args)
 {
 	t_env	*tmp;
 	int		i;
@@ -31,6 +31,7 @@ void	unset(t_env **env, char **args)
 			*env = unset_name(*env, args[i]);
 		i++;
 	}
+	ms->exit_code = 0;
 }
 
 t_env	*unset_name(t_env *env, char *name)

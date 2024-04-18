@@ -53,7 +53,7 @@ int	parse_redlist(t_ms *ms, t_node *node, t_tokens **tokens)
 		}
 		if (!*tokens)
 		{
-			perr(2, 2, 1, SYN_ERR, "`newline'");
+			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`newline'");
 			return (0);
 		}
 		(*tokens)->symbol = symbol;
