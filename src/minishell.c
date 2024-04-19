@@ -6,11 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/04/17 21:07:38 by bvasseur         ###   ########.fr       */
-=======
-/*   Updated: 2024/04/17 13:13:25 by bvasseur         ###   ########.fr       */
->>>>>>> refs/remotes/origin/main
+/*   Updated: 2024/04/19 15:33:41 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +74,6 @@ static char *test4[] = {"*\"t\"", "*d\'e\'\"\"s", "t\'*\'", "\"\'t\'\"*", "\'t\'
 int	main(int ac, char **av, char **char_env)
 {
 	t_ms	ms;
-	int		exit_code;
 
 	(void)ac;
 	(void)av;
@@ -99,7 +94,6 @@ int	main(int ac, char **av, char **char_env)
 		ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
 	}
 	rl_clear_history();
-	exit_code = ms.exit_code;
 	ft_free_ms(&ms);
-	return (exit_code);
+	return (ms.exit_code);
 }

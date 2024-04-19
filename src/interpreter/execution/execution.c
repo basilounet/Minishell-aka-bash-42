@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 14:50:58 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 21:10:45 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 14:20:38 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,9 @@ static void	execute_cmd(t_execution execution, t_node *node)
 {
 	int	pid;
 
-	if (execution.ms->exit_code == 130 || expand_args(execution.ms, node))
+	if (g_sig == SIGINT || expand_args(execution.ms, node))
 	{
+		execution.ms->exit_code = 130;
 		parent(execution);
 		return ;
 	}

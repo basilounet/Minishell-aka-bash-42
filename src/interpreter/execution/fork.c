@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 02:50:01 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 13:03:53 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:18:31 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	close_all_fds(t_ms *ms)
 {
 	int	i;
 
-	i = 0;
+	i = 3;
 	while (i < 1024)
 		try_close_fd(i++);
 	errno = ms->exit_code;
@@ -46,7 +46,7 @@ int	execute_built_ins(t_execution execution, t_node *node)
 	if (!ft_strcmp(node->cmd.args->arg, "echo"))
 		echo(execution.ms, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "exit"))
-		ft_exit(execution.ms, node->cmd.char_args);
+		blabla = ft_exit(execution.ms, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "cd"))
 		cd(execution.ms, &execution.ms->env, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "pwd"))
@@ -66,7 +66,10 @@ int	execute_built_ins(t_execution execution, t_node *node)
 	else
 		return (0);
 	if (execution.is_in_pipe)
+	{
+		ft_free_ms(execution.ms);
 		exit(execution.ms->exit_code);
+	}
 	dup2(std_out, STDOUT_FILENO);
 	try_close_fd(execution.input);
 	try_close_fd(execution.output);
@@ -98,7 +101,7 @@ void	child(t_execution execution, t_node *node)
 	else if (execution.upper_pipe[WRITE] >= 0)
 		dup2(execution.upper_pipe[WRITE], STDOUT_FILENO);
 	close_all_fds(execution.ms);
-	if (!error_occured && node->cmd.args && !execution.ms->exit_code
+	if (!error_occured && node->cmd.args
 		&& !(is_built_in(node->cmd.args->arg) && execute_built_ins(execution,
 				node)))
 		execve(node->cmd.char_args[0], node->cmd.char_args,

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:31:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/17 20:18:22 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 14:47:06 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,5 +123,7 @@ int	export(t_ms *ms, t_env **env, char **args)
 		free(expand_arg);
 		i++;
 	}
+	if (pass)
+		ms->exit_code = 0;
 	return (pass);
 }

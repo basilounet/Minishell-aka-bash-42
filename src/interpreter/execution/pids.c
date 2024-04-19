@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 16:49:25 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 20:48:23 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 14:19:12 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,6 @@ void	wait_pids(t_ms *ms)
 		free(ms->pids);
 		ms->pids = NULL;
 	}
-	if (g_sig == SIGINT)
-		ms->exit_code = 130;
 	if (ms->exit_code == 131)
 		write(2, "Quit (core dumped)\n", 19);
 }

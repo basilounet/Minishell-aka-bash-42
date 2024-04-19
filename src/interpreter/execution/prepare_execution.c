@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 13:05:14 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 14:29:25 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	expand_redirects(t_ms *ms, t_node *node)
 			exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1,
 					1, 1, 1});
 			tmp_tok->arg = exp_var.line;
-			if ((should_split_ifs(tmp_char) || ft_countc(tmp_tok->arg, -1))
+			if ((should_split_ifs(tmp_char) && ft_countc(tmp_tok->arg, -1))
 				|| tmp_tok->arg[0] == 0)
 			{
 				free(tmp_char);
@@ -166,6 +166,7 @@ void	prepare_and_execute(t_ms *ms, t_node *node)
 	if (DEBUG)
 		print_node(node, 0);
 	//if (ms->exit_code)
+	g_sig = 0;
 	if (error)
 	{
 		unlink_here_docs(ms);
@@ -175,6 +176,8 @@ void	prepare_and_execute(t_ms *ms, t_node *node)
 	execute_node((t_execution){ms, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, -1,
 		-1, 0}, node, 0);
 	wait_pids(ms);
+	if (DEBUG)
+		ft_printf("exit_code : %d\n", ms->exit_code);
 	unlink_here_docs(ms);
 	ms->root_node = NULL;
 }

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:48:16 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 13:40:51 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:18:23 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,8 @@ int	cd(t_ms *ms, t_env **env, char **args)
 					curpath), args[1], ms);
 	else
 		success = go_to_dir(env, ft_strdup(curpath), args[1], ms);
-	if (curpath)
-		free(curpath);
-	free(directory);
-	return (success);
+	ft_free_ptr(2, curpath, directory);
+	if (success)
+		ms->exit_code = 0;
+	return (1);
 }
