@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 20:17:43 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 21:07:38 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,6 @@ int	main(int ac, char **av, char **char_env)
 		ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
 	}
 	rl_clear_history();
+	ms.root_node = NULL;
 	ft_free_ms(&ms);
 }

@@ -6,20 +6,20 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 17:14:26 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 21:00:36 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <builts_in.h>
 #include <minishell.h>
 
-void	transform_to_chars(t_ms *ms, t_node *node)
+int	transform_to_chars(t_ms *ms, t_node *node)
 {
 	t_tokens	*tmp_tok;
 	int			i;
 
 	if (node->type == T_TREE)
-		return ;
+		return (0);
 	else
 	{
 		i = 0;
@@ -28,8 +28,8 @@ void	transform_to_chars(t_ms *ms, t_node *node)
 				ft_toksize(node->cmd.args) + 1);
 		if (!node->cmd.char_args)
 		{
-			ms->exit_code = 1;
-			return ;
+			ms->exit_code = perr(1, 1, 1, "A malloc error occured\n");
+			return (1);
 		}
 		while (tmp_tok)
 		{
@@ -37,6 +37,7 @@ void	transform_to_chars(t_ms *ms, t_node *node)
 			tmp_tok = tmp_tok->next;
 		}
 	}
+	return (0);
 }
 
 int	expand_args(t_ms *ms, t_node *node)
@@ -103,29 +104,30 @@ int	expand_redirects(t_ms *ms, t_node *node)
 	return (0);
 }
 
-void	check_command(t_ms *ms, char **cmd)
+int	check_command(t_ms *ms, char **cmd)
 {
 	char	*str;
 	int		i;
 
 	if (!cmd || !*cmd || is_built_in(*cmd) || (!access(*cmd, F_OK)
 			&& !access(*cmd, X_OK)))
-		return ;
+		return (0);
 	i = -1;
 	while (ms->envp && ms->envp[++i])
 	{
 		str = ft_strjoin3(ms->envp[i], "/", *cmd);
 		if (!str)
-			return ;
+			return (1);
 		if (!access(str, F_OK) && !access(str, X_OK))
 		{
 			free(*cmd);
 			*cmd = str;
-			return ;
+			return (0);
 		}
 		free(str);
 	}
 	ms->exit_code = perr(127, 2, 1, *cmd, " : command not found");
+	return (1);
 }
 
 void	reset_envp(t_ms *ms)
@@ -142,7 +144,7 @@ void	reset_envp(t_ms *ms)
 
 void	prepare_and_execute(t_ms *ms, t_node *node)
 {
-	ms->exit_code = 0;
+	g_sig = 0;
 	ms->root_node = node;
 	reset_envp(ms);
 	if (DEBUG)

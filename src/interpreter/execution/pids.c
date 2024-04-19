@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 16:49:25 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 20:15:29 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 20:48:23 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,20 @@ void	wait_pids(t_ms *ms)
 		set_interactive_mode(2);
 		while (ms->pids[i] != -1)
 		{
-			waitpid(ms->pids[i], &status, 0);
+			waitpid(ms->pids[i++], &status, 0);
 			if (WIFSIGNALED(status))
 				ms->exit_code = WTERMSIG(status) + 128;
 			else
 				ms->exit_code = WEXITSTATUS(status);
-			i++;
+			if (ms->exit_code == 130)
+				g_sig = SIGINT;
 		}
 		set_interactive_mode(3);
 		free(ms->pids);
 		ms->pids = NULL;
 	}
+	if (g_sig == SIGINT)
+		ms->exit_code = 130;
+	if (ms->exit_code == 131)
+		write(2, "Quit (core dumped)\n", 19);
 }

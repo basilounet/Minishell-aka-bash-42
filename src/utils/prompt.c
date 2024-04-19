@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 13:45:27 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 19:43:02 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 20:37:04 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,7 @@ char	*get_prompt(t_env *env)
 	if (!pwd)
 		pwd = getcwd(NULL, 0);
 	if (ft_getenv(env, "USER"))
-		str = ft_str_reajoin(ft_getenv(env, "USER"), ft_strdup("@"),
-				0, 1);
+		str = ft_str_reajoin(ft_getenv(env, "USER"), ft_strdup("@"), 0, 1);
 	else
 		str = ft_strdup("USER@");
 	if (ft_getenv(env, "BASE"))
@@ -94,5 +93,6 @@ char	*get_prompt(t_env *env)
 				1, 1);
 	else
 		str = ft_str_reajoin(str, ft_strjoin(pwd, "$ "), 1, 1);
-	return (ft_free_ptr(1, pwd), str);
+	ft_free_ptr(1, pwd);
+	return (str);
 }

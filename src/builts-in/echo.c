@@ -6,15 +6,16 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 17:17:28 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/16 13:39:42 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 21:08:00 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <minishell.h>
 #include <builts_in.h>
 #include <libft.h>
 #include <stdio.h>
 
-void	echo(char **args)
+void	echo(t_ms *ms, char **args)
 {
 	int	i;
 	int	newline;
@@ -35,4 +36,5 @@ void	echo(char **args)
 	}
 	if (newline)
 		ft_putstr_fd("\n", 1);
+	ms->exit_code = 0;
 }

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 13:33:23 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 13:33:25 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 21:06:30 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ typedef struct s_wc
 	struct s_wc		*next;
 }					t_wc;
 
+typedef struct s_minishell	t_ms;
+
 /*========== CD ==========*/
 
 int					cd(t_env **env, char **args);
@@ -46,7 +48,7 @@ int					export(t_env **env, char **args);
 
 /*========== ECHO ==========*/
 
-void				echo(char **args);
+void				echo(t_ms *ms, char **args);
 
 /*========== ENV ==========*/
 

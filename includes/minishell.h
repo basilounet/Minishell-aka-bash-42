@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 17:14:39 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/17 20:58:15 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,8 +188,8 @@ int				check_input(t_ms *ms, t_tokens *token);
 /*----- EXECUTION -----*/
 
 void			prepare_and_execute(t_ms *ms, t_node *node);
-void			transform_to_chars(t_ms *ms, t_node *node);
-void			check_command(t_ms *ms, char **cmd);
+int			transform_to_chars(t_ms *ms, t_node *node);
+int			check_command(t_ms *ms, char **cmd);
 void			execute_node(t_execution execution, t_node *node,
 					t_symbol last_operator);
 int				execute_built_ins(t_execution execution, t_node *node);
