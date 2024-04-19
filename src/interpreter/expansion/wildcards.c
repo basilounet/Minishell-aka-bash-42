@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 14:39:24 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/09 13:04:44 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:38:06 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ static DIR	*ft_open_directory(t_ms *ms)
 
 	if (!getcwd(cwd, 512))
 	{
-		ms->exit_code = perr(1, 2, 1, "wildcards: ", strerror(errno));
+		perr((t_perr){ms, 1, 2, 1}, "wildcards: ", strerror(errno));
 		return (NULL);
 	}
 	directory = opendir(cwd);
 	if (!directory)
-		ms->exit_code = perr(1, 2, 1, "wildcards: ", strerror(errno));
+		perr((t_perr){ms, 1, 2, 1}, "wildcards: ", strerror(errno));
 	return (directory);
 }
 
@@ -108,7 +108,7 @@ static bool	is_in_wildcard(char *name, t_wc *wc)
 	return (true);
 }
 
-static bool	get_files(t_tokens **files, DIR *directory, t_wc *wc, int *exit_code)
+static bool	get_files(t_tokens **files, DIR *directory, t_wc *wc)
 {
 	struct dirent	*curfile;
 	int				i;
@@ -121,7 +121,8 @@ static bool	get_files(t_tokens **files, DIR *directory, t_wc *wc, int *exit_code
 		curfile = readdir(directory);
 		if (!curfile && errno)
 		{
-			*exit_code = perr(1, 2, 1, "wildcards: ", strerror(errno));
+			perr((t_perr){wc->ms, 1, 2, 1}, "wildcards: ", strerror(errno));
+			//wc->ms->exit_code = perr(1, 2, 1, "wildcards: ", strerror(errno));
 			return (false);	
 		}
 		if (!curfile)
@@ -216,7 +217,7 @@ static char	*get_wc_result(t_tokens *files, DIR *dir, t_wc *wc, char *char_wc)
 		closedir(dir);
 		return (NULL);
 	}
-	if (!get_files(&files, dir, wc, wc->exit_code))
+	if (!get_files(&files, dir, wc))
 	{
 		ft_tokclear(&files);
 		closedir(dir);
@@ -295,6 +296,7 @@ char	*wildcards(t_ms *ms, char *char_wc)
 		return (NULL);
 	quote_mask(char_wc, mask);
 	wc = get_wc_parts(char_wc, mask);
+	wc->ms = ms;
 	free(mask);
 	//print_tokens(wc, 0);
 	//printf("\n");
@@ -306,6 +308,5 @@ char	*wildcards(t_ms *ms, char *char_wc)
 		ft_free_ptr(1, wc);
 		return (NULL);
 	}
-	wc->exit_code = &ms->exit_code;
 	return (get_wc_result(files, directory, wc, char_wc));
 }

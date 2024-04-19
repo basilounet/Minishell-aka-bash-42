@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:11:19 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/16 13:59:32 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:38:08 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static void	lex_string(t_ms *ms, t_tokens *tokens, char *line, int *i)
 	else
 		tokens->arg = ft_substrc(line, i_start, *i + 1);
 	if (!tokens->arg)
-		ms->exit_code = perr(1, 1, 1, "unclosed quote");
+		perr((t_perr){ms, 1, 1, 1}, "unclosed quote");
 }
 
 int	lexer(t_ms *ms, t_tokens **tokens, char *line)

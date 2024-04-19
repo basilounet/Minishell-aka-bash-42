@@ -6,16 +6,16 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 14:24:47 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:44:10 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <parser.h>
 # include <builts_in.h>
 # include <errno.h>
+# include <parser.h>
 //# include <libft.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -23,11 +23,11 @@
 //# include <stdbool.h>
 //# include <stdio.h>
 # include <string.h>
+# include <sys/ioctl.h>
 # include <sys/resource.h>
 # include <sys/time.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-# include <sys/ioctl.h>
 
 # define BASE_COLOR "\001\033[0;39m\002"
 # define GRAY "\001\033[0;90m\002"
@@ -61,6 +61,7 @@ extern int		g_sig;
  * pids
  * heredoc_numbers
  * exit_code
+ * error_occured
  */
 typedef struct s_minishell
 {
@@ -74,6 +75,7 @@ typedef struct s_minishell
 	int			*pids;
 	int			heredoc_number;
 	int			exit_code;
+	int			error_occured;
 }				t_ms;
 
 /*
@@ -119,11 +121,19 @@ typedef struct s_expand_args
 	int			expand_special_cases;
 }				t_expand_args;
 
+typedef struct s_perr
+{
+	t_ms		*ms;
+	int			exit_code;
+	int			n;
+	int			bs;
+}				t_perr;
+
 char			*tokens_to_string(t_tokens *tokens);
 
 /*========== ERRORS ==========*/
 
-int				perr(int exit_code, int n, int bs, ...);
+void			perr(t_perr perr, ...);
 void			ft_free_ms(t_ms *ms);
 
 /*========== SIGNALS ==========*/
@@ -139,16 +149,16 @@ char			*moving_france_pattern(int i, int len);
 
 /*========== WILDCARDS ==========*/
 
-char    		*wildcards(t_ms *ms, char *char_wc);
+char			*wildcards(t_ms *ms, char *char_wc);
 char			*symbol_to_char(t_tokens *token);
 int				is_existing_dir(char *path);
 int				is_evenly_quoted(char *str, int n);
-t_wc				*ft_wcnew(t_symbol symbol, char *arg, t_wc *next);
-t_wc				*ft_wclast(t_wc *stack);
-void				ft_wcadd_back(t_wc **stack, t_wc *new);
-bool				ft_wcnew_back(t_wc **tokens, t_symbol symbol, char *arg);
-void				ft_wcclear(t_wc **stack);
-void	quote_mask(char *wc, char *mask);
+t_wc			*ft_wcnew(t_symbol symbol, char *arg, t_wc *next);
+t_wc			*ft_wclast(t_wc *stack);
+void			ft_wcadd_back(t_wc **stack, t_wc *new);
+bool			ft_wcnew_back(t_wc **tokens, t_symbol symbol, char *arg);
+void			ft_wcclear(t_wc **stack);
+void			quote_mask(char *wc, char *mask);
 
 /*========== EXPAND ==========*/
 
@@ -160,11 +170,11 @@ int				check_quotes(char *str);
 int				len_env_name(char *str);
 t_expand		expand_var(t_ms *ms, char *str, t_expand_args args);
 int				change_state(char *str, int state, char *shld_remove, int i);
-int			expand_args(t_ms *ms, t_node *node);
+int				expand_args(t_ms *ms, t_node *node);
 int				expand_redirects(t_ms *ms, t_node *node);
 void			expand_here_doc(t_ms *ms, t_tokens *token);
 void			expand_tokens(t_ms *ms, t_node *node);
-char	*remove_quotes(t_expand exp_var, t_expand_args args);
+char			*remove_quotes(t_expand exp_var, t_expand_args args);
 
 /*========== EXECUTION ==========*/
 
@@ -172,7 +182,7 @@ char	*remove_quotes(t_expand exp_var, t_expand_args args);
 
 char			*change_ifs(char *str, char *should_remove);
 int				should_split_ifs(char *str);
-void	split_ifs(t_tokens **tokens, int is_wildcard);
+void			split_ifs(t_tokens **tokens, int is_wildcard);
 t_tokens		*shift_tokens(t_tokens *tokens, t_tokens **tmp_tok);
 
 /*----- PIDS -----*/
@@ -192,8 +202,8 @@ int				check_input(t_ms *ms, t_tokens *token);
 /*----- EXECUTION -----*/
 
 void			prepare_and_execute(t_ms *ms, t_node *node);
-int			transform_to_chars(t_ms *ms, t_node *node);
-int			check_command(t_ms *ms, char **cmd);
+int				transform_to_chars(t_ms *ms, t_node *node);
+int				check_command(t_ms *ms, char **cmd);
 void			execute_node(t_execution execution, t_node *node,
 					t_symbol last_operator);
 int				execute_built_ins(t_execution execution, t_node *node);
@@ -204,7 +214,7 @@ void			try_close_fd(int fd);
 
 /*----- UTILS -----*/
 
-int			reset_envp(t_ms *ms);
+int				reset_envp(t_ms *ms);
 int				has_input(t_tokens *tokens);
 t_tokens		*get_input_tok(t_tokens *tokens);
 t_tokens		*get_output_tok(t_tokens *tokens);

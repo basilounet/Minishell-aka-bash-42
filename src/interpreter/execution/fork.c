@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 02:50:01 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 15:18:31 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:46:10 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	execute_built_ins(t_execution execution, t_node *node)
 	if (!ft_strcmp(node->cmd.args->arg, "echo"))
 		echo(execution.ms, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "exit"))
-		blabla = ft_exit(execution.ms, node->cmd.char_args);
+		ft_exit(execution.ms, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "cd"))
 		cd(execution.ms, &execution.ms->env, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "pwd"))
@@ -79,15 +79,14 @@ int	execute_built_ins(t_execution execution, t_node *node)
 
 void	child(t_execution execution, t_node *node)
 {
-	int	error_occured;
-
 	set_interactive_mode(3);
+	if (is_built_in(node->cmd.args->arg) && execution.is_in_pipe)
+		signal(SIGPIPE, SIG_IGN);
 	execution.input = get_input_fd(node->cmd.redirects);
 	execution.output = get_output_fd(node->cmd.redirects);
-	error_occured = 0;
 	if (node->cmd.args)
-		error_occured = check_command(execution.ms, &node->cmd.args->arg);
-	error_occured = transform_to_chars(execution.ms, node);
+		check_command(execution.ms, &node->cmd.args->arg);
+	transform_to_chars(execution.ms, node);
 	if (execution.input >= 0)
 		dup2(execution.input, STDIN_FILENO);
 	else if (execution.left_pipe[READ] >= 0)
@@ -101,7 +100,7 @@ void	child(t_execution execution, t_node *node)
 	else if (execution.upper_pipe[WRITE] >= 0)
 		dup2(execution.upper_pipe[WRITE], STDOUT_FILENO);
 	close_all_fds(execution.ms);
-	if (!error_occured && node->cmd.args
+	if (node->cmd.args && !execution.ms->error_occured
 		&& !(is_built_in(node->cmd.args->arg) && execute_built_ins(execution,
 				node)))
 		execve(node->cmd.char_args[0], node->cmd.char_args,

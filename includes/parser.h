@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:41:56 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/16 13:29:22 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:39:57 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_binary_tree
 }							t_tree;
 
 /*
- 
+
 */
 typedef struct s_node
 {

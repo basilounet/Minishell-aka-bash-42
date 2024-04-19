@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 15:33:41 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 17:07:23 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ int	main(int ac, char **av, char **char_env)
 
 	(void)ac;
 	(void)av;
+	signal(SIGPIPE, SIG_DFL);
 	ft_memset((void *)&ms, 0, sizeof(t_ms));
 	if (env_array_to_list(&(ms.env), char_env) == 0)
 		return (1);

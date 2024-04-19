@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 14:29:25 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:37:59 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	transform_to_chars(t_ms *ms, t_node *node)
 				ft_toksize(node->cmd.args) + 1);
 		if (!node->cmd.char_args)
 		{
-			ms->exit_code = perr(1, 1, 1, "A malloc error occured\n");
+			perr((t_perr){ms, 1, 1, 1}, "A malloc error occured");
 			return (1);
 		}
 		while (tmp_tok)
@@ -97,7 +97,7 @@ int	expand_redirects(t_ms *ms, t_node *node)
 				|| tmp_tok->arg[0] == 0)
 			{
 				free(tmp_char);
-				ms->exit_code = perr(1, 1, 1, "ambiguous redirect");
+				perr((t_perr){ms, 1, 1, 1}, "ambiguous redirect");
 				return (1);
 			}
 			ft_free_ptr(1, tmp_char);
@@ -135,7 +135,7 @@ int	check_command(t_ms *ms, char **cmd)
 		}
 		free(str);
 	}
-	ms->exit_code = perr(127, 2, 1, *cmd, " : command not found");
+	perr((t_perr){ms, 127, 2, 1}, *cmd, " : command not found");
 	return (1);
 }
 
@@ -149,7 +149,7 @@ int	reset_envp(t_ms *ms)
 	ms->char_env = env_list_to_array(ms->env);
 	if (!ms->char_env)
 	{
-		ms->exit_code = perr(1, 1, 1, "A malloc error occurred");
+		perr((t_perr){ms, 1, 1, 1}, "A malloc error occurred");
 		return (1);
 	}
 	return (0);
@@ -160,12 +160,11 @@ void	prepare_and_execute(t_ms *ms, t_node *node)
 	int	error;
 
 	error = 0;
-	//ms->exit_code = 0;
 	ms->root_node = node;
+	ms->error_occured = 0;
 	error = reset_envp(ms);
 	if (DEBUG)
 		print_node(node, 0);
-	//if (ms->exit_code)
 	g_sig = 0;
 	if (error)
 	{

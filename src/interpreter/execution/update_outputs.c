@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 14:50:19 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 15:29:13 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:38:02 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	check_input(t_ms *ms, t_tokens *token)
 		fd = open(token->arg, O_RDONLY);
 	if (fd < 0)
 	{
-		ms->exit_code = perr(1, 1, 1, strerror(errno));
+		perr((t_perr){ms, 1, 1, 1}, strerror(errno));
 		return (1);
 	}
 	close(fd);
