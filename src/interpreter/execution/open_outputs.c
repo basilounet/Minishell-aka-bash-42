@@ -33,10 +33,12 @@ void	unlink_here_docs(t_ms *ms)
 
 void	get_new_file(t_ms *ms, char **stop)
 {
+	t_expand	exp_var;
 	char	*str;
 	int		fd;
 
-	str = expand_var(ms, *stop, (t_expand_args){0});
+	exp_var = expand_var(ms, *stop, (t_expand_args){0});
+	str = exp_var.line;
 	ft_free_ptr(1, *stop);
 	*stop = str;
 	str = ft_str_reajoin("/tmp/here_doc_", ft_itoa(ms->heredoc_number), 0, 1);

@@ -50,7 +50,7 @@ static void	lex_string(t_ms *ms, t_tokens *tokens, char *line, int *i)
 			dquoted++;
 		if (line[*i] == '\'' && dquoted % 2 == 0)
 			squoted++;
-		if (dquoted % 2 == 0 && squoted % 2 == 0 && (line[*i] == ' '
+		if (dquoted % 2 == 0 && squoted % 2 == 0 && (/*line[*i] == ' '*/ft_isifs(line[*i])
 				|| is_symbol(line, *i + 1) != T_ARG))
 			break ;
 		(*i)++;
@@ -71,7 +71,7 @@ int	lexer(t_ms *ms, t_tokens **tokens, char *line)
 	i = -1;
 	while (line && line[++i])
 	{
-		while (line[i] == ' ')
+		while (/*line[i] == ' '*/ft_isifs(line[i]))
 			i++;
 		if (!line[i])
 			return (1);

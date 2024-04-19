@@ -18,6 +18,8 @@
 # include <sys/stat.h>
 # include <libft.h>
 
+typedef struct s_minishell t_ms;
+
 typedef struct s_env
 {
 	char			*name;
@@ -27,6 +29,7 @@ typedef struct s_env
 
 typedef struct s_wc
 {
+	int				*exit_code;
 	t_symbol		symbol;
 	char			*wc;
 	char			*mask;
@@ -37,22 +40,22 @@ typedef struct s_minishell	t_ms;
 
 /*========== CD ==========*/
 
-int					cd(t_env **env, char **args);
-int					cd_set_pwd(t_env **env);
+int					cd(t_ms *ms, t_env **env, char **args);
+int					cd_set_pwd(t_env **env, t_ms *ms);
 char				*check_cdpath(t_env **env, char *directory);
 
-/*========== EXPORT ==========*/
-
-int					print_export(t_env *env);
-int					export(t_env **env, char **args);
 
 /*========== ECHO ==========*/
 
 void				echo(t_ms *ms, char **args);
 
-/*========== ENV ==========*/
+/*======= ENV / EXPORT =======*/
 
-void				env(t_env *env);
+int					print_export(t_env *env);
+int					export(t_ms *ms, t_env **env, char **args);
+void				replace_env(t_env **env, t_env *new);
+
+void				env(t_ms *ms, t_env *env);
 char				*ft_getenv(t_env *env, char *to_get);
 t_env				*ft_envnew(char *name, char *var, t_env *next);
 t_env				*ft_envlast(t_env *stack);
@@ -63,21 +66,20 @@ void				ft_envclear(t_env *stack);
 char				**env_list_to_array(t_env *env);
 int					env_array_to_list(t_env **env, char **char_env);
 int					ft_envsize(t_env *env);
+t_env				*parse_char_env(t_env *env, char *char_env, int j, int append);
 
 /*========== PWD ==========*/
 
-void				pwd(void);
+void				pwd(t_ms *ms);
 
 /*========== UNSET ==========*/
 
-void				unset(t_env **env, char **args);
+void				unset(t_ms *ms, t_env **env, char **args);
 t_env				*unset_name(t_env *env, char *name);
 
 /*========== EXIT ==========*/
 
-int					ft_exit(int *exit_code, char **args);
-
-/*========== WILDCARD ==========*/
+int					ft_exit(t_ms *ms, char **args);
 
 /*========== UTILS ==========*/
 

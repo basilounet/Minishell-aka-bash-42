@@ -32,7 +32,7 @@ char	*ft_substrc(char *str, int start, int end)
 	i = 0;
 	if (start > end)
 		return (NULL);
-	if (str[end - 1] == ' ')
+	if (ft_isifs(str[end - 1]))
 		end--;
 	new_str = malloc(end - start + 2);
 	if (!new_str)

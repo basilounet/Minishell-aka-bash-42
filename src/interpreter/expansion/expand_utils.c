@@ -12,6 +12,27 @@
 
 #include <minishell.h>
 
+char	*place_wildcards(t_ms *ms, t_expand exp_var)
+{
+	char	*line;
+	char	*mask;
+
+	mask = ft_calloc(ft_strlen(exp_var.line) + 1, 1);
+	if (!mask)
+		return (exp_var.line);
+	if (!ft_countcnm(exp_var.line, '*', ft_strlen(exp_var.line), mask))
+	{
+		ft_free_ptr(1, mask);
+		return (exp_var.line);
+	}
+	ft_free_ptr(1, mask);
+	line = wildcards(ms, exp_var.line);
+	if (!line)
+		return (exp_var.line);
+	ft_free_ptr(1, exp_var.line);
+	return (line);
+}
+
 int	len_env_name(char *str)
 {
 	int	len;

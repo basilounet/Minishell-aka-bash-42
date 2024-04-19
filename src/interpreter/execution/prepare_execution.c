@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 21:00:36 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 13:05:14 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int	transform_to_chars(t_ms *ms, t_node *node)
 
 int	expand_args(t_ms *ms, t_node *node)
 {
+	t_expand	exp_var;
 	t_tokens	*tmp_tok;
 	char		*tmp_char;
 
@@ -49,8 +50,14 @@ int	expand_args(t_ms *ms, t_node *node)
 	while (tmp_tok)
 	{
 		tmp_char = tmp_tok->arg;
-		tmp_tok->arg = expand_var(ms, tmp_char, (t_expand_args){0, 1, 1,
+		if (tmp_tok->symbol == T_ARG)
+		{
+			exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1, 1,
 				1, 1});
+			tmp_tok->arg = exp_var.line;
+		}
+		else
+			tmp_tok->arg = ft_strdup(tmp_char);
 		if (tmp_tok->arg[0] == 0)
 		{
 			node->cmd.args = shift_tokens(node->cmd.args, &tmp_tok);
@@ -58,7 +65,7 @@ int	expand_args(t_ms *ms, t_node *node)
 			continue ;
 		}
 		if (should_split_ifs(tmp_char) || ft_countc(tmp_tok->arg, -1))
-			split_ifs(&tmp_tok);
+			split_ifs(&tmp_tok, exp_var.is_wildcard);
 		free(tmp_char);
 		if (tmp_tok)
 			tmp_tok = tmp_tok->next;
@@ -70,6 +77,7 @@ int	expand_args(t_ms *ms, t_node *node)
 
 int	expand_redirects(t_ms *ms, t_node *node)
 {
+	t_expand	exp_var;
 	t_tokens	*tmp_tok;
 	char		*tmp_char;
 
@@ -82,9 +90,10 @@ int	expand_redirects(t_ms *ms, t_node *node)
 		if (T_OUTPUT <= tmp_tok->symbol && tmp_tok->symbol <= T_INPUT)
 		{
 			tmp_char = tmp_tok->arg;
-			tmp_tok->arg = expand_var(ms, tmp_char, (t_expand_args){0, 1,
+			exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1,
 					1, 1, 1});
-			if ((should_split_ifs(tmp_char) && ft_countc(tmp_tok->arg, -1))
+			tmp_tok->arg = exp_var.line;
+			if ((should_split_ifs(tmp_char) || ft_countc(tmp_tok->arg, -1))
 				|| tmp_tok->arg[0] == 0)
 			{
 				free(tmp_char);
@@ -130,7 +139,7 @@ int	check_command(t_ms *ms, char **cmd)
 	return (1);
 }
 
-void	reset_envp(t_ms *ms)
+int	reset_envp(t_ms *ms)
 {
 	if (ms->envp)
 		ft_free_map(ms->envp, ft_maplen(ms->envp));
@@ -139,17 +148,25 @@ void	reset_envp(t_ms *ms)
 		ft_free_map(ms->char_env, ft_maplen(ms->char_env));
 	ms->char_env = env_list_to_array(ms->env);
 	if (!ms->char_env)
-		ms->exit_code = perr(1, 1, 1, "A malloc error occured");
+	{
+		ms->exit_code = perr(1, 1, 1, "A malloc error occurred");
+		return (1);
+	}
+	return (0);
 }
 
 void	prepare_and_execute(t_ms *ms, t_node *node)
 {
-	g_sig = 0;
+	int	error;
+
+	error = 0;
+	//ms->exit_code = 0;
 	ms->root_node = node;
-	reset_envp(ms);
+	error = reset_envp(ms);
 	if (DEBUG)
 		print_node(node, 0);
-	if (ms->exit_code)
+	//if (ms->exit_code)
+	if (error)
 	{
 		unlink_here_docs(ms);
 		return ;

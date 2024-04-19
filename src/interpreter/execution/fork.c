@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 02:50:01 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 21:10:11 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 13:03:53 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,24 +45,24 @@ int	execute_built_ins(t_execution execution, t_node *node)
 	}
 	if (!ft_strcmp(node->cmd.args->arg, "echo"))
 		echo(execution.ms, node->cmd.char_args);
+	else if (!ft_strcmp(node->cmd.args->arg, "exit"))
+		ft_exit(execution.ms, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "cd"))
-		cd(&execution.ms->env, node->cmd.char_args);
+		cd(execution.ms, &execution.ms->env, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "pwd"))
-		pwd();
+		pwd(execution.ms);
 	else if (!ft_strcmp(node->cmd.args->arg, "export"))
 	{
-		export(&execution.ms->env, node->cmd.char_args);
+		export(execution.ms, &execution.ms->env, node->cmd.char_args);
 		reset_envp(execution.ms);
 	}
 	else if (!ft_strcmp(node->cmd.args->arg, "unset"))
 	{
-		unset(&execution.ms->env, node->cmd.char_args);
+		unset(execution.ms, &execution.ms->env, node->cmd.char_args);
 		reset_envp(execution.ms);
 	}
 	else if (!ft_strcmp(node->cmd.args->arg, "env"))
-		env(execution.ms->env);
-	else if (!ft_strcmp(node->cmd.args->arg, "exit"))
-		ft_exit(&execution.ms->exit_code, node->cmd.char_args); //check for exit return
+		env(execution.ms, execution.ms->env);
 	else
 		return (0);
 	if (execution.is_in_pipe)

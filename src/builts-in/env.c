@@ -18,7 +18,7 @@
 
 #include <minishell.h>
 
-void	env(t_env	*env)
+void	env(t_ms *ms, t_env *env)
 {
 	while (env)
 	{
@@ -26,4 +26,5 @@ void	env(t_env	*env)
 			printf("%s=%s\n", env->name, env->var);
 		env = env->next;
 	}
+	ms->exit_code = 0;
 }

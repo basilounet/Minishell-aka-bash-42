@@ -13,10 +13,9 @@
 #include <builts_in.h>
 #include <minishell.h>
 
-int	cd_set_pwd(t_env **env)
+int	cd_set_pwd(t_env **env, t_ms *ms)
 {
 	char	cwd[512];
-	char	*newpwd;
 	char	*pwd;
 
 	pwd = ft_getenv(*env, "PWD");
@@ -24,15 +23,10 @@ int	cd_set_pwd(t_env **env)
 		return (1);
 	if (!getcwd(cwd, 512))
 	{
-		perr(1, 2, 1, "cd: ", strerror(errno));
+		ms->exit_code = perr(1, 2, 1, "cd: ", strerror(errno));
 		return (0);
 	}
-	newpwd = ft_strjoin("PWD=", cwd);
-	if (!newpwd)
-		return (0);
-	if (!export(env, (char *[]){"export", newpwd, NULL}))
-		return (0);
-	free(newpwd);
+	replace_env(env, ft_envnew(ft_strdup("PWD"), ft_strdup(cwd), NULL));
 	return (1);
 }
 
