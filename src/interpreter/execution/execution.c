@@ -75,7 +75,7 @@ static void	execute_cmd(t_execution execution, t_node *node)
 	{
 		execute_built_ins(execution, node);
 		parent(execution);
-		return ;
+		return ;	
 	}
 	execution.ms->pids = add_pid_space(execution.ms, execution.ms->pids);
 	pid = fork();
@@ -99,8 +99,9 @@ void	execute_node(t_execution execution, t_node *node,
 	if (node->type == T_TREE)
 	{
 		execution = execute_left(execution, node, last_operator);
-		if (node->tree.operator == T_PIPE)
-			execution.ms->error_occured = 0;
+		if (node->tree.operator == T_PIPE && execution.should_execute)
+			execution.should_execute = 1;
+		execution.ms->error_occured = !execution.should_execute;
 		execution = execute_right(execution, node, last_operator);
 	}
 	else

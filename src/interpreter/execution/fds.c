@@ -16,9 +16,9 @@ void	close_all_fds(t_ms *ms)
 {
 	int	i;
 
-	i = 3;
+	i = 0;
 	while (i < 1024)
-		try_close_fd(i++);
+		close(i++);
 	errno = ms->exit_code;
 }
 

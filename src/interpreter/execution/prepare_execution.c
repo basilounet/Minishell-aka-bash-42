@@ -111,7 +111,7 @@ void	prepare_and_execute(t_ms *ms, t_node *node)
 	ms->error_occured = reset_envp(ms);
 	if (DEBUG)
 		print_node(node, 0);
-	if (ms->error_occured)
+	if (ms->error_occured || g_sig == SIGINT)
 	{
 		unlink_here_docs(ms);
 		return ;

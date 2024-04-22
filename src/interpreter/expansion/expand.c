@@ -55,7 +55,7 @@ int	expand_args(t_ms *ms, t_node *node, bool is_export)
 		{
 			exp_var = exp_args_core(ms, node, &tmp_tok, is_export);
 			if (!exp_var.line)
-				continue ;
+				break ;
 			if (should_split_ifs(tmp_char) || ft_countc(tmp_tok->arg, -1))
 				split_ifs(&tmp_tok, exp_var.is_wildcard, exp_var.is_expand);
 			free(tmp_char);
@@ -76,7 +76,7 @@ static int	exp_redirs_core(t_ms *ms, t_tokens *tmp_tok)
 	tmp_char = tmp_tok->arg;
 	exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1, 1, 1, 1});
 	tmp_tok->arg = exp_var.line;
-	if (ft_countc(tmp_tok->arg, -1) || tmp_tok->arg[0] == 0)
+	if (ft_countc(tmp_tok->arg, -1) || (tmp_tok->arg[0] == 0 && ft_countc(tmp_char, '$')))
 	{
 		perr((t_perr){ms, 1, 2, 1}, tmp_char, ": ambiguous redirect");
 		free(tmp_char);

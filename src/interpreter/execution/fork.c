@@ -86,16 +86,13 @@ static void	dup_child(t_execution execution)
 
 void	child(t_execution execution, t_node *node)
 {
-	int	error_occured;
-
 	signal(SIGPIPE, SIG_IGN);
 	set_interactive_mode(3);
 	execution.input = get_input_fd(node->cmd.redirects);
 	execution.output = get_output_fd(node->cmd.redirects);
-	error_occured = 0;
 	if (node->cmd.args)
-		error_occured = check_command(execution.ms, &node->cmd.args->arg);
-	error_occured = transform_to_chars(execution.ms, node);
+		execution.ms->error_occured = check_command(execution.ms, &node->cmd.args->arg);
+	execution.ms->error_occured = transform_to_chars(execution.ms, node);
 	dup_child(execution);
 	close_all_fds(execution.ms);
 	if (execution.should_execute &&node->cmd.args && !execution.ms->error_occured

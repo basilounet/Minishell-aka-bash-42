@@ -15,7 +15,7 @@
 
 void	replace_env(t_env **env, t_env *new_env)
 {
-	if (new_env->var)
+	if (new_env->var || !ft_getenv(*env, new_env->name))
 	{
 		*env = unset_name(*env, new_env->name);
 		ft_envadd_back(env, new_env);
