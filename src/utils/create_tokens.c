@@ -26,47 +26,6 @@ t_tokens	*ft_toknew(t_symbol symbol, char *arg, t_tokens *next)
 	return (stack);
 }
 
-t_tokens	*ft_toklast(t_tokens *stack)
-{
-	t_tokens	*tmp;
-
-	tmp = stack;
-	if (!tmp)
-		return (NULL);
-	while (tmp->next)
-		tmp = tmp->next;
-	return (tmp);
-}
-
-void	ft_tokadd_back(t_tokens **stack, t_tokens *new)
-{
-	t_tokens	*last;
-
-	if (!new)
-		return ;
-	if (!*stack)
-	{
-		*stack = new;
-		return ;
-	}
-	last = ft_toklast(*stack);
-	last->next = new;
-}
-
-void	ft_tokadd_front(t_tokens **stack, t_tokens *new)
-{
-	if (!new)
-	{
-		if (!*stack)
-		{
-			*stack = new;
-			return ;
-		}
-	}
-	ft_toklast(new)->next = *stack;
-	*stack = new;
-}
-
 void	ft_tokclear(t_tokens **stack)
 {
 	t_tokens	*tmp;
@@ -77,7 +36,6 @@ void	ft_tokclear(t_tokens **stack)
 		if ((*stack)->arg)
 			free((*stack)->arg);
 		free(*stack);
-		//*stack = NULL;
 		*stack = tmp;
 	}
 	*stack = NULL;
@@ -93,19 +51,4 @@ t_tokens	*ft_tokpop(t_tokens **stack)
 	*stack = (*stack)->next;
 	current_token->next = NULL;
 	return (current_token);
-}
-
-int	ft_toksize(t_tokens *tokens)
-{
-	t_tokens	*tmp;
-	int			i;
-
-	i = 0;
-	tmp = tokens;
-	while (tmp)
-	{
-		i++;
-		tmp = tmp->next;
-	}
-	return (i);
 }

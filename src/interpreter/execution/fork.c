@@ -12,20 +12,31 @@
 
 #include <minishell.h>
 
-void	close_all_fds(t_ms *ms)
+static int	start_built_ins(t_execution execution, t_node *node)
 {
-	int	i;
-
-	i = 3;
-	while (i < 1024)
-		try_close_fd(i++);
-	errno = ms->exit_code;
-}
-
-void	try_close_fd(int fd)
-{
-	if (fd > 2)
-		close(fd);
+	if (!ft_strcmp(node->cmd.args->arg, "echo"))
+		echo(execution.ms, node->cmd.char_args);
+	else if (!ft_strcmp(node->cmd.args->arg, "exit"))
+		ft_exit(execution.ms, node->cmd.char_args);
+	else if (!ft_strcmp(node->cmd.args->arg, "cd"))
+		cd(execution.ms, &execution.ms->env, node->cmd.char_args);
+	else if (!ft_strcmp(node->cmd.args->arg, "pwd"))
+		pwd(execution.ms);
+	else if (!ft_strcmp(node->cmd.args->arg, "export"))
+	{
+		export(execution.ms, &execution.ms->env, node->cmd.char_args);
+		reset_envp(execution.ms);
+	}
+	else if (!ft_strcmp(node->cmd.args->arg, "unset"))
+	{
+		unset(execution.ms, &execution.ms->env, node->cmd.char_args);
+		reset_envp(execution.ms);
+	}
+	else if (!ft_strcmp(node->cmd.args->arg, "env"))
+		env(execution.ms, execution.ms->env, node->cmd.char_args);
+	else
+		return (0);
+	return (1);
 }
 
 int	execute_built_ins(t_execution execution, t_node *node)
@@ -43,27 +54,7 @@ int	execute_built_ins(t_execution execution, t_node *node)
 		if (execution.output >= 0)
 			dup2(execution.output, STDOUT_FILENO);
 	}
-	if (!ft_strcmp(node->cmd.args->arg, "echo"))
-		echo(execution.ms, node->cmd.char_args);
-	else if (!ft_strcmp(node->cmd.args->arg, "exit"))
-		blabla = ft_exit(execution.ms, node->cmd.char_args);
-	else if (!ft_strcmp(node->cmd.args->arg, "cd"))
-		cd(execution.ms, &execution.ms->env, node->cmd.char_args);
-	else if (!ft_strcmp(node->cmd.args->arg, "pwd"))
-		pwd(execution.ms);
-	else if (!ft_strcmp(node->cmd.args->arg, "export"))
-	{
-		export(execution.ms, &execution.ms->env, node->cmd.char_args);
-		reset_envp(execution.ms);
-	}
-	else if (!ft_strcmp(node->cmd.args->arg, "unset"))
-	{
-		unset(execution.ms, &execution.ms->env, node->cmd.char_args);
-		reset_envp(execution.ms);
-	}
-	else if (!ft_strcmp(node->cmd.args->arg, "env"))
-		env(execution.ms, execution.ms->env);
-	else
+	if (!start_built_ins(execution, node))
 		return (0);
 	if (execution.is_in_pipe)
 	{
@@ -77,17 +68,8 @@ int	execute_built_ins(t_execution execution, t_node *node)
 	return (1);
 }
 
-void	child(t_execution execution, t_node *node)
+static void	dup_child(t_execution execution)
 {
-	int	error_occured;
-
-	set_interactive_mode(3);
-	execution.input = get_input_fd(node->cmd.redirects);
-	execution.output = get_output_fd(node->cmd.redirects);
-	error_occured = 0;
-	if (node->cmd.args)
-		error_occured = check_command(execution.ms, &node->cmd.args->arg);
-	error_occured = transform_to_chars(execution.ms, node);
 	if (execution.input >= 0)
 		dup2(execution.input, STDIN_FILENO);
 	else if (execution.left_pipe[READ] >= 0)
@@ -100,6 +82,20 @@ void	child(t_execution execution, t_node *node)
 		dup2(execution.right_pipe[WRITE], STDOUT_FILENO);
 	else if (execution.upper_pipe[WRITE] >= 0)
 		dup2(execution.upper_pipe[WRITE], STDOUT_FILENO);
+}
+
+void	child(t_execution execution, t_node *node)
+{
+	int	error_occured;
+
+	set_interactive_mode(3);
+	execution.input = get_input_fd(node->cmd.redirects);
+	execution.output = get_output_fd(node->cmd.redirects);
+	error_occured = 0;
+	if (node->cmd.args)
+		error_occured = check_command(execution.ms, &node->cmd.args->arg);
+	error_occured = transform_to_chars(execution.ms, node);
+	dup_child(execution);
 	close_all_fds(execution.ms);
 	if (!error_occured && node->cmd.args
 		&& !(is_built_in(node->cmd.args->arg) && execute_built_ins(execution,

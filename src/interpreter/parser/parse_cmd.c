@@ -21,7 +21,7 @@ static void	redlist_add(t_ms *ms, t_node *node, t_tokens **tokens, t_symbol sym)
 		if ((ft_countc((*tokens)->arg, '\"') || ft_countc((*tokens)->arg,
 					'\'')))
 			(*tokens)->symbol = T_INPUT;
-		get_new_file(ms, &(*tokens)->arg);
+		open_heredoc(ms, &(*tokens)->arg);
 		free((*tokens)->arg);
 		(*tokens)->arg = ft_str_reajoin("/tmp/here_doc_",
 				ft_itoa(ms->heredoc_number++), 0, 1);

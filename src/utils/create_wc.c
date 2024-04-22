@@ -60,7 +60,7 @@ bool	ft_wcnew_back(t_wc **tokens, t_symbol symbol, char *arg)
 	if (!new)
 		return (false);
 	ft_wcadd_back(tokens, new);
-	return (true); 
+	return (true);
 }
 
 void	ft_wcclear(t_wc **stack)

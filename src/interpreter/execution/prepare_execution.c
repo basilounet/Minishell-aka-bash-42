@@ -40,79 +40,6 @@ int	transform_to_chars(t_ms *ms, t_node *node)
 	return (0);
 }
 
-int	expand_args(t_ms *ms, t_node *node)
-{
-	t_expand	exp_var;
-	t_tokens	*tmp_tok;
-	char		*tmp_char;
-
-	tmp_tok = node->cmd.args;
-	while (tmp_tok)
-	{
-		tmp_char = tmp_tok->arg;
-		if (tmp_tok->symbol == T_ARG)
-		{
-			exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1, 1,
-				1, 1});
-			tmp_tok->arg = exp_var.line;
-		}
-		else
-			tmp_tok->arg = ft_strdup(tmp_char);
-		if (tmp_tok->arg[0] == 0)
-		{
-			node->cmd.args = shift_tokens(node->cmd.args, &tmp_tok);
-			free(tmp_char);
-			continue ;
-		}
-		if (should_split_ifs(tmp_char) || ft_countc(tmp_tok->arg, -1))
-			split_ifs(&tmp_tok, exp_var.is_wildcard);
-		free(tmp_char);
-		if (tmp_tok)
-			tmp_tok = tmp_tok->next;
-	}
-	if (!node->cmd.args)
-		return (1);
-	return (0);
-}
-
-int	expand_redirects(t_ms *ms, t_node *node)
-{
-	t_expand	exp_var;
-	t_tokens	*tmp_tok;
-	char		*tmp_char;
-
-	if (node->type == T_TREE)
-		tmp_tok = node->tree.redirects;
-	else
-		tmp_tok = node->cmd.redirects;
-	while (tmp_tok)
-	{
-		if (T_OUTPUT <= tmp_tok->symbol && tmp_tok->symbol <= T_INPUT)
-		{
-			tmp_char = tmp_tok->arg;
-			exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1,
-					1, 1, 1});
-			tmp_tok->arg = exp_var.line;
-			if ((should_split_ifs(tmp_char) && ft_countc(tmp_tok->arg, -1))
-				|| tmp_tok->arg[0] == 0)
-			{
-				free(tmp_char);
-				ms->exit_code = perr(1, 1, 1, "ambiguous redirect");
-				return (1);
-			}
-			ft_free_ptr(1, tmp_char);
-			if (check_input(ms, tmp_tok))
-				return (1);
-		}
-		else if (tmp_tok->symbol == T_HEREDOC)
-			expand_here_doc(ms, tmp_tok);
-		if (T_OUTPUT <= tmp_tok->symbol && tmp_tok->symbol <= T_HEREDOC)
-			tmp_tok->symbol += 4;
-		tmp_tok = tmp_tok->next;
-	}
-	return (0);
-}
-
 int	check_command(t_ms *ms, char **cmd)
 {
 	char	*str;
@@ -160,12 +87,10 @@ void	prepare_and_execute(t_ms *ms, t_node *node)
 	int	error;
 
 	error = 0;
-	//ms->exit_code = 0;
 	ms->root_node = node;
 	error = reset_envp(ms);
 	if (DEBUG)
 		print_node(node, 0);
-	//if (ms->exit_code)
 	g_sig = 0;
 	if (error)
 	{

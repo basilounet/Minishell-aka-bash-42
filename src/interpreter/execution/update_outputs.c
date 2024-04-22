@@ -38,10 +38,10 @@ int	check_input(t_ms *ms, t_tokens *token)
 
 void	expand_here_doc(t_ms *ms, t_tokens *token)
 {
-	char	*str;
-	char	**map;
-	int		fd;
-	int		i;
+	char		*str;
+	char		**map;
+	int			fd;
+	int			i;
 	t_expand	exp_var;
 
 	map = ft_get_map_fd(token->arg);
@@ -56,8 +56,7 @@ void	expand_here_doc(t_ms *ms, t_tokens *token)
 	i = 0;
 	while (map[i])
 	{
-		exp_var = expand_var(ms, map[i++], (t_expand_args){1, 0,
-					1, 0, 0});
+		exp_var = expand_var(ms, map[i++], (t_expand_args){1, 0, 1, 0, 0});
 		str = exp_var.line;
 		ft_putstr_fd(str, fd);
 		ft_free_ptr(1, str);

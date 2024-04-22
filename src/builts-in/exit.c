@@ -22,16 +22,14 @@ int	ft_exit(t_ms *ms, char **args)
 	code = ft_atoll(args[1]);
 	if (code == -1)
 	{
-		printf("exit\n");
-		perr(1, 3, 1, "exit: ", args[1], ": numeric argument required");
-		ms->exit_code = 2;
+		ms->exit_code = perr(2, 3, 1, "exit: ", args[1], \
+			": numeric argument required");
 		return (1); //exit
 	}
 	if (args[2])
 	{
 		printf("exit\n");
-		perr(1, 1, 1, "exit: too many arguments");
-		ms->exit_code = 1;
+		ms->exit_code = perr(1, 1, 1, "exit: too many arguments");
 		return (0); //dont exit
 	}
 	ms->exit_code = (unsigned long long)code & 255;

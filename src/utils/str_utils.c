@@ -13,17 +13,6 @@
 #include <builts_in.h>
 #include <minishell.h>
 
-char	*ft_getenv(t_env *env, char *to_get)
-{
-	if (!env || !to_get)
-		return (NULL);
-	while (env && ft_strcmp(to_get, env->name))
-		env = env->next;
-	if (!env)
-		return (NULL);
-	return (env->var);
-}
-
 char	*ft_substrc(char *str, int start, int end)
 {
 	char	*new_str;
@@ -104,27 +93,4 @@ int	perr(int exit_code, int n, int bs, ...)
 	write(2, "\n", 1);
 	va_end(args);
 	return (exit_code);
-}
-
-char	*tokens_to_string(t_tokens *tokens)
-{
-	char	*str;
-	char	*quoted_str;
-
-	str = NULL;
-	while (tokens)
-	{
-		quoted_str = ft_strjoin3("\377", tokens->arg, "\377");
-		if (!quoted_str)
-		{
-			if (str)
-				free(str);
-			return (NULL);
-		}
-		str = ft_str_reajoin(str, quoted_str, 1, 1);
-		if (!str)
-			return (NULL);
-		tokens = tokens->next;
-	}
-	return (str);
 }

@@ -31,23 +31,8 @@ void	unlink_here_docs(t_ms *ms)
 	}
 }
 
-void	get_new_file(t_ms *ms, char **stop)
+static char	*heredoc_rl(char *str, t_ms *ms, char **stop, int fd)
 {
-	t_expand	exp_var;
-	char	*str;
-	int		fd;
-
-	exp_var = expand_var(ms, *stop, (t_expand_args){0});
-	str = exp_var.line;
-	ft_free_ptr(1, *stop);
-	*stop = str;
-	str = ft_str_reajoin("/tmp/here_doc_", ft_itoa(ms->heredoc_number), 0, 1);
-	fd = open(str, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-	ft_free_ptr(1, str);
-	str = NULL;
-	if (fd < 0)
-		return ;
-	g_sig = 0;
 	while (1)
 	{
 		str = readline("> ");
@@ -62,9 +47,34 @@ void	get_new_file(t_ms *ms, char **stop)
 		ft_putstr_fd("\n", fd);
 		ft_free_ptr(1, str);
 	}
+	return (str);
+}
+
+void	open_heredoc(t_ms *ms, char **stop)
+{
+	t_expand	exp_var;
+	char		*str;
+	int			fd;
+
+	exp_var = expand_var(ms, *stop, (t_expand_args){0});
+	str = exp_var.line;
+	ft_free_ptr(1, *stop);
+	*stop = str;
+	str = ft_str_reajoin("/tmp/here_doc_", ft_itoa(ms->heredoc_number), 0, 1);
+	fd = open(str, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	ft_free_ptr(1, str);
+	str = NULL;
+	if (fd < 0)
+		return ;
+	g_sig = 0;
+	str = heredoc_rl(str, ms, stop, fd);
 	if (!str && g_sig != SIGINT)
-		ft_printf("baseshell: warning: here-document delimited by end-of-file \
-(wanted `%s')\n", *stop);
+	{
+		ft_putstr_fd("baseshell: warning: here-document delimited by end-of-file \
+(wanted `", 2);
+		ft_putstr_fd(*stop, 2);
+		ft_putstr_fd("')\n", 2);
+	}
 	close(fd);
 	ft_free_ptr(1, str);
 }

@@ -107,6 +107,7 @@ typedef struct s_expand
 	char		*line;
 	int			state;
 	int			i;
+	int			is_expand;
 	int			is_wildcard;
 }				t_expand;
 
@@ -143,12 +144,15 @@ char    		*wildcards(t_ms *ms, char *char_wc);
 char			*symbol_to_char(t_tokens *token);
 int				is_existing_dir(char *path);
 int				is_evenly_quoted(char *str, int n);
-t_wc				*ft_wcnew(t_symbol symbol, char *arg, t_wc *next);
-t_wc				*ft_wclast(t_wc *stack);
-void				ft_wcadd_back(t_wc **stack, t_wc *new);
-bool				ft_wcnew_back(t_wc **tokens, t_symbol symbol, char *arg);
-void				ft_wcclear(t_wc **stack);
-void	quote_mask(char *wc, char *mask);
+t_wc			*ft_wcnew(t_symbol symbol, char *arg, t_wc *next);
+t_wc			*ft_wclast(t_wc *stack);
+void			ft_wcadd_back(t_wc **stack, t_wc *new);
+bool			ft_wcnew_back(t_wc **tokens, t_symbol symbol, char *arg);
+void			ft_wcclear(t_wc **stack);
+void			quote_mask(char *wc, char *mask);
+bool			mask_wc(t_wc *wc);
+bool			get_files(t_tokens **files, DIR *directory, t_wc *wc, int *exit_code);
+void			sort_files(t_tokens *files);
 
 /*========== EXPAND ==========*/
 
@@ -172,7 +176,7 @@ char	*remove_quotes(t_expand exp_var, t_expand_args args);
 
 char			*change_ifs(char *str, char *should_remove);
 int				should_split_ifs(char *str);
-void	split_ifs(t_tokens **tokens, int is_wildcard);
+void	split_ifs(t_tokens **tokens, int is_wildcard, int is_expand);
 t_tokens		*shift_tokens(t_tokens *tokens, t_tokens **tmp_tok);
 
 /*----- PIDS -----*/
@@ -200,7 +204,11 @@ int				execute_built_ins(t_execution execution, t_node *node);
 void			child(t_execution execution, t_node *node);
 void			parent(t_execution execution);
 void			unlink_here_docs(t_ms *ms);
-void			try_close_fd(int fd);
+
+/*----- FDS -----*/
+
+void	close_all_fds(t_ms *ms);
+void	try_close_fd(int fd);
 
 /*----- UTILS -----*/
 

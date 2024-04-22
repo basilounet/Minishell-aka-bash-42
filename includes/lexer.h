@@ -51,6 +51,7 @@ typedef enum e_symbol
 	T_OR,
 	T_AND,
 	T_WILDCARD,
+	T_EXPAND,
 }					t_symbol;
 
 /*

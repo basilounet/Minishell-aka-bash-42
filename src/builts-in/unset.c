@@ -47,7 +47,7 @@ t_env	*unset_name(t_env *env, char *name)
 	while (env)
 	{
 		if (ft_strcmp(env->name, name) == 0)
-		{		
+		{
 			next = env->next;
 			if (first == env)
 				first = next;

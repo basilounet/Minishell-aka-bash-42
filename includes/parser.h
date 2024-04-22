@@ -67,7 +67,7 @@ int							is_symbol_set(int n, int exclude, t_symbol compared,
 
 /*========== PARSER ==========*/
 
-void						get_new_file(t_ms *ms, char **stop);
+void						open_heredoc(t_ms *ms, char **stop);
 int							parse_redlist(t_ms *ms, t_node *node,
 								t_tokens **tokens);
 t_node						*parse_prompt(t_ms *ms, t_tokens **tokens);

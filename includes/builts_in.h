@@ -55,7 +55,7 @@ int					print_export(t_env *env);
 int					export(t_ms *ms, t_env **env, char **args);
 void				replace_env(t_env **env, t_env *new);
 
-void				env(t_ms *ms, t_env *env);
+void				env(t_ms *ms, t_env *env, char **args);
 char				*ft_getenv(t_env *env, char *to_get);
 t_env				*ft_envnew(char *name, char *var, t_env *next);
 t_env				*ft_envlast(t_env *stack);

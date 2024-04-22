@@ -9,19 +9,22 @@ SRC =	builts-in/cd/cd_utils.c \
 		builts-in/exit.c \
 		builts-in/pwd.c \
 		builts-in/unset.c \
-		interactive/signals.c \
 		interpreter/execution/execution_utils.c \
 		interpreter/execution/execution.c \
 		interpreter/execution/fork.c \
 		interpreter/execution/ifs.c \
-		interpreter/execution/open_outputs.c \
+		interpreter/execution/heredoc.c \
 		interpreter/execution/pids.c \
 		interpreter/execution/prepare_execution.c \
 		interpreter/execution/update_inputs.c \
 		interpreter/execution/update_outputs.c \
+		interpreter/execution/fds.c \
 		interpreter/expansion/expand.c \
+		interpreter/expansion/expand_arg.c \
 		interpreter/expansion/expand_utils.c \
 		interpreter/expansion/wildcards.c \
+		interpreter/expansion/wc_mask.c \
+		interpreter/expansion/wc_sort.c \
 		interpreter/parser/lexer.c \
 		interpreter/parser/parse_cmd.c \
 		interpreter/parser/parse_logex.c \
@@ -31,9 +34,12 @@ SRC =	builts-in/cd/cd_utils.c \
 		utils/create_env.c \
 		utils/print_node.c \
 		utils/create_tokens.c \
+		utils/tok_utils.c \
+		utils/env_utils.c \
 		utils/create_wc.c \
 		utils/prompt.c \
-		utils/str_utils.c
+		utils/str_utils.c \
+		utils/signals.c
 
 MAIN = minishell.c
 

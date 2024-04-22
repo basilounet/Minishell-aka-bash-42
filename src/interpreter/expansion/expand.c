@@ -3,128 +3,103 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/21 16:48:34 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/16 18:20:27 by bvasseur         ###   ########.fr       */
+/*   Created: 2024/04/19 17:32:18 by gangouil          #+#    #+#             */
+/*   Updated: 2024/04/19 17:32:19 by gangouil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static t_expand	get_final_expand(t_ms *ms, t_expand exp_var, t_expand_args args)
+static t_expand	exp_args_core(t_ms *ms, t_node *node, t_tokens **tmp_tok,
+		char *tmp_char)
 {
-	char	*pre_wc;
+	t_expand	exp_var;
 
-	exp_var.is_wildcard = 0;
-	if (exp_var.line && args.shld_ch_ifs)
-		exp_var.line = change_ifs(exp_var.line, exp_var.mask);
-	pre_wc = ft_strdup(exp_var.line);
-	if (exp_var.line && args.expand_wc)
-		exp_var.line = place_wildcards(ms, exp_var);
-	if (ft_strcmp(pre_wc, exp_var.line) == 0)
+	if ((*tmp_tok)->symbol == T_ARG)
 	{
-		if (exp_var.line && !args.ign_qte)
-			exp_var.line = remove_quotes(exp_var, args);
+		exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1, 1, 1, 1});
+		(*tmp_tok)->arg = exp_var.line;
+		if (exp_var.is_expand)
+			(*tmp_tok)->symbol = T_EXPAND;
 	}
 	else
-		exp_var.is_wildcard = 1;
-	ft_free_ptr(2, pre_wc, exp_var.mask);
+		(*tmp_tok)->arg = ft_strdup(tmp_char);
+	if ((*tmp_tok)->arg[0] == 0 && (*tmp_tok)->symbol == T_EXPAND)
+	{
+		node->cmd.args = shift_tokens(node->cmd.args, tmp_tok);
+		free(tmp_char);
+		return ((t_expand){0});
+	}
 	return (exp_var);
 }
 
-char	*remove_quotes(t_expand exp_var, t_expand_args args)
+int	expand_args(t_ms *ms, t_node *node)
 {
-	char	*line;
-	int		i;
-	int		j;
+	t_expand	exp_var;
+	t_tokens	*tmp_tok;
+	char		*tmp_char;
 
-	(void)args;
-	i = -1;
-	j = 0;
-	line = ft_calloc(sizeof(char), ft_strlen(exp_var.line)
-			- ft_countc(exp_var.mask, 'y') + 1);
-	if (!line || !exp_var.line || !exp_var.mask)
+	tmp_tok = node->cmd.args;
+	while (tmp_tok)
 	{
-		ft_free_ptr(2, exp_var.line, line);
-		return (NULL);
+		tmp_char = tmp_tok->arg;
+		exp_var = exp_args_core(ms, node, &tmp_tok, tmp_char);
+		if (!exp_var.line)
+			continue ;
+		if (should_split_ifs(tmp_char) || ft_countc(tmp_tok->arg, -1))
+			split_ifs(&tmp_tok, exp_var.is_wildcard, exp_var.is_expand);
+		free(tmp_char);
+		if (tmp_tok)
+			tmp_tok = tmp_tok->next;
 	}
-	while (exp_var.line[++i])
-		if (exp_var.mask[i] == 'n')
-			line[j++] = exp_var.line[i];
-	ft_free_ptr(1, exp_var.line);
-	return (line);
-}
-
-int	expand_special_cases(t_ms *ms, char *str, t_expand *expand,
-		t_expand_args args)
-{
-	char	*tmp_char;
-
-	if (expand->state != 2 && str[expand->i] == '$' && str[expand->i
-			+ 1] == '?')
-	{
-		tmp_char = ft_itoa(ms->exit_code);
-		ft_strncpy(expand->line + ft_strlen(expand->line), tmp_char,
-			ft_strlen(tmp_char) + 1);
-		ft_free_ptr(1, tmp_char);
+	if (!node->cmd.args)
 		return (1);
-	}
-	if (!args.expand_special_cases)
-		return (0);
-	if (expand->state == 0 && str[expand->i] == '~' && (str[expand->i
-				+ 1] == ' ' || str[expand->i + 1] == 0) && (expand->i <= 0
-			|| str[expand->i - 1] == ' '))
-	{
-		ft_strncpy(expand->line + ft_strlen(expand->line), ft_getenv(ms->env,
-				"HOME"), ft_strlen(ft_getenv(ms->env, "HOME")) + 1);
-		expand->i--;
-		return (1);
-	}
 	return (0);
 }
 
-t_expand	expand(t_ms *ms, char *str, t_expand expand, t_expand_args args)
+static int	exp_redirs_core(t_ms *ms, t_tokens *tmp_tok)
 {
-	if (!args.ign_qte)
-		expand.state = change_state(str + expand.i, expand.state, expand.mask,
-				ft_strlen(expand.line));
-	if (expand_special_cases(ms, str, &expand, args))
-		expand.i++;
-	else if (str[expand.i] == '$' && len_env_name(str + expand.i + 1)
-		&& expand.state != 2 && args.should_expand)
+	t_expand	exp_var;
+	char		*tmp_char;
+
+	tmp_char = tmp_tok->arg;
+	exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1, 1, 1, 1});
+	tmp_tok->arg = exp_var.line;
+	if ((should_split_ifs(tmp_char) && ft_countc(tmp_tok->arg, -1))
+		|| tmp_tok->arg[0] == 0)
 	{
-		expand.name = ft_substr(str, expand.i + 1, len_env_name(str + expand.i
-					+ 1));
-		ft_strncpy(expand.line + ft_strlen(expand.line), ft_getenv(ms->env,
-				expand.name), ft_strlen(ft_getenv(ms->env, expand.name)) + 1);
-		ft_free_ptr(1, expand.name);
+		free(tmp_char);
+		ms->exit_code = perr(1, 1, 1, "ambiguous redirect");
+		return (0);
 	}
-	else
-		expand.line[ft_strlen(expand.line)] = str[expand.i];
-	if (str[expand.i++] == '$' && len_env_name(str + expand.i)
-		&& expand.state != 2 && args.should_expand)
-		expand.i += len_env_name(str + expand.i);
-	return (expand);
+	ft_free_ptr(1, tmp_char);
+	if (check_input(ms, tmp_tok))
+		return (0);
+	return (1);
 }
 
-t_expand	expand_var(t_ms *ms, char *str, t_expand_args args)
+int	expand_redirects(t_ms *ms, t_node *node)
 {
-	t_expand	expand_var;
+	t_tokens	*tmp_tok;
 
-	ft_memset(&expand_var, 0, sizeof(t_expand));
-	expand_var.line = ft_calloc(sizeof(char), exp_len(ms->env, str, args, 0)
-			+ special_cases_total_len(ms, str, args) + 1);
-	expand_var.mask = ft_calloc(sizeof(char), exp_len(ms->env, str, args, 0)
-			+ special_cases_total_len(ms, str, args) + 1);
-	if (!expand_var.line || !expand_var.mask || !str)
+	if (node->type == T_TREE)
+		tmp_tok = node->tree.redirects;
+	else
+		tmp_tok = node->cmd.redirects;
+	while (tmp_tok)
 	{
-		ft_free_ptr(2, expand_var.line, expand_var.mask);
-		return ((t_expand){0});
+		if (T_OUTPUT <= tmp_tok->symbol && tmp_tok->symbol <= T_INPUT)
+		{
+			if (!exp_redirs_core(ms, tmp_tok))
+				return (1);
+		}
+		else if (tmp_tok->symbol == T_HEREDOC)
+			expand_here_doc(ms, tmp_tok);
+		if (T_OUTPUT <= tmp_tok->symbol && tmp_tok->symbol <= T_HEREDOC)
+			tmp_tok->symbol += 4;
+		tmp_tok = tmp_tok->next;
 	}
-	ft_memset(expand_var.mask, 'n', exp_len(ms->env, str, args, 0)
-		+ special_cases_total_len(ms, str, args));
-	while (str[expand_var.i])
-		expand_var = expand(ms, str, expand_var, args);
-	return (get_final_expand(ms, expand_var, args));
+	return (0);
 }

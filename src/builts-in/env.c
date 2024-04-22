@@ -10,16 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/11 20:36:42 by gangouil          #+#    #+#             */
-/*   Updated: 2024/03/24 20:58:57 by bvasseur         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <minishell.h>
 
-void	env(t_ms *ms, t_env *env)
+void	env(t_ms *ms, t_env *env, char **args)
 {
+	if (args[1])
+	{
+		ms->exit_code = perr(127, 3, 0, "env: ", \
+			args[1], ": No such file or directory");
+		return ;
+	}
 	while (env)
 	{
 		if (env->var)

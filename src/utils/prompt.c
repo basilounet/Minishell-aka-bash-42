@@ -68,6 +68,29 @@ char	*add_colors(char *str, char *(*color_pattern)(int, int))
 	return (colored_str);
 }
 
+static char	*set_prompt_str(t_env *env, char *home, char *pwd)
+{
+	char	*str;
+
+	if (ft_getenv(env, "USER"))
+		str = ft_str_reajoin(ft_getenv(env, "USER"), ft_strdup("@"), 0, 1);
+	else
+		str = ft_strdup("USER@");
+	if (ft_getenv(env, "BASE"))
+		str = ft_str_reajoin(str, ft_strjoin(ft_getenv(env, "BASE"), "shell:"),
+				1, 1);
+	else
+		str = ft_str_reajoin(str, "baseshell:", 1, 0);
+	if ((home && pwd && !ft_strncmp(home, pwd, ft_strlen(home))
+			&& home[ft_strlen(home)] != '/') && (pwd[ft_strlen(home)] == '/'
+			|| pwd[ft_strlen(home)] == '\0'))
+		str = ft_str_reajoin(str, ft_strjoin3("~", pwd + ft_strlen(home), "$ "),
+				1, 1);
+	else
+		str = ft_str_reajoin(str, ft_strjoin(pwd, "$ "), 1, 1);
+	return (str);
+}
+
 char	*get_prompt(t_env *env)
 {
 	char	*home;
@@ -78,21 +101,7 @@ char	*get_prompt(t_env *env)
 	home = ft_getenv(env, "HOME");
 	if (!pwd)
 		pwd = getcwd(NULL, 0);
-	if (ft_getenv(env, "USER"))
-		str = ft_str_reajoin(ft_getenv(env, "USER"), ft_strdup("@"), 0, 1);
-	else
-		str = ft_strdup("USER@");
-	if (ft_getenv(env, "BASE"))
-		str = ft_str_reajoin(str, ft_strjoin(ft_getenv(env, "BASE"), "shell:"), 1, 1);
-	else
-		str = ft_str_reajoin(str, "baseshell:", 1, 0);
-	if ((home && pwd && !ft_strncmp(home, pwd, ft_strlen(home))
-			&& home[ft_strlen(home)] != '/') && (pwd[ft_strlen(home)] == '/'
-			|| pwd[ft_strlen(home)] == '\0'))
-		str = ft_str_reajoin(str, ft_strjoin3("~", pwd + ft_strlen(home), "$ "),
-				1, 1);
-	else
-		str = ft_str_reajoin(str, ft_strjoin(pwd, "$ "), 1, 1);
+	str = set_prompt_str(env, home, pwd);
 	ft_free_ptr(1, pwd);
 	return (str);
 }
