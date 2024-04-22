@@ -47,7 +47,7 @@ int					ft_rand(int a, int b);
 int					ft_atoi_base(char *str, char *base);
 int					ft_atoi(const char *str);
 long				ft_atol(const char *str);
-long long			ft_atoll(const char *str);
+int					ft_atoll(const char *str, long long *number);
 char				*ft_itoa(int n);
 char				*ft_itob(unsigned long n, const char *base);
 int					ft_btoi(char *str, const char *base);

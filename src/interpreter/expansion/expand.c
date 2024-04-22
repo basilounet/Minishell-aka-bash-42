@@ -12,14 +12,20 @@
 
 #include <minishell.h>
 
-static t_expand	exp_args_core(t_ms *ms, t_node *node, t_tokens **tmp_tok,
-		char *tmp_char)
+static t_expand	exp_args_core(t_ms *ms, t_node *node, t_tokens **tmp_tok, \
+	bool is_export)
 {
 	t_expand	exp_var;
+	char		*tmp_char;
 
+	tmp_char = (*tmp_tok)->arg;
+	ft_memset(&exp_var, 0, sizeof(t_expand));
 	if ((*tmp_tok)->symbol == T_ARG)
 	{
-		exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1, 1, 1, 1});
+		if (!is_export)
+			exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1, 1, 1, 1});
+		else
+			exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1, 1, 0, 0});
 		(*tmp_tok)->arg = exp_var.line;
 		if (exp_var.is_expand)
 			(*tmp_tok)->symbol = T_EXPAND;
@@ -35,7 +41,7 @@ static t_expand	exp_args_core(t_ms *ms, t_node *node, t_tokens **tmp_tok,
 	return (exp_var);
 }
 
-int	expand_args(t_ms *ms, t_node *node)
+int	expand_args(t_ms *ms, t_node *node, bool is_export)
 {
 	t_expand	exp_var;
 	t_tokens	*tmp_tok;
@@ -45,12 +51,15 @@ int	expand_args(t_ms *ms, t_node *node)
 	while (tmp_tok)
 	{
 		tmp_char = tmp_tok->arg;
-		exp_var = exp_args_core(ms, node, &tmp_tok, tmp_char);
-		if (!exp_var.line)
-			continue ;
-		if (should_split_ifs(tmp_char) || ft_countc(tmp_tok->arg, -1))
-			split_ifs(&tmp_tok, exp_var.is_wildcard, exp_var.is_expand);
-		free(tmp_char);
+		if (tmp_tok->symbol != T_EXPAND)
+		{
+			exp_var = exp_args_core(ms, node, &tmp_tok, is_export);
+			if (!exp_var.line)
+				continue ;
+			if (should_split_ifs(tmp_char) || ft_countc(tmp_tok->arg, -1))
+				split_ifs(&tmp_tok, exp_var.is_wildcard, exp_var.is_expand);
+			free(tmp_char);
+		}
 		if (tmp_tok)
 			tmp_tok = tmp_tok->next;
 	}
@@ -67,11 +76,10 @@ static int	exp_redirs_core(t_ms *ms, t_tokens *tmp_tok)
 	tmp_char = tmp_tok->arg;
 	exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1, 1, 1, 1});
 	tmp_tok->arg = exp_var.line;
-	if ((should_split_ifs(tmp_char) && ft_countc(tmp_tok->arg, -1))
-		|| tmp_tok->arg[0] == 0)
+	if (ft_countc(tmp_tok->arg, -1) || tmp_tok->arg[0] == 0)
 	{
+		perr((t_perr){ms, 1, 2, 1}, tmp_char, ": ambiguous redirect");
 		free(tmp_char);
-		perr((t_perr){ms, 1, 1, 1}, "ambiguous redirect");
 		return (0);
 	}
 	ft_free_ptr(1, tmp_char);

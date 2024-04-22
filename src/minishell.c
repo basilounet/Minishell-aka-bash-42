@@ -34,6 +34,7 @@ static void	temp_execution(t_ms *ms, char *line)
 	g_sig = 0;
 	ms->tokens = NULL;
 	ms->heredoc_number = 0;
+	ms->error_occured = 0;
 	if (lexer(ms, &ms->tokens, line) == 0)
 	{
 		ft_tokclear(&ms->tokens);
@@ -85,6 +86,8 @@ int	main(int ac, char **av, char **char_env)
 	while (1)
 	{
 		set_interactive_mode(1);
+		if (ms.should_exit)
+			break ;
 		ms.line = readline(ms.prompt);
 		if (!ms.line)
 			break ;
@@ -94,6 +97,7 @@ int	main(int ac, char **av, char **char_env)
 		free(ms.prompt);
 		ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
 	}
+	ft_printf("exit\n");
 	rl_clear_history();
 	ft_free_ms(&ms);
 	return (ms.exit_code);

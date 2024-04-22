@@ -17,12 +17,11 @@ int	ft_exit(t_ms *ms, char **args)
 {
 	long long	code;
 
+	code = 0;
 	if (!args[1])
-		return (1); // exit
-	code = ft_atoll(args[1]);
-	if (code == -1)
+		return (1); // exit 
+	if (!ft_atoll(args[1], &code))
 	{
-		printf("exit\n");
 		perr((t_perr){ms, 2, 3, 1}, "exit: ", args[1],
 			": numeric argument required");
 		return (1); // exit

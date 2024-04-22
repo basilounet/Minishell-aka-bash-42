@@ -15,8 +15,14 @@
 
 void	replace_env(t_env **env, t_env *new_env)
 {
-	*env = unset_name(*env, new_env->name);
-	ft_envadd_back(env, new_env);
+	if (new_env->var)
+	{
+		*env = unset_name(*env, new_env->name);
+		ft_envadd_back(env, new_env);
+		return ;
+	}
+	ft_free_ptr(2, new_env->name, new_env->var);
+	free(new_env);
 }
 
 t_env	*parse_char_env(t_env *env, char *char_env, int j, int append)
@@ -34,12 +40,7 @@ t_env	*parse_char_env(t_env *env, char *char_env, int j, int append)
 	new_env = ft_envnew(name, var, NULL);
 	if (!new_env || !name || !var)
 	{
-		if (name)
-			free(name);
-		if (var)
-			free(var);
-		if (new_env)
-			free(new_env);
+		ft_free_ptr(3, new_env, name, var);
 		return (NULL);
 	}
 	return (new_env);

@@ -19,7 +19,8 @@ void	echo(t_ms *ms, char **args)
 
 	i = 1;
 	newline = 1;
-	if (args[1] && ft_strncmp(args[1], "-n", 2) == 0)
+	if (args[1] && ft_countc(args[1], 'n') == ft_strlen(args[1]) - 1
+		&& args[1][0] == '-')
 	{
 		newline = 0;
 		i++;

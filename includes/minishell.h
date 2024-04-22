@@ -76,6 +76,7 @@ typedef struct s_minishell
 	int			heredoc_number;
 	int			exit_code;
 	int			error_occured;
+	bool		should_exit;
 }				t_ms;
 
 /*
@@ -100,6 +101,7 @@ typedef struct s_execution
 	int			input;
 	int			output;
 	int			is_in_pipe;
+	int			should_execute;
 }				t_execution;
 
 typedef struct s_expand
@@ -129,8 +131,6 @@ typedef struct s_perr
 	int			n;
 	int			bs;
 }				t_perr;
-
-char			*tokens_to_string(t_tokens *tokens);
 
 /*========== ERRORS ==========*/
 
@@ -163,6 +163,7 @@ void			quote_mask(char *wc, char *mask);
 bool			mask_wc(t_wc *wc);
 bool			get_files(t_tokens **files, DIR *directory, t_wc *wc);
 void			sort_files(t_tokens *files);
+char			*tokens_to_string(t_tokens *tokens);
 
 /*========== EXPAND ==========*/
 
@@ -174,7 +175,7 @@ int				check_quotes(char *str);
 int				len_env_name(char *str);
 t_expand		expand_var(t_ms *ms, char *str, t_expand_args args);
 int				change_state(char *str, int state, char *shld_remove, int i);
-int				expand_args(t_ms *ms, t_node *node);
+int				expand_args(t_ms *ms, t_node *node, bool is_export);
 int				expand_redirects(t_ms *ms, t_node *node);
 void			expand_here_doc(t_ms *ms, t_tokens *token);
 void			expand_tokens(t_ms *ms, t_node *node);

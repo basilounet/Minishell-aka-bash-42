@@ -40,13 +40,33 @@ int	transform_to_chars(t_ms *ms, t_node *node)
 	return (0);
 }
 
+int	check_directory(t_ms *ms, char *cmd)
+{
+	if (ft_countc(cmd, '/'))
+	{
+		if (is_existing_dir(cmd))
+		{
+			perr((t_perr){ms, 126, 2, 1}, cmd, ": Is a directory");
+			return (1);
+		}
+		else
+			access(cmd, X_OK);
+		if (errno == EACCES)
+			perr((t_perr){ms, 126, 3, 1}, cmd, ": ", strerror(errno));
+		else
+			perr((t_perr){ms, 127, 3, 1}, cmd, ": ", strerror(errno));
+		return (1);
+	}
+	return (0);
+}
+
 int	check_command(t_ms *ms, char **cmd)
 {
 	char	*str;
 	int		i;
 
-	if (!cmd || !*cmd || is_built_in(*cmd) || (!access(*cmd, F_OK)
-			&& !access(*cmd, X_OK)))
+	if (!cmd || !*cmd || is_built_in(*cmd) || (!is_existing_dir(*cmd) 
+		&& !access(*cmd, F_OK) && !access(*cmd, X_OK)))
 		return (0);
 	i = -1;
 	while (ms->envp && ms->envp[++i])
@@ -62,6 +82,8 @@ int	check_command(t_ms *ms, char **cmd)
 		}
 		free(str);
 	}
+	if (check_directory(ms, *cmd))
+		return (1);
 	perr((t_perr){ms, 127, 2, 1}, *cmd, " : command not found");
 	return (1);
 }
@@ -96,7 +118,7 @@ void	prepare_and_execute(t_ms *ms, t_node *node)
 	}
 	ms->tokens = NULL;
 	execute_node((t_execution){ms, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, -1,
-		-1, 0}, node, 0);
+		-1, 0, 1}, node, 0);
 	wait_pids(ms);
 	if (DEBUG)
 		ft_printf("exit_code : %d\n", ms->exit_code);

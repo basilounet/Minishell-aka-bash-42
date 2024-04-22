@@ -62,7 +62,8 @@ static void	execute_cmd(t_execution execution, t_node *node)
 {
 	int	pid;
 
-	if (g_sig == SIGINT || expand_args(execution.ms, node))
+	if (g_sig == SIGINT || expand_args(execution.ms, node, \
+		node->cmd.args && !ft_strcmp(node->cmd.args->arg, "export")))
 	{
 		if (g_sig == SIGINT)
 			execution.ms->exit_code = 130;
@@ -91,10 +92,10 @@ void	execute_node(t_execution execution, t_node *node,
 		t_symbol last_operator)
 {
 	execution.ms->error_occured = expand_redirects(execution.ms, node);
+	if (execution.ms->error_occured)
+		execution.should_execute = 0;
 	update_inputs(node);
 	update_outputs(node);
-	if (execution.ms->error_occured)
-		return ;
 	if (node->type == T_TREE)
 	{
 		execution = execute_left(execution, node, last_operator);

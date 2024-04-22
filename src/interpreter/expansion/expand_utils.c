@@ -71,7 +71,7 @@ int	special_cases_total_len(t_ms *ms, char *str, t_expand_args args)
 
 	ft_memset(&expand, 0, sizeof(t_expand));
 	len = 0;
-	while (str[expand.i])
+	while (str && str[expand.i])
 	{
 		if (!args.ign_qte)
 			expand.state = change_state(str + expand.i, expand.state, NULL, 0);
@@ -85,7 +85,8 @@ int	special_cases_total_len(t_ms *ms, char *str, t_expand_args args)
 			&& str[expand.i] == '~' && (str[expand.i + 1] == ' ' || str[expand.i
 					+ 1] == 0) && (expand.i <= 0 || str[expand.i - 1] == ' '))
 			len += ft_strlen(ft_getenv(ms->env, "HOME"));
-		expand.i++;
+		if (str[expand.i])
+			expand.i++;
 	}
 	return (len);
 }

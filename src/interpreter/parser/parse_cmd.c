@@ -14,9 +14,8 @@
 
 static void	redlist_add(t_ms *ms, t_node *node, t_tokens **tokens, t_symbol sym)
 {
-	g_sig = 0;
 	set_interactive_mode(0);
-	if (sym == T_HEREDOC)
+	if (sym == T_HEREDOC && g_sig != SIGINT)
 	{
 		if ((ft_countc((*tokens)->arg, '\"') || ft_countc((*tokens)->arg,
 					'\'')))

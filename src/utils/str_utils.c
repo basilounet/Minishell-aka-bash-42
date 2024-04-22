@@ -64,7 +64,8 @@ int	is_existing_dir(char *path)
 	if (!path)
 		return (0);
 	stats = (struct stat){0};
-	stat(path, &stats);
+	if (stat(path, &stats) == -1)
+		return (0);
 	if (S_ISDIR(stats.st_mode))
 		return (1);
 	return (0);

@@ -17,7 +17,7 @@ static int	start_built_ins(t_execution execution, t_node *node)
 	if (!ft_strcmp(node->cmd.args->arg, "echo"))
 		echo(execution.ms, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "exit"))
-		ft_exit(execution.ms, node->cmd.char_args);
+		execution.ms->should_exit = ft_exit(execution.ms, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "cd"))
 		cd(execution.ms, &execution.ms->env, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "pwd"))
@@ -88,6 +88,7 @@ void	child(t_execution execution, t_node *node)
 {
 	int	error_occured;
 
+	signal(SIGPIPE, SIG_IGN);
 	set_interactive_mode(3);
 	execution.input = get_input_fd(node->cmd.redirects);
 	execution.output = get_output_fd(node->cmd.redirects);
@@ -97,7 +98,7 @@ void	child(t_execution execution, t_node *node)
 	error_occured = transform_to_chars(execution.ms, node);
 	dup_child(execution);
 	close_all_fds(execution.ms);
-	if (node->cmd.args && !execution.ms->error_occured
+	if (execution.should_execute &&node->cmd.args && !execution.ms->error_occured
 		&& !(is_built_in(node->cmd.args->arg) && execute_built_ins(execution,
 				node)))
 		execve(node->cmd.char_args[0], node->cmd.char_args,

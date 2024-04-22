@@ -98,7 +98,7 @@ static void	add_ifs(char **split, t_tokens **tokens, int is_wildcard,
 	{
 		if (is_expand)
 			ft_tokadd_back(&tok_list, ft_toknew(T_EXPAND, split[i], NULL));
-		if (is_wildcard)
+		else if (is_wildcard)
 			ft_tokadd_back(&tok_list, ft_toknew(T_WILDCARD, split[i], NULL));
 		else
 			ft_tokadd_back(&tok_list, ft_toknew(T_ARG, split[i], NULL));
