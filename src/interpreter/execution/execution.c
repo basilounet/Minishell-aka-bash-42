@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 14:50:58 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 14:20:38 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/22 13:20:15 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static t_execution	execute_left(t_execution execution, t_node *node,
 	if (node->tree.operator == T_PIPE)
 	{
 		if (pipe(execution.right_pipe) == -1)
-			execution.ms->exit_code = perr(1, 1, 1, strerror(errno));
+			perr((t_perr){execution.ms, 1, 1, 1}, strerror(errno));
 		execution.is_in_pipe = 1;
 	}
 	if (execution.is_in_pipe && last_operator == T_PIPE
@@ -64,11 +64,12 @@ static void	execute_cmd(t_execution execution, t_node *node)
 
 	if (g_sig == SIGINT || expand_args(execution.ms, node))
 	{
-		execution.ms->exit_code = 130;
+		if (g_sig == SIGINT)
+			execution.ms->exit_code = 130;
 		parent(execution);
 		return ;
 	}
-	if (!execution.is_in_pipe && node->cmd.args
+	if (!execution.is_in_pipe && node->cmd.args && !execution.ms->error_occured
 		&& is_built_in(node->cmd.args->arg))
 	{
 		execute_built_ins(execution, node);
@@ -80,7 +81,7 @@ static void	execute_cmd(t_execution execution, t_node *node)
 	set_interactive_mode(2);
 	execution.ms->pids[pids_len(execution.ms->pids) - 1] = pid;
 	if (pid < 0)
-		execution.ms->exit_code = perr(1, 1, 1, strerror(errno));
+		perr((t_perr){execution.ms, 1, 1, 1}, strerror(errno));
 	if (pid == 0)
 		child(execution, node);
 	parent(execution);
@@ -89,13 +90,16 @@ static void	execute_cmd(t_execution execution, t_node *node)
 void	execute_node(t_execution execution, t_node *node,
 		t_symbol last_operator)
 {
-	if (expand_redirects(execution.ms, node))
-		return ;
+	execution.ms->error_occured = expand_redirects(execution.ms, node);
 	update_inputs(node);
 	update_outputs(node);
+	if (execution.ms->error_occured)
+		return ;
 	if (node->type == T_TREE)
 	{
 		execution = execute_left(execution, node, last_operator);
+		if (node->tree.operator == T_PIPE)
+			execution.ms->error_occured = 0;
 		execution = execute_right(execution, node, last_operator);
 	}
 	else

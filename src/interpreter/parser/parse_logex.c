@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:17:56 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/16 13:59:14 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:38:40 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ t_node	*parse_prompt(t_ms *ms, t_tokens **tokens)
 	node = parse_logex(ms, tokens);
 	if (node && *tokens)
 	{
-		ms->exit_code = perr(2, 4, 1, SYN_ERR, "`", symbol_to_char(*tokens),
-				"'");
+		perr((t_perr){ms, 2, 4, 1}, SYN_ERR, "`", symbol_to_char(*tokens), "'");
 		free_node(node);
 		return (NULL);
 	}
@@ -43,7 +42,7 @@ t_node	*parse_logex(t_ms *ms, t_tokens **tokens)
 		free(ft_tokpop(tokens));
 		if (!*tokens)
 		{
-			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`newline'");
+			perr((t_perr){ms, 2, 2, 1}, SYN_ERR, "`newline'");
 			free_node(node);
 			return (NULL);
 		}
@@ -69,7 +68,7 @@ t_node	*parse_pipeline(t_ms *ms, t_tokens **tokens)
 		free(ft_tokpop(tokens));
 		if (!*tokens)
 		{
-			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`newline'");
+			perr((t_perr){ms, 2, 2, 1}, SYN_ERR, "`newline'");
 			free_node(node);
 			return (NULL);
 		}
@@ -91,7 +90,7 @@ t_node	*parse_brace(t_ms *ms, t_tokens **tokens)
 	free(ft_tokpop(tokens));
 	if (*tokens && (*tokens)->symbol == T_RPARENTH)
 	{
-		ms->exit_code = perr(2, 2, 1, SYN_ERR, "`)'");
+		perr((t_perr){ms, 2, 2, 1}, SYN_ERR, "`)'");
 		return (NULL);
 	}
 	node = parse_logex(ms, tokens);

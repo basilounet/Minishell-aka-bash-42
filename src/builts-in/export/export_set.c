@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:31:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/19 14:47:06 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:37:39 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ static char	*is_export_valid(t_ms *ms, char *arg)
 	i = 0;
 	if (!arg || !arg[0] || arg[0] == '=' || (arg[0] >= '0' && arg[0] <= '9'))
 	{
-		ms->exit_code = perr(1, 3, 1, "export: `", \
-			arg, "': not a valid identifier");
+		perr((t_perr){ms, 1, 3, 1}, "export: `", arg,
+			"': not a valid identifier");
 		ft_free_ptr(1, arg);
 		return (NULL);
 	}
@@ -89,8 +89,8 @@ static char	*is_export_valid(t_ms *ms, char *arg)
 			break ;
 		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 		{
-			ms->exit_code = perr(1, 3, 1, "export: `", \
-				arg, "': not a valid identifier");
+			perr((t_perr){ms, 1, 3, 1}, "export: `", arg,
+				"': not a valid identifier");
 			free(arg);
 			return (NULL);
 		}

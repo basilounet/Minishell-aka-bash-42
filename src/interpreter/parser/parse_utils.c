@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:18:11 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/17 14:18:16 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:38:44 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@ int	parenth_check(t_ms *ms, t_tokens *tokens)
 	if (balance > 0 || balance < 0)
 	{
 		if (balance > 0)
-			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`('");
+			perr((t_perr){ms, 2, 2, 1}, SYN_ERR, "`('");
 		if (balance < 0)
-			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`)'");
+			perr((t_perr){ms, 2, 2, 1}, SYN_ERR, "`)'");
 		return (0);
 	}
 	return (1);

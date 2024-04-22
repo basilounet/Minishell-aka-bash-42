@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:18:25 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/16 13:28:13 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:39:46 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define LEXER_H
 
 # include <libft.h>
-# include <stddef.h>
 # include <stdbool.h>
+# include <stddef.h>
 
 /*
  * Tokens types
@@ -67,7 +67,8 @@ typedef struct s_tokens
 /*========== TOKENS ==========*/
 
 t_tokens			*ft_toknew(t_symbol symbol, char *arg, t_tokens *next);
-bool				ft_toknew_back(t_tokens **tokens, t_symbol symbol, char *arg);
+bool				ft_toknew_back(t_tokens **tokens, t_symbol symbol,
+						char *arg);
 t_tokens			*ft_toklast(t_tokens *stack);
 void				ft_tokadd_back(t_tokens **stack, t_tokens *new);
 void				ft_tokadd_front(t_tokens **stack, t_tokens *new);

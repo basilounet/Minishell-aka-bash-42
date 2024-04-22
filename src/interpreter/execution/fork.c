@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 02:50:01 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 15:18:31 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:46:10 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	child(t_execution execution, t_node *node)
 	error_occured = transform_to_chars(execution.ms, node);
 	dup_child(execution);
 	close_all_fds(execution.ms);
-	if (!error_occured && node->cmd.args
+	if (node->cmd.args && !execution.ms->error_occured
 		&& !(is_built_in(node->cmd.args->arg) && execute_built_ins(execution,
 				node)))
 		execve(node->cmd.char_args[0], node->cmd.char_args,

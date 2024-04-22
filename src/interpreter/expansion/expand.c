@@ -71,7 +71,7 @@ static int	exp_redirs_core(t_ms *ms, t_tokens *tmp_tok)
 		|| tmp_tok->arg[0] == 0)
 	{
 		free(tmp_char);
-		ms->exit_code = perr(1, 1, 1, "ambiguous redirect");
+		perr((t_perr){ms, 1, 1, 1}, "ambiguous redirect");
 		return (0);
 	}
 	ft_free_ptr(1, tmp_char);

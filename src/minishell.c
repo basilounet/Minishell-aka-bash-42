@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 15:33:41 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/22 14:16:20 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 
 void	ft_free_ms(t_ms *ms)
 {
-	//ft_tokclear(&ms->tokens);
 	ft_free_ptr(1, ms->prompt);
 	ft_envclear(ms->env);
 	ft_free_map(ms->envp, ft_maplen(ms->envp));
@@ -30,6 +29,9 @@ static void	temp_execution(t_ms *ms, char *line)
 {
 	t_node	*node;
 
+	if (g_sig == SIGINT)
+		ms->exit_code = 130;
+	g_sig = 0;
 	ms->tokens = NULL;
 	ms->heredoc_number = 0;
 	if (lexer(ms, &ms->tokens, line) == 0)
@@ -48,7 +50,6 @@ static void	temp_execution(t_ms *ms, char *line)
 		return ;
 	}
 	prepare_and_execute(ms, node);
-	//printf("exit code = %d\n", ms->exit_code);
 	node = free_node(node);
 	ft_tokclear(&ms->tokens);
 	if (line)

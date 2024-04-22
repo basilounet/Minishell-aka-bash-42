@@ -6,18 +6,18 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:08:12 by marvin            #+#    #+#             */
-/*   Updated: 2024/03/22 13:32:39 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:39:48 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 # include <fcntl.h>
+# include <limits.h>
 # include <stdarg.h>
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
-# include <limits.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1023
 # endif

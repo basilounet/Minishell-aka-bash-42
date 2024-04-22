@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 13:57:38 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 20:09:40 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:18:44 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,27 +70,30 @@ int	is_existing_dir(char *path)
 	return (0);
 }
 
-int	perr(int exit_code, int n, int bs, ...)
+void	perr(t_perr perr, ...)
 {
 	va_list	args;
 	char	*to_print;
 
-	va_start(args, bs);
-	if (bs)
+	if (perr.ms->error_occured)
+		return ;
+	va_start(args, perr);
+	if (perr.bs)
 		write(2, "baseshell: ", 11);
-	while (n)
+	while (perr.n)
 	{
 		to_print = va_arg(args, char *);
-		if (!to_print && n != 1)
+		if (!to_print && perr.n != 1)
 		{
 			va_arg(args, char *);
-			n--;
+			perr.n--;
 		}
 		else
 			write(2, to_print, ft_strlen(to_print));
-		n--;
+		perr.n--;
 	}
 	write(2, "\n", 1);
 	va_end(args);
-	return (exit_code);
+	perr.ms->exit_code = perr.exit_code;
+	perr.ms->error_occured = 42;
 }

@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:48:16 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 15:18:23 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:37:33 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ static int	cd_errors(t_env **env, char **args, t_ms *ms)
 		return (0);
 	if (args[1] && args[2])
 	{
-		ms->exit_code = perr(1, 1, 1, "cd: too many arguments");
+		perr((t_perr){ms, 1, 1, 1}, "cd: too many arguments");
 		return (0);
 	}
 	if (!ft_getenv(*env, "HOME") && !args[1])
 	{
-		ms->exit_code = perr(1, 1, 1, "cd: HOME not set");
+		perr((t_perr){ms, 1, 1, 1}, "cd: HOME not set");
 		return (0);
 	}
 	return (1);
@@ -35,12 +35,12 @@ static int	cd_set_newpwd(t_env **env, t_ms *ms)
 	char	cwd[512];
 
 	if (ft_getenv(*env, "PWD"))
-		replace_env(env, ft_envnew(ft_strdup("OLDPWD"), \
-			ft_strdup(ft_getenv(*env, "PWD")), NULL));
+		replace_env(env, ft_envnew(ft_strdup("OLDPWD"),
+				ft_strdup(ft_getenv(*env, "PWD")), NULL));
 	ft_bzero(cwd, 512);
 	if (!getcwd(cwd, 512))
 	{
-		ms->exit_code = perr(1, 2, 1, "cd: ", strerror(errno));
+		perr((t_perr){ms, 1, 2, 1}, "cd: ", strerror(errno));
 		return (0);
 	}
 	replace_env(env, ft_envnew(ft_strdup("PWD"), ft_strdup(cwd), NULL));
@@ -56,7 +56,7 @@ static int	go_to_dir(t_env **env, char *curpath, char *arg, t_ms *ms)
 		free(curpath);
 		if (!ft_getenv(*env, "OLDPWD"))
 		{
-			ms->exit_code = perr(1, 1, 1, "cd: OLDPWD not set");
+			perr((t_perr){ms, 1, 1, 1}, "cd: OLDPWD not set");
 			return (0);
 		}
 		curpath = ft_strdup(ft_getenv(*env, "OLDPWD"));
@@ -65,7 +65,7 @@ static int	go_to_dir(t_env **env, char *curpath, char *arg, t_ms *ms)
 	}
 	if (chdir(curpath) < 0)
 	{
-		ms->exit_code = perr(1, 4, 1, "cd: ", arg, ": ", strerror(errno));
+		perr((t_perr){ms, 1, 4, 1}, "cd: ", arg, ": ", strerror(errno));
 		free(curpath);
 		return (0);
 	}

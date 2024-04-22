@@ -92,7 +92,7 @@ static bool	is_in_wildcard(char *name, t_wc *wc)
 	return (true);
 }
 
-bool	get_files(t_tokens **files, DIR *directory, t_wc *wc, int *exit_code)
+bool	get_files(t_tokens **files, DIR *directory, t_wc *wc)
 {
 	struct dirent	*curfile;
 	int				i;
@@ -105,7 +105,7 @@ bool	get_files(t_tokens **files, DIR *directory, t_wc *wc, int *exit_code)
 		curfile = readdir(directory);
 		if (!curfile && errno)
 		{
-			*exit_code = perr(1, 2, 1, "wildcards: ", strerror(errno));
+			perr((t_perr){wc->ms, 1, 2, 1}, "wildcards: ", strerror(errno));
 			return (false);
 		}
 		if (!curfile)

@@ -16,7 +16,7 @@ void	env(t_ms *ms, t_env *env, char **args)
 {
 	if (args[1])
 	{
-		ms->exit_code = perr(127, 3, 0, "env: ", \
+		perr((t_perr){ms, 127, 3, 0}, "env: ", \
 			args[1], ": No such file or directory");
 		return ;
 	}

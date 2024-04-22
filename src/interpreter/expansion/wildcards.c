@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 14:39:24 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/09 13:04:44 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:38:06 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ static DIR	*ft_open_directory(t_ms *ms)
 
 	if (!getcwd(cwd, 512))
 	{
-		ms->exit_code = perr(1, 2, 1, "wildcards: ", strerror(errno));
+		perr((t_perr){ms, 1, 2, 1}, "wildcards: ", strerror(errno));
 		return (NULL);
 	}
 	directory = opendir(cwd);
 	if (!directory)
-		ms->exit_code = perr(1, 2, 1, "wildcards: ", strerror(errno));
+		perr((t_perr){ms, 1, 2, 1}, "wildcards: ", strerror(errno));
 	return (directory);
 }
 
@@ -40,7 +40,7 @@ static char	*get_wc_result(t_tokens *files, DIR *dir, t_wc *wc, char *char_wc)
 		closedir(dir);
 		return (NULL);
 	}
-	if (!get_files(&files, dir, wc, wc->exit_code))
+	if (!get_files(&files, dir, wc))
 	{
 		ft_tokclear(&files);
 		closedir(dir);
@@ -119,6 +119,7 @@ char	*wildcards(t_ms *ms, char *char_wc)
 		return (NULL);
 	quote_mask(char_wc, mask);
 	wc = get_wc_parts(char_wc, mask);
+	wc->ms = ms;
 	free(mask);
 	if (!wc)
 		return (NULL);
@@ -128,6 +129,5 @@ char	*wildcards(t_ms *ms, char *char_wc)
 		ft_free_ptr(1, wc);
 		return (NULL);
 	}
-	wc->exit_code = &ms->exit_code;
 	return (get_wc_result(files, directory, wc, char_wc));
 }

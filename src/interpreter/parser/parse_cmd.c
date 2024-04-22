@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:17:52 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/17 13:45:36 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/19 19:11:08 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ int	parse_redlist(t_ms *ms, t_node *node, t_tokens **tokens)
 		free(ft_tokpop(tokens));
 		if (*tokens && (*tokens)->symbol != T_ARG)
 		{
-			ms->exit_code = perr(2, 4, 1, SYN_ERR, "`", symbol_to_char(*tokens),
-					"'");
+			perr((t_perr){ms, 2, 4, 1}, SYN_ERR, "`", symbol_to_char(*tokens),
+				"'");
 			return (0);
 		}
 		if (!*tokens)
 		{
-			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`newline'");
+			perr((t_perr){ms, 2, 2, 1}, SYN_ERR, "`newline'");
 			return (0);
 		}
 		(*tokens)->symbol = symbol;
@@ -70,8 +70,7 @@ t_node	*parse_command(t_ms *ms, t_tokens **tokens)
 
 	if (*tokens && is_symbol_set(3, 0, (*tokens)->symbol, T_PIPE, T_AND, T_OR))
 	{
-		ms->exit_code = perr(2, 4, 1, SYN_ERR, "`", symbol_to_char(*tokens),
-				"'");
+		perr((t_perr){ms, 2, 4, 1}, SYN_ERR, "`", symbol_to_char(*tokens), "'");
 		return (NULL);
 	}
 	if (*tokens && (*tokens)->symbol == T_LPARENTH)
@@ -81,7 +80,7 @@ t_node	*parse_command(t_ms *ms, t_tokens **tokens)
 		node = parse_simple_command(ms, tokens);
 		if (node && *tokens && (*tokens)->symbol == T_LPARENTH)
 		{
-			ms->exit_code = perr(2, 2, 1, SYN_ERR, "`('");
+			perr((t_perr){ms, 2, 2, 1}, SYN_ERR, "`('");
 			free_node(node);
 			return (NULL);
 		}
