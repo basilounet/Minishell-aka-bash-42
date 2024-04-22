@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 18:37:59 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/22 14:19:45 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,8 @@ int	expand_redirects(t_ms *ms, t_node *node)
 			if ((should_split_ifs(tmp_char) && ft_countc(tmp_tok->arg, -1))
 				|| tmp_tok->arg[0] == 0)
 			{
+				perr((t_perr){ms, 1, 2, 1}, tmp_char, ": ambiguous redirect");
 				free(tmp_char);
-				perr((t_perr){ms, 1, 1, 1}, "ambiguous redirect");
 				return (1);
 			}
 			ft_free_ptr(1, tmp_char);
@@ -157,16 +157,12 @@ int	reset_envp(t_ms *ms)
 
 void	prepare_and_execute(t_ms *ms, t_node *node)
 {
-	int	error;
-
-	error = 0;
 	ms->root_node = node;
 	ms->error_occured = 0;
-	error = reset_envp(ms);
+	ms->error_occured = reset_envp(ms);
 	if (DEBUG)
 		print_node(node, 0);
-	g_sig = 0;
-	if (error)
+	if (ms->error_occured)
 	{
 		unlink_here_docs(ms);
 		return ;
@@ -178,5 +174,6 @@ void	prepare_and_execute(t_ms *ms, t_node *node)
 	if (DEBUG)
 		ft_printf("exit_code : %d\n", ms->exit_code);
 	unlink_here_docs(ms);
+	ms->error_occured = 0;
 	ms->root_node = NULL;
 }

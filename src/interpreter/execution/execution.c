@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 14:50:58 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 18:37:17 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/22 13:20:15 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ static void	execute_cmd(t_execution execution, t_node *node)
 
 	if (g_sig == SIGINT || expand_args(execution.ms, node))
 	{
-		execution.ms->exit_code = 130;
+		if (g_sig == SIGINT)
+			execution.ms->exit_code = 130;
 		parent(execution);
 		return ;
 	}
@@ -89,12 +90,16 @@ static void	execute_cmd(t_execution execution, t_node *node)
 void	execute_node(t_execution execution, t_node *node,
 		t_symbol last_operator)
 {
-	expand_redirects(execution.ms, node);
+	execution.ms->error_occured = expand_redirects(execution.ms, node);
 	update_inputs(node);
 	update_outputs(node);
+	if (execution.ms->error_occured)
+		return ;
 	if (node->type == T_TREE)
 	{
 		execution = execute_left(execution, node, last_operator);
+		if (node->tree.operator == T_PIPE)
+			execution.ms->error_occured = 0;
 		execution = execute_right(execution, node, last_operator);
 	}
 	else
