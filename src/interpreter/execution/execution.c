@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 14:50:58 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/22 13:20:15 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/23 18:43:14 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,24 +62,23 @@ static void	execute_cmd(t_execution execution, t_node *node)
 {
 	int	pid;
 
-	if (g_sig == SIGINT || expand_args(execution.ms, node, \
-		node->cmd.args && !ft_strcmp(node->cmd.args->arg, "export")))
+	if (g_sig == SIGINT)
 	{
-		if (g_sig == SIGINT)
-			execution.ms->exit_code = 130;
-		parent(execution);
+		execution.ms->exit_code = 130;
 		return ;
 	}
+	if (expand_args(execution.ms, node, node->cmd.args && \
+	!ft_strcmp(node->cmd.args->arg, "export")) && !execution.ms->error_occured)
+		execution.ms->exit_code = 0;
 	if (!execution.is_in_pipe && node->cmd.args && !execution.ms->error_occured
 		&& is_built_in(node->cmd.args->arg))
 	{
 		execute_built_ins(execution, node);
 		parent(execution);
-		return ;	
+		return ;
 	}
 	execution.ms->pids = add_pid_space(execution.ms, execution.ms->pids);
 	pid = fork();
-	set_interactive_mode(2);
 	execution.ms->pids[pids_len(execution.ms->pids) - 1] = pid;
 	if (pid < 0)
 		perr((t_perr){execution.ms, 1, 1, 1}, strerror(errno));
@@ -91,7 +90,9 @@ static void	execute_cmd(t_execution execution, t_node *node)
 void	execute_node(t_execution execution, t_node *node,
 		t_symbol last_operator)
 {
-	execution.ms->error_occured = expand_redirects(execution.ms, node);
+	if (execution.should_execute)
+		execution.ms->error_occured = 0;
+	execution.ms->error_occured += expand_redirects(execution.ms, node);
 	if (execution.ms->error_occured)
 		execution.should_execute = 0;
 	update_inputs(node);
@@ -99,9 +100,6 @@ void	execute_node(t_execution execution, t_node *node,
 	if (node->type == T_TREE)
 	{
 		execution = execute_left(execution, node, last_operator);
-		if (node->tree.operator == T_PIPE && execution.should_execute)
-			execution.should_execute = 1;
-		execution.ms->error_occured = !execution.should_execute;
 		execution = execute_right(execution, node, last_operator);
 	}
 	else

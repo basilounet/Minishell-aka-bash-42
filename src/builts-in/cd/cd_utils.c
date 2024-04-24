@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 17:00:11 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/19 17:34:30 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:28:27 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ int	cd_set_pwd(t_env **env, t_ms *ms)
 	if (!getcwd(cwd, 512))
 	{
 		perr((t_perr){ms, 1, 2, 1}, "cd: ", strerror(errno));
-//		perr(1, 2, 1, "cd: ", strerror(errno));
 		return (0);
 	}
 	replace_env(env, ft_envnew(ft_strdup("PWD"), ft_strdup(cwd), NULL));

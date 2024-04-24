@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 10:14:40 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/22 14:19:45 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/24 15:04:52 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,11 @@ int	check_command(t_ms *ms, char **cmd)
 	char	*str;
 	int		i;
 
-	if (!cmd || !*cmd || is_built_in(*cmd) || (!is_existing_dir(*cmd) 
-		&& !access(*cmd, F_OK) && !access(*cmd, X_OK)))
+	if (is_built_in(*cmd) || (!is_existing_dir(*cmd)
+			&& !access(*cmd, F_OK) && !access(*cmd, X_OK)))
 		return (0);
 	i = -1;
-	while (ms->envp && ms->envp[++i])
+	while (cmd && *cmd && *cmd[0] && ms->envp && ms->envp[++i])
 	{
 		str = ft_strjoin3(ms->envp[i], "/", *cmd);
 		if (!str)
@@ -106,7 +106,7 @@ int	reset_envp(t_ms *ms)
 
 void	prepare_and_execute(t_ms *ms, t_node *node)
 {
-	ms->root_node = node;
+	set_interactive_mode(2);
 	ms->error_occured = 0;
 	ms->error_occured = reset_envp(ms);
 	if (DEBUG)
@@ -116,6 +116,7 @@ void	prepare_and_execute(t_ms *ms, t_node *node)
 		unlink_here_docs(ms);
 		return ;
 	}
+	ms->root_node = node;
 	ms->tokens = NULL;
 	execute_node((t_execution){ms, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, -1,
 		-1, 0, 1}, node, 0);
@@ -123,6 +124,7 @@ void	prepare_and_execute(t_ms *ms, t_node *node)
 	if (DEBUG)
 		ft_printf("exit_code : %d\n", ms->exit_code);
 	unlink_here_docs(ms);
+	g_sig = 0;
 	ms->error_occured = 0;
 	ms->root_node = NULL;
 }

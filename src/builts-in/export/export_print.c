@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:07:51 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/16 13:40:40 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:29:11 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,7 @@ static char	**env_formatted_array(t_env *env)
 		else
 			char_env[i] = env_formatted_values(env);
 		if (!char_env[i])
-		{
-			// free tab
-			return (NULL); // malloc error
-		}
+			return (NULL);
 		env = env->next;
 		i++;
 	}
@@ -105,10 +102,7 @@ char	**env_list_to_array(t_env *env)
 			continue ;
 		}
 		if (!char_env[i])
-		{
-			// free tab
-			return (NULL); // malloc error
-		}
+			return (NULL);
 		env = env->next;
 		i++;
 	}
@@ -123,7 +117,7 @@ int	print_export(t_env *env)
 	i = 0;
 	char_env = env_formatted_array(env);
 	if (!char_env)
-		return (0); // malloc error
+		return (0);
 	char_env = env_sort(char_env);
 	while (char_env[i])
 	{

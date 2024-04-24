@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:52:11 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/22 14:19:34 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:41:48 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,9 @@
 # include <builts_in.h>
 # include <errno.h>
 # include <parser.h>
-//# include <libft.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
-//# include <stdbool.h>
-//# include <stdio.h>
 # include <string.h>
 # include <sys/ioctl.h>
 # include <sys/resource.h>
@@ -48,21 +45,6 @@
 
 extern int		g_sig;
 
-/*
- * minishell main structure
- * contains :
- * line
- * env
- * prompt
- * envp
- * char_env
- * root_node
- * tokens
- * pids
- * heredoc_numbers
- * exit_code
- * error_occured
- */
 typedef struct s_minishell
 {
 	char		*line;
@@ -76,21 +58,9 @@ typedef struct s_minishell
 	int			heredoc_number;
 	int			exit_code;
 	int			error_occured;
-	bool		should_exit;
+	int			should_exit;
 }				t_ms;
 
-/*
- * minishell execution structure
- * contains :
- * minishell structure
- * lower_pipe
- * left_pipe
- * right_pipe
- * upper_pipe
- * input
- * output
- * is_in_pipe
- */
 typedef struct s_execution
 {
 	t_ms		*ms;
@@ -218,8 +188,8 @@ void			unlink_here_docs(t_ms *ms);
 
 /*----- FDS -----*/
 
-void	close_all_fds(t_ms *ms);
-void	try_close_fd(int fd);
+void			close_all_fds(void);
+void			try_close_fd(int fd);
 
 /*----- UTILS -----*/
 

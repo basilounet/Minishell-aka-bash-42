@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 23:26:28 by marvin            #+#    #+#             */
-/*   Updated: 2024/03/14 17:30:32 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:35:11 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ int	ft_atoll(const char *str, long long *number)
 		if ((sign == 1 && ((unsigned long long)((*number * 10 + \
 			(str[i] - '0')) * sign)) > LLONG_MAX) || !ft_isdigit(str[i]))
 			return (0);
-		if (!ft_isdigit(str[i]) || (sign == -1 && ((unsigned long long)((*number \
-			* 10 + (str[i] - '0')))) > (unsigned long long)LLONG_MAX + 1))
+		if (!ft_isdigit(str[i]) || (sign == -1 && ((unsigned long long)(\
+		(*number * 10 + (str[i] - '0')))) > (unsigned long long)LLONG_MAX + 1))
 			return (0);
 		*number = *number * 10 + (str[i] - '0');
 		i++;

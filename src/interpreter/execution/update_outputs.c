@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 14:50:19 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/22 11:04:27 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/24 15:33:48 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,14 +67,17 @@ void	expand_here_doc(t_ms *ms, t_tokens *token)
 
 void	update_outputs(t_node *node)
 {
+	t_tokens	*output;
+
 	if (!node)
 		return ;
 	if (node->type == T_TREE)
 	{
+		output = get_output_tok(node->tree.redirects);
+		if (output && output->symbol == T_FINAL_OUTPUT)
+			output->symbol = T_FINAL_APPEND;
 		if (node->tree.operator != T_PIPE)
-			add_redirect_node(node->tree.left,
-				get_output_tok(node->tree.redirects));
-		add_redirect_node(node->tree.right,
-			get_output_tok(node->tree.redirects));
+			add_redirect_node(node->tree.left, output);
+		add_redirect_node(node->tree.right, output);
 	}
 }

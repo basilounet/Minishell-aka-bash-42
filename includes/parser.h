@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:41:56 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/19 18:39:57 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:31:05 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define PARSER_H
 
 # include <lexer.h>
-//# include <libft.h>
 # include <stdio.h>
 
 # define SYN_ERR "syntax error near unexpected token "

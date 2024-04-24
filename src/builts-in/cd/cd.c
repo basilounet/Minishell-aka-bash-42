@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:48:16 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 18:37:33 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:28:41 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static int	cd_set_newpwd(t_env **env, t_ms *ms)
 static int	go_to_dir(t_env **env, char *curpath, char *arg, t_ms *ms)
 {
 	if (!curpath)
-		return (0); // malloc error
+		return (0);
 	if (ft_strcmp(curpath, "-") == 0)
 	{
 		free(curpath);
@@ -61,7 +61,7 @@ static int	go_to_dir(t_env **env, char *curpath, char *arg, t_ms *ms)
 		}
 		curpath = ft_strdup(ft_getenv(*env, "OLDPWD"));
 		if (!curpath)
-			return (0); // malloc error
+			return (0);
 	}
 	if (chdir(curpath) < 0)
 	{
@@ -109,7 +109,7 @@ int	cd(t_ms *ms, t_env **env, char **args)
 	else
 		directory = ft_strdup(args[1]);
 	if (!directory)
-		return (0); // malloc error
+		return (0);
 	curpath = set_curpath(env, directory);
 	if (curpath && curpath[0] != '/')
 		success = go_to_dir(env, ft_strjoin3(ft_getenv(*env, "PWD"), "/",

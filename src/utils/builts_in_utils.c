@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:10:17 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/04 13:14:33 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:28:18 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	env_array_to_list(t_env **env, char **char_env)
 		new_env = parse_char_env(*env, char_env[i], j, 0);
 		if (!new_env)
 		{
-			ft_envclear(*env); // malloc error
+			ft_envclear(*env);
 			return (0);
 		}
 		ft_envadd_back(env, new_env);

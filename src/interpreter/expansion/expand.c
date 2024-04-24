@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:32:18 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/19 17:32:19 by gangouil         ###   ########.fr       */
+/*   Updated: 2024/04/24 15:30:00 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static t_expand	exp_args_core(t_ms *ms, t_node *node, t_tokens **tmp_tok, \
-	bool is_export)
+static t_expand	exp_args_core(t_ms *ms, t_node *node, t_tokens **tmp_tok,
+		bool is_export)
 {
 	t_expand	exp_var;
 	char		*tmp_char;
@@ -32,7 +32,8 @@ static t_expand	exp_args_core(t_ms *ms, t_node *node, t_tokens **tmp_tok, \
 	}
 	else
 		(*tmp_tok)->arg = ft_strdup(tmp_char);
-	if ((*tmp_tok)->arg[0] == 0 && (*tmp_tok)->symbol == T_EXPAND)
+	if ((*tmp_tok)->arg[0] == 0 && (*tmp_tok)->symbol == T_EXPAND && \
+		!ft_countc(tmp_char, '"') && !ft_countc(tmp_char, '\''))
 	{
 		node->cmd.args = shift_tokens(node->cmd.args, tmp_tok);
 		free(tmp_char);
@@ -51,11 +52,11 @@ int	expand_args(t_ms *ms, t_node *node, bool is_export)
 	while (tmp_tok)
 	{
 		tmp_char = tmp_tok->arg;
-		if (tmp_tok->symbol != T_EXPAND)
+		if (tmp_tok->symbol == T_ARG)
 		{
 			exp_var = exp_args_core(ms, node, &tmp_tok, is_export);
 			if (!exp_var.line)
-				break ;
+				continue ;
 			if (should_split_ifs(tmp_char) || ft_countc(tmp_tok->arg, -1))
 				split_ifs(&tmp_tok, exp_var.is_wildcard, exp_var.is_expand);
 			free(tmp_char);
@@ -76,7 +77,8 @@ static int	exp_redirs_core(t_ms *ms, t_tokens *tmp_tok)
 	tmp_char = tmp_tok->arg;
 	exp_var = expand_var(ms, tmp_char, (t_expand_args){0, 1, 1, 1, 1});
 	tmp_tok->arg = exp_var.line;
-	if (ft_countc(tmp_tok->arg, -1) || (tmp_tok->arg[0] == 0 && ft_countc(tmp_char, '$')))
+	if (ft_countc(tmp_tok->arg, -1) || (tmp_tok->arg[0] == 0
+			&& ft_countc(tmp_char, '$')))
 	{
 		perr((t_perr){ms, 1, 2, 1}, tmp_char, ": ambiguous redirect");
 		free(tmp_char);

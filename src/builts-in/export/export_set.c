@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:31:02 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/19 18:37:39 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:29:31 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static int	set_export_values(t_env **env, char *expand_arg)
 	{
 		name = ft_substr(expand_arg, 0, j);
 		if (!name)
-			return (0); // malloc error
+			return (0);
 		new_env = ft_envnew(name, NULL, NULL);
 	}
 	else if (expand_arg[j] == '=')
@@ -67,7 +67,7 @@ static int	set_export_values(t_env **env, char *expand_arg)
 	else
 		new_env = parse_char_env(*env, expand_arg, j, 1);
 	if (!new_env)
-		return (0); // malloc error
+		return (0);
 	replace_env(env, new_env);
 	return (1);
 }
@@ -120,7 +120,7 @@ int	export(t_ms *ms, t_env **env, char **args)
 			continue ;
 		}
 		if (!set_export_values(env, expand_arg))
-			return (0); // malloc error
+			return (0);
 		free(expand_arg);
 		i++;
 	}

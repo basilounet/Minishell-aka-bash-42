@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 20:51:20 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/17 17:32:28 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/23 16:42:08 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,5 +129,7 @@ void	split_ifs(t_tokens **tokens, int is_wildcard, int is_expand)
 		return ;
 	}
 	(*tokens)->arg = split[0];
+	if (is_wildcard)
+		(*tokens)->symbol = T_WILDCARD;
 	add_ifs(split, tokens, is_wildcard, is_expand);
 }

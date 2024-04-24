@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 02:50:01 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/19 18:46:10 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/24 15:30:53 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ static int	start_built_ins(t_execution execution, t_node *node)
 	if (!ft_strcmp(node->cmd.args->arg, "echo"))
 		echo(execution.ms, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "exit"))
-		execution.ms->should_exit = ft_exit(execution.ms, node->cmd.char_args);
+		execution.ms->should_exit = ft_exit(execution.ms, node->cmd.char_args, \
+		execution.is_in_pipe);
 	else if (!ft_strcmp(node->cmd.args->arg, "cd"))
 		cd(execution.ms, &execution.ms->env, node->cmd.char_args);
 	else if (!ft_strcmp(node->cmd.args->arg, "pwd"))
@@ -54,8 +55,7 @@ int	execute_built_ins(t_execution execution, t_node *node)
 		if (execution.output >= 0)
 			dup2(execution.output, STDOUT_FILENO);
 	}
-	if (!start_built_ins(execution, node))
-		return (0);
+	start_built_ins(execution, node);
 	if (execution.is_in_pipe)
 	{
 		ft_free_ms(execution.ms);
@@ -91,13 +91,14 @@ void	child(t_execution execution, t_node *node)
 	execution.input = get_input_fd(node->cmd.redirects);
 	execution.output = get_output_fd(node->cmd.redirects);
 	if (node->cmd.args)
-		execution.ms->error_occured = check_command(execution.ms, &node->cmd.args->arg);
-	execution.ms->error_occured = transform_to_chars(execution.ms, node);
+		execution.ms->error_occured += check_command(execution.ms,
+				&node->cmd.args->arg);
+	execution.ms->error_occured += transform_to_chars(execution.ms, node);
 	dup_child(execution);
-	close_all_fds(execution.ms);
-	if (execution.should_execute &&node->cmd.args && !execution.ms->error_occured
-		&& !(is_built_in(node->cmd.args->arg) && execute_built_ins(execution,
-				node)))
+	close_all_fds();
+	if (execution.should_execute && node->cmd.args
+		&& !execution.ms->error_occured && !(is_built_in(node->cmd.args->arg)
+			&& execute_built_ins(execution, node)))
 		execve(node->cmd.char_args[0], node->cmd.char_args,
 			execution.ms->char_env);
 	ft_free_ms(execution.ms);
