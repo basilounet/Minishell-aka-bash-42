@@ -127,7 +127,6 @@ fclean : clean
 re : fclean all
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
-##	@echo -e "\033[$(shell expr $(NUM_LINES_TO_CLEAR));H\033[K"
 ifeq ($(IS_PRINT),1)
 	@sleep $(TIMER)
 	@clear
@@ -153,4 +152,4 @@ else
 endif
 
 
-.PHONY : all bonus clean fclean re
+.PHONY : all clean fclean re

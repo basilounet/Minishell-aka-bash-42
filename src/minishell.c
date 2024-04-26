@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/24 14:59:32 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/26 14:48:04 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ static void	start_execution(t_ms *ms, char *line)
 {
 	t_node	*node;
 
-	set_ms(ms);
 	g_sig = 0;
 	if (lexer(ms, &ms->tokens, line) == 0)
 	{
@@ -78,6 +77,7 @@ int	main(int ac, char **av, char **char_env)
 		if (ms.should_exit)
 			break ;
 		ms.line = readline(ms.prompt);
+		set_ms(&ms);
 		if (!ms.line)
 			break ;
 		if (ms.line[0] != '\0')
@@ -85,7 +85,7 @@ int	main(int ac, char **av, char **char_env)
 		start_execution(&ms, ms.line);
 		ft_free_ptr(1, ms.prompt);
 	}
-	ft_putstr_fd("exit\n", 2);
+	ft_putstr_fd("exit\n", 1);
 	rl_clear_history();
 	ft_free_ms(&ms);
 	return (ms.exit_code);

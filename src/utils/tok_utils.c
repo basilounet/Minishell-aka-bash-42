@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   del_tokens.c                                       :+:      :+:    :+:   */
+/*   tok_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gangouil <gangouil@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 18:02:11 by gangouil          #+#    #+#             */
-/*   Updated: 2024/04/19 18:02:12 by gangouil         ###   ########.fr       */
+/*   Updated: 2024/04/26 14:12:18 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,19 +72,16 @@ int	ft_toksize(t_tokens *tokens)
 char	*tokens_to_string(t_tokens *tokens)
 {
 	char	*str;
-	char	*quoted_str;
 
 	str = NULL;
+	if (tokens)
+	{
+		str = ft_strdup(tokens->arg);
+		tokens = tokens->next;
+	}
 	while (tokens)
 	{
-		quoted_str = ft_strjoin3("\377", tokens->arg, "\377");
-		if (!quoted_str)
-		{
-			if (str)
-				free(str);
-			return (NULL);
-		}
-		str = ft_str_reajoin(str, quoted_str, 1, 1);
+		str = ft_str_reajoin(str, ft_strjoin("\377", tokens->arg), 1, 1);
 		if (!str)
 			return (NULL);
 		tokens = tokens->next;
