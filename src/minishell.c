@@ -6,7 +6,7 @@
 /*   By: bvasseur <bvasseur@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:47:49 by bvasseur          #+#    #+#             */
-/*   Updated: 2024/04/26 14:48:04 by bvasseur         ###   ########.fr       */
+/*   Updated: 2024/04/27 15:23:17 by bvasseur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,25 @@ static void	start_execution(t_ms *ms, char *line)
 	return ;
 }
 
+static void	minishell_loop(t_ms *ms)
+{
+	while (1)
+	{
+		ms->prompt = add_colors(get_prompt(ms->env), &moving_rainbow_pattern);
+		set_interactive_mode(1);
+		if (ms->should_exit)
+			break ;
+		ms->line = readline(ms->prompt);
+		set_ms(ms);
+		if (!ms->line)
+			break ;
+		if (ms->line[0] != '\0')
+			add_history(ms->line);
+		start_execution(ms, ms->line);
+		ft_free_ptr(1, ms->prompt);
+	}
+}
+
 int	main(int ac, char **av, char **char_env)
 {
 	t_ms	ms;
@@ -70,22 +89,8 @@ int	main(int ac, char **av, char **char_env)
 	ft_memset((void *)&ms, 0, sizeof(t_ms));
 	if (env_array_to_list(&(ms.env), char_env) == 0)
 		return (1);
-	while (1)
-	{
-		ms.prompt = add_colors(get_prompt(ms.env), &moving_rainbow_pattern);
-		set_interactive_mode(1);
-		if (ms.should_exit)
-			break ;
-		ms.line = readline(ms.prompt);
-		set_ms(&ms);
-		if (!ms.line)
-			break ;
-		if (ms.line[0] != '\0')
-			add_history(ms.line);
-		start_execution(&ms, ms.line);
-		ft_free_ptr(1, ms.prompt);
-	}
-	ft_putstr_fd("exit\n", 1);
+	minishell_loop(&ms);
+	ft_putstr_fd("exit\n", 2);
 	rl_clear_history();
 	ft_free_ms(&ms);
 	return (ms.exit_code);
