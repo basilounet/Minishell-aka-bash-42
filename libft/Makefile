@@ -80,18 +80,25 @@ OBJ = $(addprefix $(OBJS_DIR),$(SRC:.c=.o))
 ##========== COLORS ==========##
 
 BASE_COLOR 	=		\033[0;39m
+BLACK		=		\033[30m
 GRAY 		=		\033[0;90m
+DARK_GRAY	=		\033[37m
 RED 		=		\033[0;91m
+DARK_GREEN	=		\033[32m
+DARK_RED	=		\033[31m
 GREEN 		=		\033[0;92m
-YELLOW 		=		\033[0;93m
+ORANGE 		=		\033[0;93m
+DARK_YELLOW	=		\033[33m
 BLUE 		=		\033[0;94m
+DARK_BLUE	=		\033[34m
 MAGENTA		=		\033[0;95m
+DARK_MAGENTA=		\033[35m
 CYAN 		=		\033[0;96m
 WHITE		=		\033[0;97m
 
 ##========== COMPILATOR ==========##
 
-CC = cc
+CC = clang
 
 ##========== FLAGS ==========##
 
@@ -117,7 +124,10 @@ endif
 
 NUM_SRC = $(words $(SRC))
 INDEX = 0
-NUM_LINES_TO_CLEAR = 1
+NUMBER_OF_ANIMATION = 9
+ifndef
+	ANIMATION_RATE = 4
+endif
 
 all : $(CLEAR) $(NAME)
 
@@ -126,30 +136,42 @@ $(NAME) : $(OBJ)
 	@echo "$(RED)-= Libft compiled =-$(BASE_COLOR)"
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
-##	@echo -e "\033[$(shell expr $(NUM_LINES_TO_CLEAR));H\033[K"
 	@mkdir -p $(OBJS_DIR)
 ifeq ($(IS_PRINT),1)
 	@sleep $(TIMER)
 	@clear
 	@echo "$(RED)Compiling Libft$(BASE_COLOR)"
-	@echo "╔==================================================╗"
-	@echo -n "║$(RED)"
-	@echo -n "▓"
-	@for i in $$(seq 1 $$(expr $(INDEX) \* 50 / $(NUM_SRC))); do \
-		echo -n "▓"; \
-	done
-	@for i in $$(seq 1 $$(expr 49 - $(INDEX) \* 50 / $(NUM_SRC))); do \
-		echo -n " "; \
-	done
-	@echo "$(BASE_COLOR)║" $(shell expr $(INDEX) \* 100 / $(NUM_SRC))%
-	@echo "╚==================================================╝"
-	@$(eval INDEX=$(shell expr $(INDEX) + 1))
-	@echo "Compiling : $<"
+	$(animations)
+	$(loading)
+	$(file_size_graph)
 	$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 else
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 endif
+
+define animations
+	$(animation_$(shell expr $(INDEX) / $(ANIMATION_RATE) % $(NUMBER_OF_ANIMATION)))
+endef
+
+define loading
+	@$(eval INDEX=$(shell expr $(INDEX) + 1))
+	@echo "╔═══════════════════════════════════════════════════╗"
+	@echo -n "║$(RED)"
+	@echo -n "▓"
+	@for i in $$(seq 1 $$(expr $(INDEX) \* 50 / $(NUM_SRC))); do \
+		echo -n "▓"; \
+	done
+	@for i in $$(seq 1 $$(expr 50 - $(INDEX) \* 50 / $(NUM_SRC))); do \
+		echo -n " "; \
+	done
+	@echo "$(BASE_COLOR)║" $(shell expr $(INDEX) \* 100 / $(NUM_SRC))%
+	@echo "╚═══════════════════════════════════════════════════╝"
+endef
+
+define file_size_graph
+	@awk -v size=$(shell stat -c %s $<) 'BEGIN { printf "[ "; for (i=0; i<int(size/1000); i++) printf "#"; printf " ] (%d KB)\n", size/1000 }'
+endef
 
 clean :
 	@rm -rf $(OBJS_DIR)
@@ -158,5 +180,86 @@ fclean : clean
 	@rm -rf $(NAME)
 
 re : fclean all
+
+define animation_0
+	@echo "           $(BLUE) _        _     _          __    _   $(BASE_COLOR)                          "
+	@echo "  $(WHITE)  o O O  $(BLUE)| |      (_)   | |__      / _|  | |_ $(BASE_COLOR)                          "
+	@echo "  $(WHITE) o       $(BLUE)| |__    | |   | '_ \    |  _|  |  _|$(BASE_COLOR)                          "
+	@echo "  $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O]  $(BLUE)|$(RED)____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/   $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_   $(RED)_$(BLUE)\\\\$(RED)__$(BLUE)|$(BASE_COLOR)                          "
+	@echo " $(RED){======|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|$(BASE_COLOR)                         "
+	@echo "$(RED)./$(DARK_YELLOW)o$(RED)--$(DARK_YELLOW)000$(RED)'\"\`-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'$(BASE_COLOR)                 "
+endef
+
+define animation_1
+	@echo "  $(BLUE) _        _     _          __    _                                      "
+	@echo "  $(BLUE)| |      (_)   | |__      / _|  | |_                            $(WHITE)  o O O "
+	@echo "  $(BLUE)| |__    | |   | '_ \    |  _|  |  _|                           $(WHITE) o      "
+	@echo "  $(BLUE)|$(RED)____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/   $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_   $(RED)_$(BLUE)\\\\$(RED)__$(BLUE)|                           $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O] "
+	@echo "$(RED)_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)| $(BASE_COLOR)                        $(RED){======| "
+	@echo "$(RED)\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'$(BASE_COLOR)                        $(RED)./$(DARK_YELLOW)o$(RED)-$(RED)-$(DARK_YELLOW)000$(RED)'$(BASE_COLOR)   "
+endef
+
+define animation_2
+	@echo "$(BLUE)    _     _          __    _                                        _     "
+	@echo "$(BLUE)   (_)   | |__      / _|  | |_                            $(WHITE)  o O O  $(BLUE)| |    "
+	@echo "$(BLUE)   | |   | '_ \    |  _|  |  _|                           $(WHITE) o       $(BLUE)| |__  "
+	@echo "$(BLUE)  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/   $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_   _$(BLUE)\\\\$(RED)__$(BLUE)|                           $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O]  $(BLUE)|$(RED)____$(BLUE)| "
+	@echo "$(RED)_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|$(BASE_COLOR)                         $(RED){======|_|$(ORANGE)\"\"\"\"\"$(RED)| "
+	@echo "\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'$(BASE_COLOR)                        $(RED)./$(DARK_YELLOW)o$(RED)--$(DARK_YELLOW)000$(RED)'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-' $(BASE_COLOR)  $(BASE_COLOR)"
+endef
+
+define animation_3
+	@echo "$(BLUE)  _          __    _                                       $(BLUE) _        _    "
+	@echo "$(BLUE) | |__      / _|  | |_                             $(WHITE) o O O  $(BLUE)| |      (_)   "
+	@echo "$(BLUE) | '_ \    |  _|  |  _|                            $(WHITE)o       $(BLUE)| |__    | |   "
+	@echo "$(BLUE) |$(RED)_.__$(BLUE)/   $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_   _$(BLUE)\\\\$(RED)__$(BLUE)|                           $(DARK_YELLOW)TS__$(DARK_YELLOW)[O]  $(BLUE)|$(RED)____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  "
+	@echo "$(RED)_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|    $(BASE_COLOR)                     $(RED){======$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)| "
+	@echo "\"\`-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'$(BASE_COLOR)                        $(RED)./o-$(RED)-$(DARK_YELLOW)000$(RED)'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0-' $(BASE_COLOR)"
+endef
+
+define animation_4
+	@echo "$(BLUE)     __    _                                        _     $(BLUE)   _     _      "
+	@echo "$(BLUE)    / _|  | |_                             $(WHITE) o O O $(BLUE) | |      (_)   | |__   "
+	@echo "$(BLUE)   |  _|  |  _|                            $(WHITE)o      $(BLUE) | |__    | |   | '_ \  "
+	@echo "  $(RED)_$(BLUE)|_$(BLUE)|$(RED)_   _$(BLUE)\\\\$(RED)__$(BLUE)|                           $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O]  $(BLUE)|____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/  "
+	@echo "$(RED)_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|$(BASE_COLOR)                         $(RED){======|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)| "
+	@echo "\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-' $(BASE_COLOR)                       $(RED)./$(DARK_YELLOW)o$(RED)--$(DARK_YELLOW)000$(RED)'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0-' $(BASE_COLOR)"
+endef
+
+define animation_5
+	@echo "$(BLUE)   _                                        _    $(BLUE)    _     _          __  "
+	@echo "$(BLUE)  | |_                             $(WHITE) o O O$(BLUE)  | |      (_)   | |__      / _| "
+	@echo "$(BLUE)  |  _|                            $(WHITE)o     $(BLUE)  | |__    | |   | '_ \    |  _| "
+	@echo "  _$(BLUE)\\\\$(RED)__$(BLUE)|                           $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O]  $(BLUE)|____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/   $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  "
+	@echo "_|$(ORANGE)\"\"\"\"\"$(RED)|$(BASE_COLOR)                         $(RED){======|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)| "
+	@echo "\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-' $(BASE_COLOR)                       $(RED)./$(DARK_YELLOW)o$(RED)--$(DARK_YELLOW)000$(RED)'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-' $(BASE_COLOR)"
+endef
+
+define animation_6
+	@echo "                                    $(BLUE)_        _     _          __    _     "
+	@echo "                           $(WHITE) o O O$(BLUE)  | |      (_)   | |__      / _|  | |_   "
+	@echo "                           $(WHITE)o     $(BLUE)  | |__    | |   | '_ \    |  _|  |  _|  "
+	@echo "                          $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O]  $(BLUE)|$(RED)____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/   $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(RED) _$(BLUE)\\\\$(RED)__$(BLUE)|  "
+	@echo "                         $(RED){======|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|$(BASE_COLOR) "
+	@echo "                        $(RED)./$(DARK_YELLOW)o$(RED)--$(DARK_YELLOW)000$(RED)'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-' $(BASE_COLOR)"
+endef
+
+define animation_7
+	@echo "                           $(BLUE) _        _     _          __    _             "
+	@echo "                   $(WHITE) o O O $(BLUE) | |      (_)   | |__      / _|  | |_           "
+	@echo "                   $(WHITE)o      $(BLUE) | |__    | |   | '_ \    |  _|  |  _|          "
+	@echo "                  $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O]  $(BLUE)|$(RED)____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/   $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_   $(RED)_$(BLUE)\\\\$(RED)__$(BLUE)|          "
+	@echo "                 $(RED){======|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|$(BASE_COLOR)         "
+	@echo "                $(RED)./$(DARK_YELLOW)o$(RED)--$(DARK_YELLOW)000$(RED)'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-' $(BASE_COLOR)"
+endef
+
+define animation_8
+	@echo "                   $(BLUE) _        _     _          __    _                     "
+	@echo "           $(WHITE) o O O $(BLUE) | |      (_)   | |__      / _|  | |_                   "
+	@echo "           $(WHITE)o      $(BLUE) | |__    | |   | '_ \    |  _|  |  _|                  "
+	@echo "          $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O]  $(BLUE)|$(RED)____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/   $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_   $(RED)_$(BLUE)\\\\$(RED)__$(BLUE)|                  "
+	@echo "         $(RED){======|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)| $(BASE_COLOR)                "
+	@echo "        $(RED)./$(DARK_YELLOW)o$(RED)--$(DARK_YELLOW)000$(RED)'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-' $(BASE_COLOR)      "
+endef
 
 .PHONY : all clean fclean re
