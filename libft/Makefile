@@ -157,7 +157,8 @@ endef
 define loading
 	@$(eval INDEX=$(shell expr $(INDEX) + 1))
 	@echo "╔═══════════════════════════════════════════════════╗"
-	@echo -n "║$(RED)"
+	@echo -n "║"
+	$(loading_color)
 	@echo -n "▓"
 	@for i in $$(seq 1 $$(expr $(INDEX) \* 50 / $(NUM_SRC))); do \
 		echo -n "▓"; \
@@ -167,6 +168,18 @@ define loading
 	done
 	@echo "$(BASE_COLOR)║" $(shell expr $(INDEX) \* 100 / $(NUM_SRC))%
 	@echo "╚═══════════════════════════════════════════════════╝"
+endef
+
+define loading_color
+	@if [ $(INDEX) -lt $$(expr $(NUM_SRC) \* 1 / 5) ]; then \
+		echo -n "$(DARK_RED)" ; \
+	elif [ $(INDEX) -lt $$(expr $(NUM_SRC) \* 2 / 5) ]; then \
+		echo -n "$(RED)" ; \
+	elif [ $(INDEX) -lt $$(expr $(NUM_SRC) \* 3 / 5) ]; then \
+		echo -n "$(ORANGE)" ; \
+	else \
+		echo -n "$(GREEN)" ; \
+	fi
 endef
 
 define file_size_graph
