@@ -234,7 +234,7 @@ define animation_4
 	@echo "$(BLUE)     __    _                                        _     $(BLUE)   _     _      "
 	@echo "$(BLUE)    / _|  | |_                             $(WHITE) o O O $(BLUE) | |      (_)   | |__   "
 	@echo "$(BLUE)   |  _|  |  _|                            $(WHITE)o      $(BLUE) | |__    | |   | '_ \  "
-	@echo "  $(RED)_$(BLUE)|_$(BLUE)|$(RED)_   _$(BLUE)\\\\$(RED)__$(BLUE)|                           $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O]  $(BLUE)|____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/  "
+	@echo "  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_   _$(BLUE)\\\\$(RED)__$(BLUE)|                           $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O]  $(BLUE)|$(RED)____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/  "
 	@echo "$(RED)_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|$(BASE_COLOR)                         $(RED){======|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)| "
 	@echo "\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-' $(BASE_COLOR)                       $(RED)./$(DARK_YELLOW)o$(RED)--$(DARK_YELLOW)000$(RED)'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0-' $(BASE_COLOR)"
 endef
@@ -243,7 +243,7 @@ define animation_5
 	@echo "$(BLUE)   _                                        _    $(BLUE)    _     _          __  "
 	@echo "$(BLUE)  | |_                             $(WHITE) o O O$(BLUE)  | |      (_)   | |__      / _| "
 	@echo "$(BLUE)  |  _|                            $(WHITE)o     $(BLUE)  | |__    | |   | '_ \    |  _| "
-	@echo "  _$(BLUE)\\\\$(RED)__$(BLUE)|                           $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O]  $(BLUE)|____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/   $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  "
+	@echo "  $(RED)_$(BLUE)\\\\$(RED)__$(BLUE)|                           $(DARK_YELLOW)TS$(RED)__$(DARK_YELLOW)[O]  $(BLUE)|$(RED)____$(BLUE)|  $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  $(BLUE)|$(RED)_.__$(BLUE)/   $(RED)_$(BLUE)|$(RED)_$(BLUE)|$(RED)_  "
 	@echo "_|$(ORANGE)\"\"\"\"\"$(RED)|$(BASE_COLOR)                         $(RED){======|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)|_|$(ORANGE)\"\"\"\"\"$(RED)| "
 	@echo "\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-' $(BASE_COLOR)                       $(RED)./$(DARK_YELLOW)o$(RED)--$(DARK_YELLOW)000$(RED)'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-'\"\`$(RED)-$(DARK_YELLOW)0$(RED)-$(DARK_YELLOW)0$(RED)-' $(BASE_COLOR)"
 endef
